@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kasir Persewaan Camping</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 16px; background:#f5f5f5 }
+    h2 { margin-top: 24px }
+    .box { background:#fff; padding:16px; border-radius:8px; margin-bottom:16px }
+    input, button { padding:8px; margin:4px 0 }
+    button { cursor:pointer }
+    .item { border-bottom:1px solid #ddd; padding:8px 0 }
+    .row { display:flex; gap:8px; flex-wrap:wrap }
+    .row input { flex:1 }
+  </style>
+</head>
+<body>
+  <h1>Web Kasir Persewaan Alat Camping</h1>
+
+  <div class="box">
+    <h2>1. Daftar Barang</h2>
+    <button onclick="openForm()">+ Tambah Barang</button>
+    <div id="barangList"></div>
+  </div>
+
+  <div class="box">
+    <h2>2. Keranjang Sewa</h2>
+    <div id="cart"></div>
+  </div>
+
+  <div class="box">
+    <h2>3. Data Customer</h2>
+    <input id="custName" placeholder="Nama Customer" />
+    <input id="custWa" placeholder="No WhatsApp (628xxxx)" />
+    <div class="row">
+      <input type="date" id="startDate" />
+      <input type="date" id="endDate" />
+    </div>
+    <label>
+      <input type="checkbox" id="nbCheck" /> Nb. Barang hilang wajib ganti
+    </label>
+    <h3>Total: Rp <span id="total">0</span></h3>
+    <button onclick="sendWA()">Simpan & Kirim WA</button>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5)">
+    <div style="background:#fff; padding:16px; margin:10% auto; width:90%; max-width:400px">
+      <h3>Tambah / Edit Barang</h3>
+      <input id="itemName" placeholder="Nama Barang" />
+      <input id="itemPrice" type="number" placeholder="Harga / hari" />
+      <button onclick="saveItem()">Simpan</button>
+      <button onclick="closeForm()">Batal</button>
+    </div>
+  </div>
+
+<script>
+let items = JSON.parse(localStorage.getItem('items')||'[]');
+let cart = [];
+let editIndex = null;
+
+function renderItems(){
+  localStorage.setItem('items',JSON.stringify(items));
+  const el = document.getElementById('barangList');
+  el.innerHTML='';
+  items.forEach((it,i)=>{
+    el.innerHTML+=`
+      <div class="item">
+        <b>${it.name}</b> - Rp ${it.price}
+        <button onclick="addCart(${i})">+ Keranjang</button>
+        <button onclick="editItem(${i})">Edit</button>
+        <button onclick="delItem(${i})">Hapus</button>
+      </div>`;
+  });
+}
+
+function renderCart(){
+  const el=document.getElementById('cart');
+  el.innerHTML='';
+  cart.forEach((c,i)=>{
+    el.innerHTML+=`${c.name} (Rp ${c.price}) <button onclick="cart.splice(${i},1);calc()">x</button><br>`;
+  });
+}
+
+function openForm(){ document.getElementById('modal').style.display='block'; }
+function closeForm(){ editIndex=null; document.getElementById('modal').style.display='none'; }
+
+function saveItem(){
+  const name=itemName.value, price=+itemPrice.value;
+  if(editIndex!==null) items[editIndex]={name,price};
+  else items.push({name,price});
+  itemName.value=itemPrice.value='';
+  closeForm(); renderItems();
+}
+
+function editItem(i){ editIndex=i; openForm(); itemName.value=items[i].name; itemPrice.value=items[i].price }
+function delItem(i){ items.splice(i,1); renderItems() }
+function addCart(i){ cart.push(items[i]); calc() }
+
+function days(){
+  const s=new Date(startDate.value), e=new Date(endDate.value);
+  const d=(e-s)/(1000*3600*24);
+  return d<=1?1:d;
+}
+
+function calc(){
+  renderCart();
+  const d=days();
+  const total=cart.reduce((a,b)=>a+b.price*d,0);
+  document.getElementById('total').innerText=total;
+}
+
+[startDate,endDate].forEach(i=>i.onchange=calc);
+
+function sendWA(){
+  const d=days();
+  let msg=`Halo ${custName.value}%0A\nDetail Sewa:%0A`;
+  cart.forEach(c=>{ msg+=`- ${c.name} : Rp ${c.price} x ${d} hari%0A`; });
+  msg+=`Total: Rp ${total.innerText}%0A`;
+  msg+=`Tanggal: ${startDate.value} s/d ${endDate.value}%0A`;
+  if(nbCheck.checked) msg+=`Nb. Barang hilang wajib ganti%0A`;
+  window.open(`https://wa.me/${custWa.value}?text=${msg}`,'_blank');
+}
+
+renderItems();
+</script>
+</body>
+</html>
