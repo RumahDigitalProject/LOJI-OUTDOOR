@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kasir Persewaan Tenda</title>
+  <style>
+    :root{
+      --primary:#6C63FF;
+      --green:#2ecc71;
+      --red:#e74c3c;
+      --dark:#1e1e2f;
+      --card:#2a2a40;
+      --bg:#111827;
+    }
+    *{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+    body{margin:0;background:linear-gradient(135deg,#111827,#1f2933);color:#fff;padding:12px}
+    h2{margin:8px 0}
+    button{cursor:pointer;border:none;border-radius:10px;padding:10px 14px;font-weight:600}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-danger{background:var(--red);color:#fff}
+    .btn-green{background:var(--green);color:#fff}
+    .section{background:rgba(255,255,255,0.04);border-radius:16px;padding:12px;margin-bottom:14px}
+
+    /* KATALOG */
+    .catalog-header{display:flex;justify-content:space-between;align-items:center}
+    .catalog-list{display:flex;gap:12px;overflow-x:auto;padding:10px 0}
+    .catalog-list::-webkit-scrollbar{height:6px}
+    .catalog-list::-webkit-scrollbar-thumb{background:#444;border-radius:10px}
+    .item{
+      min-width:220px;
+      background:var(--card);
+      border-radius:16px;
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      transition:.2s;
+    }
+    .item.green{border:2px solid var(--green)}
+    .item.red{border:2px solid var(--red)}
+    .item-name{text-align:center;font-weight:700;font-size:16px}
+    .item-stock{position:absolute;right:20px;top:14px;font-size:12px}
+    .item-price{text-align:center;margin:6px 0;color:#c7c7ff}
+    .item-actions{display:flex;gap:6px}
+    .item-actions button{flex:1;font-size:12px;padding:8px}
+
+    /* TRANSAKSI */
+    .cart-item{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;background:#1f2937;padding:8px;border-radius:10px}
+    .cart-item input{width:50px;border-radius:6px;border:none;padding:4px;text-align:center}
+    .total{font-size:18px;font-weight:700;text-align:right;margin-top:8px}
+    input,textarea{width:100%;padding:10px;border-radius:10px;border:none;margin-bottom:8px}
+    label{font-size:12px;color:#ccc}
+
+    /* MODAL */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center}
+    .modal-content{background:#1f2937;padding:16px;border-radius:16px;width:90%;max-width:360px}
+  </style>
+</head>
+<body>
+
+  <!-- KATALOG -->
+  <div class="section">
+    <div class="catalog-header">
+      <h2>📦 Katalog</h2>
+      <button class="btn-primary" onclick="openModal()">+ Tambah</button>
+    </div>
+    <div class="catalog-list" id="catalog"></div>
+  </div>
+
+  <!-- TRANSAKSI -->
+  <div class="section">
+    <h2>🛒 Transaksi</h2>
+    <label>Tanggal Sewa</label>
+    <input type="date" id="startDate" />
+    <input type="date" id="endDate" />
+
+    <div id="cart"></div>
+    <div class="total" id="grandTotal">Total: Rp 0</div>
+
+    <label>Nama Customer *</label>
+    <input id="custName" />
+
+    <label>No WhatsApp *</label>
+    <input id="custWa" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+
+    <label><input type="checkbox" id="nbCheck" /> Sertakan NB. Sewa barang</label>
+
+    <button class="btn-green" style="width:100%" onclick="sendWA()">Kirim ke WhatsApp</button>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h3>Tambah / Edit Barang</h3>
+      <input placeholder="Nama Barang" id="mName" />
+      <input placeholder="Harga (Rp)" id="mPrice" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+      <input placeholder="Stok" id="mStock" type="number" />
+      <button class="btn-primary" style="width:100%" onclick="saveItem()">Simpan</button>
+    </div>
+  </div>
+
+<script>
+// === STATE ===
+let items = JSON.parse(localStorage.getItem('items') || '[]');
+let cart = {};
+let rentals = JSON.parse(localStorage.getItem('rentals') || '[]');
+let editIndex = null;
+
+// === UTIL ===
+function saveAll(){
+  localStorage.setItem('items', JSON.stringify(items));
+  localStorage.setItem('rentals', JSON.stringify(rentals));
+}
+function rupiah(n){return 'Rp ' + Number(n||0).toLocaleString('id-ID');}
+
+// === KATALOG ===
+function renderCatalog(){
+  const c = document.getElementById('catalog');
+  c.innerHTML = '';
+  items.forEach((it,i)=>{
+    const div = document.createElement('div');
+    div.className = 'item ' + (it.stock>0?'green':'red');
+    div.innerHTML = `
+      <div class="item-name">${it.name} <small>(${it.stock})</small></div>
+      <div class="item-price">${rupiah(it.price)}</div>
+      <div class="item-actions">
+        <button class="btn-green" onclick="addToCart(${i})">+</button>
+        <button class="btn-primary" onclick="editItem(${i})">Edit</button>
+        <button class="btn-danger" onclick="deleteItem(${i})">Hapus</button>
+      </div>`;
+    c.appendChild(div);
+  });
+  saveAll();
+}
+
+function deleteItem(i){
+  if(!confirm('Hapus item?')) return;
+  delete cart[i];
+  items.splice(i,1);
+  renderCatalog();
+  renderCart();
+}
+
+function openModal(){
+  document.getElementById('modal').style.display='flex';
+  editIndex=null;
+  mName.value=''; mPrice.value=''; mStock.value='';
+}
+
+function editItem(i){
+  editIndex=i;
+  const it=items[i];
+  mName.value=it.name; mPrice.value=it.price; mStock.value=it.stock;
+  document.getElementById('modal').style.display='flex';
+}
+
+function saveItem(){
+  const obj={name:mName.value, price:Number(mPrice.value), stock:Number(mStock.value)};
+  if(editIndex===null) items.push(obj); else items[editIndex]=obj;
+  document.getElementById('modal').style.display='none';
+  renderCatalog();
+}
+
+// === CART ===
+function addToCart(i){
+  if(items[i].stock<=0){
+    alert('Stok habis, tidak bisa ditambahkan');
+    return;
+  }
+  cart[i]=(cart[i]||0)+1;
+  items[i].stock--;
+  renderCatalog();
+  renderCart();
+}
+
+function cancelItem(i){
+  items[i].stock += cart[i];
+  delete cart[i];
+  renderCatalog();
+  renderCart();
+}
+
+function getDays(){
+  if(!startDate.value||!endDate.value) return 1;
+  const s=new Date(startDate.value);
+  const e=new Date(endDate.value);
+  const d=(e-s)/(1000*60*60*24);
+  return d<=0?1:d;
+}
+
+function renderCart(){
+  const d=document.getElementById('cart');
+  d.innerHTML='';
+  let total=0; const days=getDays();
+  Object.keys(cart).forEach(i=>{
+    const it=items[i]; const qty=cart[i];
+    const sub=it.price*qty*days; total+=sub;
+    d.innerHTML+=`
+      <div class="cart-item">
+        <div>${it.name}<br>${rupiah(it.price)} x ${qty} x ${days} hari</div>
+        <div>
+          ${rupiah(sub)}<br>
+          <button class="btn-danger" onclick="cancelItem(${i})">Batal</button>
+        </div>
+      </div>`;
+  });
+  grandTotal.innerText='Total: '+rupiah(total);
+}
+startDate.onchange=endDate.onchange=renderCart;
+
+// === WA & RENTAL ===
+function generateInvoice(){
+  let inv;
+  do{
+    inv='INV-'+Date.now()+'-'+Math.floor(Math.random()*1000);
+  }while(localStorage.getItem(inv));
+  localStorage.setItem(inv,'1');
+  return inv;
+}
+
+function buildMsg(trx){
+  let inv=generateInvoice();
+  let m=`LOJI OUTDOOR%0A(${inv})%0A%0AKak *${trx.name}*%0ATgl Sewa ${trx.start} s/d ${trx.end}%0A%0A`;
+  const days=getDays();
+  let total=0;
+  Object.keys(trx.items).forEach(i=>{
+    const it=items[i];
+    const sub=it.price*trx.items[i]*days;
+    total+=sub;
+    m+=`• ${it.name} × (${days} hari) x ${rupiah(it.price)} = ${rupiah(sub)}%0A`;
+  });
+  m+=`%0ATotal = ${rupiah(total)}%0A`;
+  if(trx.nb) m+='%0ANb. Untuk jaminan persewaan memakai kartu Identitas KTP/SIM';
+  return m;
+}
+
+function sendWA(){
+  if(!custName.value||!custWa.value) return alert('Lengkapi data');
+  const trx={
+    name:custName.value,
+    wa:custWa.value,
+    start:startDate.value,
+    end:endDate.value,
+    items:{...cart},
+    nb:nbCheck.checked
+  };
+  rentals.push(trx);
+  saveAll();
+  window.open(`https://wa.me/${trx.wa}?text=${buildMsg(trx)}`,'_blank');
+  cart={}; custName.value=''; custWa.value=''; startDate.value=''; endDate.value='';
+  renderCart(); renderCatalog(); renderRentals();
+}
+
+function renderRentals(){
+  let box=document.getElementById('rentals');
+  if(!box){
+    box=document.createElement('div');
+    box.id='rentals'; box.className='section';
+    document.body.appendChild(box);
+  }
+  box.innerHTML='<h2>⏳ Sedang Sewa</h2>';
+  rentals.forEach((r,i)=>{
+    box.innerHTML+=`
+      <div class="cart-item">
+        <div>${r.name}<br>${r.start} - ${r.end}</div>
+        <div>
+          <button class="btn-primary" onclick="lihatBarang(${i})">Lihat</button>
+          <button class="btn-green" onclick="selesaiSewa(${i})">Selesai</button>
+        </div>
+      </div>`;
+  });
+}
+
+function lihatBarang(i){
+  const r=rentals[i];
+  let t='';
+  Object.keys(r.items).forEach(k=>{
+    t+=`${items[k].name} x${r.items[k]}
+`;
+  });
+  alert(t);
+}
+
+function selesaiSewa(i){
+  const r=rentals[i];
+  showFinishPopup(i);
+}
+
+function showFinishPopup(idx){
+  let modal=document.createElement('div');
+  modal.className='modal';
+  modal.style.display='flex';
+  modal.innerHTML=`
+    <div class="modal-content">
+      <h3>Selesaikan Sewa</h3>
+      <label><input type="checkbox" id="aman" checked/> Barang aman</label><br>
+      <label><input type="checkbox" id="lengkap" checked/> Barang lengkap</label><br>
+      <label><input type="checkbox" id="rusak"/> Barang rusak</label><br>
+      <label><input type="checkbox" id="hilang"/> Barang hilang</label><br>
+      <textarea id="tertinggal" placeholder="Barang tertinggal"></textarea>
+      <label><input type="checkbox" id="bonus"/> Sertakan pesan bonus / diskon</label>
+      <button class="btn-green" onclick="finishSend(${idx}, this)">Kirim</button>
+      <button class="btn-danger" onclick="this.parentElement.parentElement.remove()">Batal</button>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+function finishSend(i,btn){
+  const r=rentals[i];
+  let msg=`LOJI OUTDOOR%0A%0AHalo Kak *${r.name}* 👋%0ATerima kasih telah menyewa perlengkapan camping di _Loji Outdoor_! ⛺✨%0A%0A`;
+  if(document.getElementById('bonus').checked){
+    msg+=`Sebagai bentuk apresiasi, Kakak berhak mendapatkan *DISKON spesial untuk transaksi selanjutnya!*%0ACukup tunjukkan bukti ratingnya saat booking berikutnya ya!%0A%0A`;
+  }
+  msg+=`Cek Kondisi Barang:%0A`;
+  if(aman.checked) msg+='✔️ Barang aman%0A';
+  if(lengkap.checked) msg+='✔️ Barang lengkap%0A';
+  if(rusak.checked) msg+='❌ Barang rusak%0A';
+  if(hilang.checked) msg+='❌ Barang hilang%0A';
+  if(tertinggal.value) msg+=`Barang tertinggal: ${tertinggal.value}%0A`;
+  msg+=`%0AKami juga sangat terbuka terhadap kritik & saran demi meningkatkan pelayanan kami 🙏%0A%0ABantu kami dengan memberikan ⭐ rating:%0Ahttps://maps.app.goo.gl/K9zr9RvvgQyF66MS7%0A%0ASalam hangat & sampai jumpa di petualangan selanjutnya! 🌲🏕️%0A%0A*Loji Outdoor*`;
+
+  Object.keys(r.items).forEach(k=>{items[k].stock+=r.items[k];});
+  window.open(`https://wa.me/${r.wa}?text=${msg}`,'_blank');
+  rentals.splice(i,1);
+  saveAll();
+  renderCatalog();
+  renderRentals();
+  btn.closest('.modal').remove();
+}
+renderCatalog();
+renderCart();
+renderRentals();
+</script>
+</body>
+</html>
