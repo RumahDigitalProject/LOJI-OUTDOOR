@@ -321,7 +321,7 @@ function finishSend(i,btn){
   msg+=`%0AKami juga sangat terbuka terhadap kritik & saran demi meningkatkan pelayanan kami 🙏%0A%0ABantu kami dengan memberikan ⭐ rating:%0Ahttps://maps.app.goo.gl/K9zr9RvvgQyF66MS7%0A%0ASalam hangat & sampai jumpa di petualangan selanjutnya! 🌲🏕️%0A%0A*Loji Outdoor*`;
 
   Object.keys(r.items).forEach(k=>{items[k].stock+=r.items[k];});
-  window.open(`https://wa.me/${r.wa}?text=${msg}`,'_blank');
+  window.open(`https://wa.me/${r.wa}?text=${encodeURIComponent(msg)}`,'_blank');
   rentals.splice(i,1);
   saveAll();
   renderCatalog();
@@ -334,3 +334,4 @@ renderRentals();
 </script>
 </body>
 </html>
+
