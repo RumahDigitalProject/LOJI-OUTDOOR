@@ -484,7 +484,7 @@ Object.keys(cart).forEach(i=>{
 });
 
 const trx={
-  tgl: today(),
+  tgl: new Date().toISOString(),
   invoice: inv,
   name: custName.value,
   wa: custWa.value,
