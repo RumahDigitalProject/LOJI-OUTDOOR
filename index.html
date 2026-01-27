@@ -61,10 +61,19 @@
 
   <!-- KATALOG -->
   <div class="section">
-    <div class="catalog-header">
-      <h2>📦 Katalog</h2>
-      <button class="btn-primary" onclick="openModal()">+ Tambah</button>
-    </div>
+<div class="catalog-header">
+  <h2>📦 Katalog</h2>
+  <div style="display:flex;gap:8px;align-items:center">
+    <input 
+      type="text"
+      id="searchCatalog"
+      placeholder="Cari item..."
+      oninput="renderCatalog()"
+      style="padding:8px 10px;border-radius:10px;border:none;width:140px"
+    />
+    <button class="btn-primary" onclick="openModal()">+ Tambah</button>
+  </div>
+</div>
     <div class="catalog-list" id="catalog"></div>
   </div>
 
@@ -73,7 +82,9 @@
     <h2>🛒 Transaksi</h2>
     <label>Tanggal Sewa</label>
     <input type="date" id="startDate" />
+    placeholder="Cari item..."
     <input type="date" id="endDate" />
+    placeholder="Cari item..."
 
     <div id="cart"></div>
     <div class="total" id="grandTotal">Total: Rp 0</div>
@@ -117,8 +128,26 @@ function rupiah(n){return 'Rp ' + Number(n||0).toLocaleString('id-ID');}
 // === KATALOG ===
 function renderCatalog(){
   const c = document.getElementById('catalog');
+  const keyword = (document.getElementById('searchCatalog')?.value || '').toLowerCase();
   c.innerHTML = '';
+
   items.forEach((it,i)=>{
+    if(keyword && !it.name.toLowerCase().includes(keyword)) return;
+
+    const div = document.createElement('div');
+    div.className = 'item ' + (it.stock>0?'green':'red');
+    div.innerHTML = `
+      <div class="item-name">${it.name} <small>(${it.stock})</small></div>
+      <div class="item-price">${rupiah(it.price)}</div>
+      <div class="item-actions">
+        <button class="btn-green" onclick="addToCart(${i})">+</button>
+        <button class="btn-primary" onclick="editItem(${i})">Edit</button>
+        <button class="btn-danger" onclick="deleteItem(${i})">Hapus</button>
+      </div>`;
+    c.appendChild(div);
+  });
+  saveAll();
+  
     const div = document.createElement('div');
     div.className = 'item ' + (it.stock>0?'green':'red');
     div.innerHTML = `
