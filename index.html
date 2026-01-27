@@ -390,7 +390,7 @@ function renderRentals(){
   if(!box){
     box=document.createElement('div');
     box.id='rentals'; box.className='section';
-    document.body.appendChild(box);
+    document.getElementById('pageTransaksi').appendChild(box);
   }
   box.innerHTML='<h2>⏳ Sedang Sewa</h2>';
   rentals.forEach((r,i)=>{
