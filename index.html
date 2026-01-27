@@ -219,21 +219,16 @@
 <script>
 
 // === lap ===
-function formatTgl(t){
-  return new Date(t).toLocaleDateString('id-ID');
-}
-
-
 function renderLaporan(){
   const box = document.getElementById('laporanBox');
   box.innerHTML = '';
 
-  if(rentals.length === 0){
+  if(reports.length === 0){
     box.innerHTML = `<tr><td colspan="6">Belum ada data</td></tr>`;
     return;
   }
 
-  rentals.forEach((r,i)=>{
+  reports.forEach((r,i)=>{
     box.innerHTML += `
       <tr>
         <td>${formatTgl(r.tgl)}</td>
@@ -242,7 +237,7 @@ function renderLaporan(){
         <td>${r.wa}</td>
         <td>${rupiah(r.total)}</td>
         <td>
-          <button class="btn-primary" onclick="showDetail(${i})">
+          <button class="btn-primary" onclick="showDetailReport(${i})">
             Detail
           </button>
         </td>
@@ -306,6 +301,62 @@ function showDetail(i){
   `;
   document.body.appendChild(modal);
 }
+
+function showDetailReport(i){
+  const r = reports[i];
+  let rows = '';
+
+  Object.keys(r.items).forEach(k=>{
+    const it = items[k];
+    const qty = r.items[k];
+    const sub = it.price * qty * r.days;
+
+    rows += `
+      <tr>
+        <td>${it.name}</td>
+        <td>${qty}</td>
+        <td>${r.days} hari</td>
+        <td>${rupiah(it.price)}</td>
+        <td>${rupiah(sub)}</td>
+      </tr>
+    `;
+  });
+
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h3>Detail Laporan</h3>
+      <p><b>${r.name}</b> (${r.invoice})</p>
+
+      <div class="table-wrap">
+        <table class="lap-table">
+          <thead>
+            <tr>
+              <th>Barang</th>
+              <th>Qty</th>
+              <th>Hari</th>
+              <th>Harga</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+
+      <p style="text-align:right;font-weight:bold">
+        Total: ${rupiah(r.total)}
+      </p>
+
+      <button class="btn-danger" onclick="this.closest('.modal').remove()">
+        Tutup
+      </button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
 
 
 
@@ -459,7 +510,7 @@ function generateInvoice(){
 }
 
 function buildMsg(trx){
-  let inv=generateInvoice();
+  let inv = trx.invoice;
   let m=`LOJI OUTDOOR%0A(${inv})%0A%0AKak *${trx.name}*%0ATgl Sewa ${trx.start} s/d ${trx.end}%0A%0A`;
   const days=getDays();
   let total=0;
@@ -499,8 +550,10 @@ const trx={
 };
 
 
-  rentals.push(trx);
-  saveAll();
+  rentals.push(trx);   // sedang sewa
+reports.push(trx);   // laporan permanen
+saveAll();
+
 
   // 👉 buka WA Business
   window.location.href =
