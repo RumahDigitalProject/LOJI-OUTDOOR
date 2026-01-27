@@ -400,6 +400,16 @@ function saveAll(){
   localStorage.setItem('reports', JSON.stringify(reports));
 }
 function rupiah(n){return 'Rp ' + Number(n||0).toLocaleString('id-ID');}
+function formatTgl(iso){
+  if(!iso) return '-';
+  const d = new Date(iso);
+  return d.toLocaleDateString('id-ID',{
+    day:'2-digit',
+    month:'2-digit',
+    year:'numeric'
+  });
+}
+
 
 // === KATALOG ===
 function renderCatalog(){
