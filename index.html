@@ -241,6 +241,7 @@ function buildMsg(trx){
 
 function sendWA(){
   if(!custName.value||!custWa.value) return alert('Lengkapi data');
+
   const trx={
     name:custName.value,
     wa:custWa.value,
@@ -249,12 +250,18 @@ function sendWA(){
     items:{...cart},
     nb:nbCheck.checked
   };
+
   rentals.push(trx);
   saveAll();
-  window.open(`https://wa.me/${trx.wa}?text=${buildMsg(trx)}`,'_blank');
+
+  // 👉 buka WA Business
+  window.location.href =
+    `intent://send?phone=${trx.wa}&text=${buildMsg(trx)}#Intent;scheme=whatsapp;package=com.whatsapp.w4b;end`;
+
   cart={}; custName.value=''; custWa.value=''; startDate.value=''; endDate.value='';
   renderCart(); renderCatalog(); renderRentals();
 }
+
 
 function renderRentals(){
   let box=document.getElementById('rentals');
