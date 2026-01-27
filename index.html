@@ -71,12 +71,11 @@
   <!-- TRANSAKSI -->
   <div class="section">
     <h2>🛒 Transaksi</h2>
-    <label>Tanggal Sewa</label>
+    <label>Tanggal Awal Sewa</label>
     <input type="date" id="startDate" />
-    placeholder="Cari item..."
+    <label>Tanggal Akhir Sewa</label>
     <input type="date" id="endDate" />
-    placeholder="Cari item..."
-
+    
     <div id="cart"></div>
     <div class="total" id="grandTotal">Total: Rp 0</div>
 
@@ -215,9 +214,12 @@ startDate.onchange=endDate.onchange=renderCart;
 function generateInvoice(){
   let inv;
   do{
-    inv='INV-'+Date.now()+'-'+Math.floor(Math.random()*1000);
-  }while(localStorage.getItem(inv));
-  localStorage.setItem(inv,'1');
+    const part1 = Math.floor(Math.random() * 100).toString().padStart(2, '0'); // xx
+    const part2 = Math.floor(Math.random() * 1000).toString().padStart(3, '0'); // xxx
+    inv = `Rent-${part1}-${part2}`;
+  } while(localStorage.getItem(inv));
+
+  localStorage.setItem(inv, '1');
   return inv;
 }
 
