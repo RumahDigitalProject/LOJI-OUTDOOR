@@ -182,7 +182,7 @@
 
 </div>
 
-  
+  <div id="pageLaporan" style="display:none">
 <div style="display:flex;justify-content:space-between;align-items:center">
   <h2>📊 Laporan Penjualan</h2>
   <button class="btn-danger" onclick="confirmHapusTerpilih()">
@@ -255,7 +255,7 @@ function confirmHapusTerpilih(){
 
 
 function hapusTerpilih(){
-  const pin = document.getElementById('pinInput').value;
+  const pin = document.getElementById('1234').value;
 
   if(pin !== LAPORAN_PIN){
     alert('❌ PIN salah');
@@ -304,10 +304,8 @@ function renderLaporan(){
       </td>
     </tr>
   `;
-});
-
-
-
+}
+                  
 function showDetail(i){
   const r = rentals[i];
   let rows = '';
