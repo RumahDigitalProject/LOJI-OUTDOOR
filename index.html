@@ -650,6 +650,15 @@ function finishSend(i,btn){
   renderRentals();
   btn.closest('.modal').remove();
 }
+function syncOldRentalsToReports(){
+  rentals.forEach(r=>{
+    const exist = reports.find(x => x.invoice === r.invoice);
+    if(!exist){
+      reports.push(r);
+    }
+  });
+  saveAll();
+}
 syncOldRentalsToReports();
 renderCatalog();
 renderCart();
