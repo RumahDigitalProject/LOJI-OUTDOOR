@@ -190,6 +190,7 @@
     <table class="lap-table">
       <thead>
         <tr>
+          <th>tgl</th>
           <th>No Inv</th>
           <th>Nama</th>
           <th>WhatsApp</th>
@@ -218,18 +219,24 @@
 <script>
 
 // === lap ===
+function formatTgl(t){
+  return new Date(t).toLocaleDateString('id-ID');
+}
+
+
 function renderLaporan(){
   const box = document.getElementById('laporanBox');
   box.innerHTML = '';
 
   if(rentals.length === 0){
-    box.innerHTML = `<tr><td colspan="5">Belum ada data</td></tr>`;
+    box.innerHTML = `<tr><td colspan="6">Belum ada data</td></tr>`;
     return;
   }
 
   rentals.forEach((r,i)=>{
     box.innerHTML += `
       <tr>
+        <td>${formatTgl(r.tgl)}</td>
         <td>${r.invoice}</td>
         <td>${r.name}</td>
         <td>${r.wa}</td>
@@ -477,6 +484,7 @@ Object.keys(cart).forEach(i=>{
 });
 
 const trx={
+  tgl: today(),
   invoice: inv,
   name: custName.value,
   wa: custWa.value,
