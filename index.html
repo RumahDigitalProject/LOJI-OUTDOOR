@@ -183,21 +183,26 @@
 </div>
 
   
-<div class="section" id="pageLaporan" style="display:none">
+<div style="display:flex;justify-content:space-between;align-items:center">
   <h2>📊 Laporan Penjualan</h2>
+  <button class="btn-danger" onclick="confirmHapusTerpilih()">
+    🗑 Hapus Terpilih
+  </button>
+</div>
 
   <div class="table-wrap">
     <table class="lap-table">
       <thead>
-        <tr>
-          <th>tgl</th>
-          <th>No Inv</th>
-          <th>Nama</th>
-          <th>WhatsApp</th>
-          <th>Total</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
+  <tr>
+    <th><input type="checkbox" onclick="toggleAll(this)"></th>
+    <th>Tgl</th>
+    <th>No Inv</th>
+    <th>Nama</th>
+    <th>WA</th>
+    <th>Total</th>
+    <th>Aksi</th>
+  </tr>
+</thead>
       <tbody id="laporanBox"></tbody>
     </table>
   </div>
@@ -218,6 +223,59 @@
 
 <script>
 
+function toggleAll(el){
+  document.querySelectorAll('.chkReport')
+    .forEach(c => c.checked = el.checked);
+}
+
+
+function confirmHapusTerpilih(){
+  const selected = [...document.querySelectorAll('.chkReport:checked')];
+
+  if(selected.length === 0){
+    alert('Pilih data yang ingin dihapus');
+    return;
+  }
+
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h3>🔐 Konfirmasi PIN</h3>
+      <p>${selected.length} data akan dihapus</p>
+      <input id="pinInput" type="password" placeholder="Masukkan PIN">
+      <button class="btn-danger" onclick="hapusTerpilih()">Hapus</button>
+      <button class="btn-primary" onclick="this.closest('.modal').remove()">Batal</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+
+function hapusTerpilih(){
+  const pin = document.getElementById('pinInput').value;
+
+  if(pin !== LAPORAN_PIN){
+    alert('❌ PIN salah');
+    return;
+  }
+
+  const indexes = [...document.querySelectorAll('.chkReport:checked')]
+    .map(c => Number(c.value))
+    .sort((a,b)=>b-a); // penting: hapus dari belakang
+
+  indexes.forEach(i => reports.splice(i,1));
+
+  saveAll();
+  renderLaporan();
+
+  document.querySelector('.modal')?.remove();
+  alert('✅ Data laporan terhapus');
+}
+
+
 // === lap ===
 function renderLaporan(){
   const box = document.getElementById('laporanBox');
@@ -229,22 +287,25 @@ function renderLaporan(){
   }
 
   reports.forEach((r,i)=>{
-    box.innerHTML += `
-      <tr>
-        <td>${formatTgl(r.tgl)}</td>
-        <td>${r.invoice}</td>
-        <td>${r.name}</td>
-        <td>${r.wa}</td>
-        <td>${rupiah(r.total)}</td>
-        <td>
-          <button class="btn-primary" onclick="showDetailReport(${i})">
-            Detail
-          </button>
-        </td>
-      </tr>
-    `;
-  });
-}
+  box.innerHTML += `
+    <tr>
+      <td>
+        <input type="checkbox" class="chkReport" value="${i}">
+      </td>
+      <td>${formatTgl(r.tgl)}</td>
+      <td>${r.invoice}</td>
+      <td>${r.name}</td>
+      <td>${r.wa}</td>
+      <td>${rupiah(r.total)}</td>
+      <td>
+        <button class="btn-primary" onclick="showDetail(${i})">
+          Detail
+        </button>
+      </td>
+    </tr>
+  `;
+});
+
 
 
 function showDetail(i){
