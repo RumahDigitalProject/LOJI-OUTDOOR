@@ -73,7 +73,6 @@
   from{transform:translateX(100%)}
   to{transform:translateX(0)}
 }
-
     
     /* KATALOG */
     .catalog-header{display:flex;justify-content:space-between;align-items:center}
@@ -104,6 +103,29 @@
     .total{font-size:18px;font-weight:700;text-align:right;margin-top:8px}
     input,textarea{width:100%;padding:10px;border-radius:10px;border:none;margin-bottom:8px}
     label{font-size:12px;color:#ccc}
+
+    /* Laporan*/
+    .table-wrap{
+  overflow-x:auto;
+}
+
+.lap-table{
+  min-width:600px;
+  width:100%;
+  border-collapse:collapse;
+}
+
+.lap-table th,
+.lap-table td{
+  padding:10px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  text-align:left;
+  font-size:13px;
+}
+
+.lap-table th{
+  color:#c7c7ff;
+}
 
     /* MODAL */
     .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center}
@@ -163,8 +185,23 @@
   
 <div class="section" id="pageLaporan" style="display:none">
   <h2>📊 Laporan Penjualan</h2>
-  <div id="laporanBox"></div>
+
+  <div class="table-wrap">
+    <table class="lap-table">
+      <thead>
+        <tr>
+          <th>No Inv</th>
+          <th>Nama</th>
+          <th>WhatsApp</th>
+          <th>Total</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="laporanBox"></tbody>
+    </table>
+  </div>
 </div>
+
 
 
   <!-- MODAL -->
@@ -182,20 +219,87 @@
 
 // === lap ===
 function renderLaporan(){
-  const box=document.getElementById('laporanBox');
-  box.innerHTML='';
-  if(rentals.length===0){
-    box.innerHTML='<p>Belum ada data.</p>';
+  const box = document.getElementById('laporanBox');
+  box.innerHTML = '';
+
+  if(rentals.length === 0){
+    box.innerHTML = `<tr><td colspan="5">Belum ada data</td></tr>`;
     return;
   }
-  rentals.forEach(r=>{
-    box.innerHTML+=`
-      <div class="cart-item">
-        <div>${r.name}<br>${r.start} - ${r.end}</div>
-      </div>
+
+  rentals.forEach((r,i)=>{
+    box.innerHTML += `
+      <tr>
+        <td>${r.invoice}</td>
+        <td>${r.name}</td>
+        <td>${r.wa}</td>
+        <td>${rupiah(r.total)}</td>
+        <td>
+          <button class="btn-primary" onclick="showDetail(${i})">
+            Detail
+          </button>
+        </td>
+      </tr>
     `;
   });
 }
+
+
+function showDetail(i){
+  const r = rentals[i];
+  let rows = '';
+
+  Object.keys(r.items).forEach(k=>{
+    const it = items[k];
+    const qty = r.items[k];
+    const sub = it.price * qty * r.days;
+
+    rows += `
+      <tr>
+        <td>${it.name}</td>
+        <td>${qty}</td>
+        <td>${r.days} hari</td>
+        <td>${rupiah(it.price)}</td>
+        <td>${rupiah(sub)}</td>
+      </tr>
+    `;
+  });
+
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h3>Detail Sewa</h3>
+      <p><b>${r.name}</b> (${r.invoice})</p>
+
+      <div class="table-wrap">
+        <table class="lap-table">
+          <thead>
+            <tr>
+              <th>Barang</th>
+              <th>Qty</th>
+              <th>Hari</th>
+              <th>Harga</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+
+      <p style="text-align:right;font-weight:bold">
+        Total: ${rupiah(r.total)}
+      </p>
+
+      <button class="btn-danger" onclick="this.closest('.modal').remove()">
+        Tutup
+      </button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
 
 
 // === Titik 3===
@@ -364,14 +468,26 @@ function buildMsg(trx){
 function sendWA(){
   if(!custName.value||!custWa.value) return alert('Lengkapi data');
 
-  const trx={
-    name:custName.value,
-    wa:custWa.value,
-    start:startDate.value,
-    end:endDate.value,
-    items:{...cart},
-    nb:nbCheck.checked
-  };
+  const inv = generateInvoice();
+const days = getDays();
+let total = 0;
+
+Object.keys(cart).forEach(i=>{
+  total += items[i].price * cart[i] * days;
+});
+
+const trx={
+  invoice: inv,
+  name: custName.value,
+  wa: custWa.value,
+  start: startDate.value,
+  end: endDate.value,
+  days,
+  items: {...cart},
+  total,
+  nb: nbCheck.checked
+};
+
 
   rentals.push(trx);
   saveAll();
