@@ -22,6 +22,59 @@
     .btn-green{background:var(--green);color:#fff}
     .section{background:rgba(255,255,255,0.04);border-radius:16px;padding:12px;margin-bottom:14px}
 
+/* TOP BAR */
+.topbar{
+  display:flex;
+  justify-content:flex-end;
+  margin-bottom:10px;
+}
+.menu-btn{
+  font-size:26px;
+  cursor:pointer;
+  user-select:none;
+}
+
+/* MENU OVERLAY */
+.menu-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  display:none;
+  z-index:99;
+}
+
+/* PANEL SETENGAH LAYAR */
+.menu-panel{
+  position:absolute;
+  right:0;
+  top:0;
+  width:70%;
+  max-width:320px;
+  height:100%;
+  background:#1f2937;
+  padding:20px;
+  border-radius:16px 0 0 16px;
+  animation:slideIn .25s ease;
+}
+.menu-panel h3{
+  margin-top:0;
+}
+.menu-panel button{
+  width:100%;
+  margin-bottom:10px;
+  padding:12px;
+  border-radius:12px;
+  background:var(--primary);
+  color:white;
+  font-size:14px;
+}
+
+@keyframes slideIn{
+  from{transform:translateX(100%)}
+  to{transform:translateX(0)}
+}
+
+    
     /* KATALOG */
     .catalog-header{display:flex;justify-content:space-between;align-items:center}
     .catalog-list{display:flex;gap:12px;overflow-x:auto;padding:10px 0}
@@ -59,13 +112,30 @@
 </head>
 <body>
 
+  <div class="topbar">
+  <div class="menu-btn" onclick="openMenu()">☰</div>
+</div>
+
+  <div class="menu-overlay" id="menuOverlay" onclick="closeMenu(event)">
+  <div class="menu-panel">
+    <h3>📋 Menu</h3>
+    <button onclick="showTransaksi()">🛒 Transaksi</button>
+    <button onclick="showLaporan()">📊 Laporan</button>
+  </div>
+</div>
+
   <!-- KATALOG -->
-  <div class="section">
+<div class="section" id="pageTransaksi">
     <div class="catalog-header">
       <h2>📦 Katalog</h2>
       <button class="btn-primary" onclick="openModal()">+ Tambah</button>
     </div>
     <div class="catalog-list" id="catalog"></div>
+  </div>
+
+  <div class="section" id="pageLaporan" style="display:none">
+  <h2>📊 Laporan Penjualan</h2>
+  <div id="laporanBox"></div>
   </div>
   
   <!-- TRANSAKSI -->
@@ -102,6 +172,51 @@
   </div>
 
 <script>
+
+// === lap ===
+function renderLaporan(){
+  const box=document.getElementById('laporanBox');
+  box.innerHTML='';
+  if(rentals.length===0){
+    box.innerHTML='<p>Belum ada data.</p>';
+    return;
+  }
+  rentals.forEach(r=>{
+    box.innerHTML+=`
+      <div class="cart-item">
+        <div>${r.name}<br>${r.start} - ${r.end}</div>
+      </div>
+    `;
+  });
+}
+
+
+// === Titik 3===
+function openMenu(){
+  document.getElementById('menuOverlay').style.display='block';
+}
+
+function closeMenu(e){
+  if(e.target.id==='menuOverlay'){
+    document.getElementById('menuOverlay').style.display='none';
+    showTransaksi();
+  }
+}
+
+function showTransaksi(){
+  pageTransaksi.style.display='block';
+  pageLaporan.style.display='none';
+  menuOverlay.style.display='none';
+}
+
+function showLaporan(){
+  pageTransaksi.style.display='none';
+  pageLaporan.style.display='block';
+  menuOverlay.style.display='none';
+  renderLaporan();
+}
+
+
 // === STATE ===
 let items = JSON.parse(localStorage.getItem('items') || '[]');
 let cart = {};
