@@ -306,27 +306,32 @@ function renderLaporan(){
   });
 
   if(filtered.length === 0){
-    box.innerHTML = `<tr><td colspan="6">Data tidak ditemukan</td></tr>`;
+    box.innerHTML = `<tr><td colspan="7">Data tidak ditemukan</td></tr>`;
     return;
   }
 
   filtered.forEach(r=>{
-    box.innerHTML += `
-      <tr>
-        <td>${formatTgl(r.date)}</td>
-        <td>${r.invoice}</td>
-        <td>${r.name}</td>
-        <td>${r.wa}</td>
-        <td>${rupiah(r.total)}</td>
-        <td>
-          <button onclick="showDetailReport(${reports.indexOf(r)})">
-            Detail
-          </button>
-        </td>
-      </tr>
-    `;
-  });
-}
+  const i = reports.indexOf(r);
+
+  box.innerHTML += `
+    <tr>
+      <td>
+        <input type="checkbox" class="chkReport" value="${i}">
+      </td>
+      <td>${formatTgl(r.tgl)}</td>
+      <td>${r.invoice}</td>
+      <td>${r.name}</td>
+      <td>${r.wa}</td>
+      <td>${rupiah(r.total)}</td>
+      <td>
+        <button class="btn-primary" onclick="showDetailReport(${i})">
+          Detail
+        </button>
+      </td>
+    </tr>
+  `;
+});
+
 
 
                   
