@@ -185,6 +185,13 @@
   <div id="pageLaporan" style="display:none">
 <div style="display:flex;justify-content:space-between;align-items:center">
   <h2>📊 Laporan Penjualan</h2>
+  <input 
+  type="text"
+  id="searchReport"
+  placeholder="Cari nama / invoice / WA..."
+  oninput="renderLaporan()"
+  style="width:100%;padding:10px;margin:10px 0"
+/>
   <button class="btn-danger" onclick="confirmHapusTerpilih()">
     🗑 Hapus Terpilih
   </button>
@@ -285,34 +292,39 @@ function hapusTerpilih(){
 // === lap ===
 function renderLaporan(){
   const box = document.getElementById('laporanBox');
+  const keyword = document.getElementById('searchReport')?.value.toLowerCase() || '';
+
   box.innerHTML = '';
 
-  if(reports.length === 0){
-    box.innerHTML = `<tr><td colspan="7">Belum ada data</td>
-</tr>`;
+  const filtered = reports.filter(r =>
+    r.name.toLowerCase().includes(keyword) ||
+    r.invoice.toLowerCase().includes(keyword) ||
+    r.wa.toLowerCase().includes(keyword)
+  );
+
+  if(filtered.length === 0){
+    box.innerHTML = `<tr><td colspan="7">Data tidak ditemukan</td></tr>`;
     return;
   }
 
-  reports.forEach((r,i)=>{
-  box.innerHTML += `
-    <tr>
-      <td>
-        <input type="checkbox" class="chkReport" value="${i}">
-      </td>
-      <td>${formatTgl(r.tgl)}</td>
-      <td>${r.invoice}</td>
-      <td>${r.name}</td>
-      <td>${r.wa}</td>
-      <td>${rupiah(r.total)}</td>
-      <td>
-        <button class="btn-primary" onclick="showDetailReport(${i})">
-          Detail
-        </button>
-      </td>
-    </tr>
-  `;
-});
+  filtered.forEach((r,i)=>{
+    box.innerHTML += `
+      <tr>
+        <td>${formatTgl(r.date)}</td>
+        <td>${r.invoice}</td>
+        <td>${r.name}</td>
+        <td>${r.wa}</td>
+        <td>${rupiah(r.total)}</td>
+        <td>
+          <button class="btn-primary" onclick="showDetailReport(${reports.indexOf(r)})">
+            Detail
+          </button>
+        </td>
+      </tr>
+    `;
+  });
 }
+
                   
 function showDetail(i){
   const r = rentals[i];
