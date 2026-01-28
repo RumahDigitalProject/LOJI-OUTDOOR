@@ -395,7 +395,13 @@ function showDetailReport(i){
   modal.innerHTML = `
     <div class="modal-content">
       <h3>Detail Laporan</h3>
-      <p><b>${r.name}</b> (${r.invoice})</p>
+      <p>
+  <b>${r.name}</b><br>
+  <small>
+    No Inv: ${r.invoice}<br>
+    Tgl Sewa: ${formatTgl(r.start)} s/d ${formatTgl(r.end)}
+  </small>
+</p>
 
       <div class="table-wrap">
         <table class="lap-table">
