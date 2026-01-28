@@ -149,6 +149,14 @@
 .lap-table th{
   color:#c7c7ff;
 }
+.search-input{
+  width:100%;
+  max-width:260px;
+  margin-top:6px;
+  padding:8px 10px;
+  border-radius:10px;
+  border:none;
+}
 
 /*Omzet*/
 .lap-header{
@@ -264,11 +272,22 @@
 
   <!-- HEADER -->
   <div class="lap-header">
+  <div>
     <h2>📊 Laporan Penjualan</h2>
-    <button class="btn-danger" onclick="confirmHapusTerpilih()">
-      🗑 Hapus Terpilih
-    </button>
+    <input
+      type="text"
+      id="searchReport"
+      placeholder="Cari nama / invoice / WA..."
+      oninput="renderLaporan()"
+      class="search-input"
+    />
   </div>
+
+  <button class="btn-danger" onclick="confirmHapusTerpilih()">
+    🗑 Hapus Terpilih
+  </button>
+</div>
+
 
   <!-- TABLE -->
   <div class="table-wrap lap-body">
