@@ -290,40 +290,7 @@ function hapusTerpilih(){
 
 
 // === lap ===
-function renderLaporan(){
-  const box = document.getElementById('laporanBox');
-  const keyword = document.getElementById('searchReport')?.value.toLowerCase() || '';
-
-  box.innerHTML = '';
-
-  const filtered = reports.filter(r =>
-    r.name.toLowerCase().includes(keyword) ||
-    r.invoice.toLowerCase().includes(keyword) ||
-    r.wa.toLowerCase().includes(keyword)
-  );
-
-  if(filtered.length === 0){
-    box.innerHTML = `<tr><td colspan="7">Data tidak ditemukan</td></tr>`;
-    return;
-  }
-
-  filtered.forEach((r,i)=>{
-    box.innerHTML += `
-      <tr>
-        <td>${formatTgl(r.date)}</td>
-        <td>${r.invoice}</td>
-        <td>${r.name}</td>
-        <td>${r.wa}</td>
-        <td>${rupiah(r.total)}</td>
-        <td>
-          <button class="btn-primary" onclick="showDetailReport(${reports.indexOf(r)})">
-            Detail
-          </button>
-        </td>
-      </tr>
-    `;
-  });
-}
+function renderLaporan(){ const box = document.getElementById('laporanBox'); box.innerHTML = ''; if(reports.length === 0){ box.innerHTML = <tr><td colspan="6">Belum ada data</td></tr>; return; } reports.forEach((r,i)=>{ box.innerHTML += <tr> <td> <input type="checkbox" class="chkReport" value="${i}"> </td> <td>${formatTgl(r.tgl)}</td> <td>${r.invoice}</td> <td>${r.name}</td> <td>${r.wa}</td> <td>${rupiah(r.total)}</td> <td> <button class="btn-primary" onclick="showDetailReport(${i})"> Detail </button> </td> </tr> ; }
 
 
 
