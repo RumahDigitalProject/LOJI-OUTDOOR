@@ -222,6 +222,11 @@
   </div>
 
 <script>
+const pageTransaksi = document.getElementById('pageTransaksi');
+const pageLaporan = document.getElementById('pageLaporan');
+const menuOverlay = document.getElementById('menuOverlay');
+
+const LAPORAN_PIN = '1234';
 
 function toggleAll(el){
   document.querySelectorAll('.chkReport')
@@ -255,7 +260,8 @@ function confirmHapusTerpilih(){
 
 
 function hapusTerpilih(){
-  const pin = document.getElementById('1234').value;
+  const pin = document.getElementById('pinInput').value;
+
 
   if(pin !== LAPORAN_PIN){
     alert('❌ PIN salah');
@@ -282,7 +288,8 @@ function renderLaporan(){
   box.innerHTML = '';
 
   if(reports.length === 0){
-    box.innerHTML = `<tr><td colspan="6">Belum ada data</td></tr>`;
+    box.innerHTML = `<tr><td colspan="7">Belum ada data</td>
+</tr>`;
     return;
   }
 
@@ -304,6 +311,7 @@ function renderLaporan(){
       </td>
     </tr>
   `;
+});
 }
                   
 function showDetail(i){
