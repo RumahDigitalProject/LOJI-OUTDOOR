@@ -190,7 +190,7 @@
   id="searchReport"
   placeholder="Cari nama / invoice / WA..."
   oninput="renderLaporan()"
-  style="width:100%;padding:10px;margin:10px 0"
+  style="width:80%;padding:10px;margin:10px 0"
 />
   <button class="btn-danger" onclick="confirmHapusTerpilih()">
     🗑 Hapus Terpilih
@@ -292,22 +292,25 @@ function hapusTerpilih(){
 // === lap ===
 function renderLaporan(){
   const box = document.getElementById('laporanBox');
-  const keyword = document.getElementById('searchReport')?.value.toLowerCase() || '';
+  const input = document.getElementById('searchReport');
+  const keyword = input ? input.value.toLowerCase() : '';
 
   box.innerHTML = '';
 
-  const filtered = reports.filter(r =>
-    r.name.toLowerCase().includes(keyword) ||
-    r.invoice.toLowerCase().includes(keyword) ||
-    r.wa.toLowerCase().includes(keyword)
-  );
+  const filtered = reports.filter(r => {
+    return (
+      (r.name && r.name.toLowerCase().includes(keyword)) ||
+      (r.invoice && r.invoice.toLowerCase().includes(keyword)) ||
+      (r.wa && r.wa.toLowerCase().includes(keyword))
+    );
+  });
 
   if(filtered.length === 0){
     box.innerHTML = `<tr><td colspan="7">Data tidak ditemukan</td></tr>`;
     return;
   }
 
-  filtered.forEach((r,i)=>{
+  filtered.forEach(r=>{
     box.innerHTML += `
       <tr>
         <td>${formatTgl(r.date)}</td>
@@ -316,7 +319,7 @@ function renderLaporan(){
         <td>${r.wa}</td>
         <td>${rupiah(r.total)}</td>
         <td>
-          <button class="btn-primary" onclick="showDetailReport(${reports.indexOf(r)})">
+          <button onclick="showDetailReport(${reports.indexOf(r)})">
             Detail
           </button>
         </td>
@@ -324,6 +327,7 @@ function renderLaporan(){
     `;
   });
 }
+
 
                   
 function showDetail(i){
