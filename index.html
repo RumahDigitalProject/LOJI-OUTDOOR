@@ -151,17 +151,34 @@
 }
 
 /*Omzet*/
-    .omzet-box{
+.lap-header{
   display:flex;
   justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.lap-body{
+  max-height:55vh;
+}
+
+.lap-footer{
+  position:sticky;
+  bottom:0;
+  background:#111827;
+  padding:10px;
+  border-top:1px solid rgba(255,255,255,.1);
+}
+
+.omzet-box{
+  display:flex;
   gap:8px;
-  width:100%;
   margin-bottom:8px;
 }
 
 .omzet-box div{
   flex:1;
-  background:#111827;
+  background:#1f2937;
   border-radius:10px;
   padding:8px;
   text-align:center;
@@ -181,9 +198,9 @@
 .filter-row{
   display:flex;
   gap:8px;
-  align-items:center;
-  width:100%;
   justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
 }
 
 
@@ -242,76 +259,68 @@
 
 </div>
 
+
 <div id="pageLaporan" style="display:none">
 
-  <!-- 🔼 BAGIAN ATAS : DATA LAPORAN -->
-  <div class="laporan-content">
-
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <h2>📊 Laporan Penjualan</h2>
-      <button class="btn-danger" onclick="confirmHapusTerpilih()">
-        🗑 Hapus Terpilih
-      </button>
-    </div>
-
-    <!-- SEARCH -->
-    <input 
-      type="text"
-      id="searchReport"
-      placeholder="Cari nama / invoice / WA..."
-      oninput="renderLaporan()"
-      style="width:100%;padding:10px;margin:10px 0"
-    />
-
-    <!-- TABEL -->
-    <div class="table-wrap">
-      <table class="lap-table">
-        <thead>
-          <tr>
-            <th><input type="checkbox" onclick="toggleAll(this)"></th>
-            <th>Tgl</th>
-            <th>No Inv</th>
-            <th>Nama</th>
-            <th>WA</th>
-            <th>Total</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody id="laporanBox"></tbody>
-      </table>
-    </div>
-
+  <!-- HEADER -->
+  <div class="lap-header">
+    <h2>📊 Laporan Penjualan</h2>
+    <button class="btn-danger" onclick="confirmHapusTerpilih()">
+      🗑 Hapus Terpilih
+    </button>
   </div>
 
-  <!-- 🔽 BAGIAN BAWAH : FILTER TANGGAL -->
-  <div class="laporan-filter">
-
-  <!-- RINGKASAN OMZET -->
-  <div class="omzet-box">
-    <div>
-      <small>💰 Penghasilan</small>
-      <b id="incomeBox">Rp 0</b>
-    </div>
-    <div>
-      <small>🧾 Operasional</small>
-      <b id="expenseBox">Rp 0</b>
-    </div>
-    <div>
-      <small>📊 Omzet Bersih</small>
-      <b id="netBox">Rp 0</b>
-    </div>
+  <!-- TABLE -->
+  <div class="table-wrap lap-body">
+    <table class="lap-table">
+      <thead>
+        <tr>
+          <th><input type="checkbox" onclick="toggleAll(this)"></th>
+          <th>Tgl</th>
+          <th>No Inv</th>
+          <th>Nama</th>
+          <th>WA</th>
+          <th>Total</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="laporanBox"></tbody>
+    </table>
   </div>
 
-  <!-- FILTER -->
-  <div class="filter-row">
-    <input type="date" id="filterFrom">
-    <span>–</span>
-    <input type="date" id="filterTo">
-    <button class="btn-primary" onclick="renderLaporan();hitungOmzet()">Terapkan</button>
-    <button class="btn-danger" onclick="resetFilter()">Reset</button>
+  <!-- PANEL BAWAH -->
+  <div class="lap-footer">
+
+    <!-- OMZET -->
+    <div class="omzet-box">
+      <div>
+        <small>💰 Penghasilan</small>
+        <b id="incomeBox">Rp 0</b>
+      </div>
+      <div>
+        <small>🧾 Operasional</small>
+        <b id="expenseBox">Rp 0</b>
+      </div>
+      <div>
+        <small>📊 Bersih</small>
+        <b id="netBox">Rp 0</b>
+      </div>
+    </div>
+
+    <!-- FILTER -->
+    <div class="filter-row">
+      <input type="date" id="filterFrom">
+      <span>–</span>
+      <input type="date" id="filterTo">
+      <button class="btn-primary" onclick="renderLaporan();hitungOmzet()">Terapkan</button>
+      <button class="btn-danger" onclick="resetFilter()">Reset</button>
+    </div>
+
   </div>
 
 </div>
+
+
 
 
 
@@ -329,6 +338,15 @@
   </div>
 
 <script>
+
+function resetFilter(){
+  filterFrom.value = '';
+  filterTo.value = '';
+  renderLaporan();
+  hitungOmzet();
+}
+
+  
 const pageTransaksi = document.getElementById('pageTransaksi');
 const pageLaporan = document.getElementById('pageLaporan');
 const menuOverlay = document.getElementById('menuOverlay');
