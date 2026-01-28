@@ -150,6 +150,43 @@
   color:#c7c7ff;
 }
 
+/*Omzet*/
+    .omzet-box{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  width:100%;
+  margin-bottom:8px;
+}
+
+.omzet-box div{
+  flex:1;
+  background:#111827;
+  border-radius:10px;
+  padding:8px;
+  text-align:center;
+}
+
+.omzet-box small{
+  font-size:11px;
+  color:#aaa;
+}
+
+.omzet-box b{
+  display:block;
+  margin-top:4px;
+  font-size:14px;
+}
+
+.filter-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  width:100%;
+  justify-content:center;
+}
+
+
     /* MODAL */
     .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center}
     .modal-content{background:#1f2937;padding:16px;border-radius:16px;width:90%;max-width:360px}
@@ -248,14 +285,34 @@
 
   <!-- 🔽 BAGIAN BAWAH : FILTER TANGGAL -->
   <div class="laporan-filter">
+
+  <!-- RINGKASAN OMZET -->
+  <div class="omzet-box">
+    <div>
+      <small>💰 Penghasilan</small>
+      <b id="incomeBox">Rp 0</b>
+    </div>
+    <div>
+      <small>🧾 Operasional</small>
+      <b id="expenseBox">Rp 0</b>
+    </div>
+    <div>
+      <small>📊 Omzet Bersih</small>
+      <b id="netBox">Rp 0</b>
+    </div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-row">
     <input type="date" id="filterFrom">
     <span>–</span>
     <input type="date" id="filterTo">
-    <button class="btn-primary" onclick="renderLaporan()">Terapkan</button>
+    <button class="btn-primary" onclick="renderLaporan();hitungOmzet()">Terapkan</button>
     <button class="btn-danger" onclick="resetFilter()">Reset</button>
   </div>
 
 </div>
+
 
 
 
@@ -547,6 +604,7 @@ let items = JSON.parse(localStorage.getItem('items') || '[]');
 let cart = {};
 let rentals = JSON.parse(localStorage.getItem('rentals') || '[]');
 let reports = JSON.parse(localStorage.getItem('reports') || '[]');
+let expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
 let editIndex = null;
 
 // === UTIL ===
@@ -554,6 +612,7 @@ function saveAll(){
   localStorage.setItem('items', JSON.stringify(items));
   localStorage.setItem('rentals', JSON.stringify(rentals));
   localStorage.setItem('reports', JSON.stringify(reports));
+  localStorage.setItem('expenses', JSON.stringify(expenses));
 }
 function rupiah(n){return 'Rp ' + Number(n||0).toLocaleString('id-ID');}
 function formatTgl(iso){
@@ -566,6 +625,38 @@ function formatTgl(iso){
   });
 }
 
+
+  
+function hitungOmzet(){
+  const from = filterFrom.value;
+  const to = filterTo.value;
+
+  // FILTER LAPORAN (PENGHASILAN)
+  const laporanFiltered = reports.filter(r=>{
+    if(!from && !to) return true;
+    const t = r.tgl.slice(0,10);
+    if(from && t < from) return false;
+    if(to && t > to) return false;
+    return true;
+  });
+
+  // FILTER BIAYA
+  const expenseFiltered = expenses.filter(e=>{
+    if(!from && !to) return true;
+    const t = e.tgl.slice(0,10);
+    if(from && t < from) return false;
+    if(to && t > to) return false;
+    return true;
+  });
+
+  const income = laporanFiltered.reduce((a,b)=>a + b.total, 0);
+  const expense = expenseFiltered.reduce((a,b)=>a + b.amount, 0);
+  const net = income - expense;
+
+  document.getElementById('incomeBox').innerText = rupiah(income);
+  document.getElementById('expenseBox').innerText = rupiah(expense);
+  document.getElementById('netBox').innerText = rupiah(net);
+}
 
 // === KATALOG ===
 function renderCatalog(){
