@@ -663,6 +663,7 @@ let cart = {};
 let rentals = JSON.parse(localStorage.getItem('rentals') || '[]');
 let reports = JSON.parse(localStorage.getItem('reports') || '[]');
 let expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+let operasional = JSON.parse(localStorage.getItem('operasional') || '[]');
 let editIndex = null;
 
 // === UTIL ===
@@ -716,6 +717,110 @@ function hitungOmzet(){
   incomeBox.innerText = rupiah(income);
   expenseBox.innerText = rupiah(expense);
   netBox.innerText = rupiah(net);
+}
+
+// === Operasional ===
+document.getElementById('btnOperasional').onclick = openOperasional;
+
+function openOperasional(){
+  let rows = '';
+
+  operasional.forEach((o,i)=>{
+    rows += `
+      <tr>
+        <td>${formatTgl(o.date)}</td>
+        <td>${o.note}</td>
+        <td>${rupiah(o.amount)}</td>
+        <td>
+          <button onclick="editOperasional(${i})">✏️</button>
+          <button onclick="hapusOperasional(${i})">🗑</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h3>🧾 Data Operasional</h3>
+
+      <label>Tanggal</label>
+      <input type="date" id="opDate">
+
+      <label>Keterangan</label>
+      <input id="opNote" placeholder="Contoh: bensin, listrik">
+
+      <label>Nominal</label>
+      <input id="opAmount" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+
+      <button class="btn-primary" onclick="simpanOperasional()">+ Simpan</button>
+
+      <div class="table-wrap" style="margin-top:10px">
+        <table class="lap-table">
+          <thead>
+            <tr>
+              <th>Tgl</th>
+              <th>Keterangan</th>
+              <th>Nominal</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>${rows || '<tr><td colspan="4">Belum ada data</td></tr>'}</tbody>
+        </table>
+      </div>
+
+      <button class="btn-danger" onclick="this.closest('.modal').remove()">Tutup</button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+}
+
+
+// === simpan data operasional ===
+let editOpIndex = null;
+
+function simpanOperasional(){
+  const obj = {
+    date: opDate.value || new Date().toISOString().slice(0,10),
+    note: opNote.value,
+    amount: Number(opAmount.value)
+  };
+
+  if(!obj.amount || !obj.note){
+    alert('Lengkapi data');
+    return;
+  }
+
+  if(editOpIndex === null){
+    operasional.push(obj);
+  } else {
+    operasional[editOpIndex] = obj;
+    editOpIndex = null;
+  }
+
+  localStorage.setItem('operasional', JSON.stringify(operasional));
+  document.querySelector('.modal').remove();
+  renderOperasional();
+}
+
+// === edit hapus operasional ===
+  function editOperasional(i){
+  const o = operasional[i];
+  editOpIndex = i;
+  opDate.value = o.date;
+  opNote.value = o.note;
+  opAmount.value = o.amount;
+}
+
+function hapusOperasional(i){
+  if(!confirm('Hapus data ini?')) return;
+  operasional.splice(i,1);
+  localStorage.setItem('operasional', JSON.stringify(operasional));
+  document.querySelector('.modal').remove();
+  renderOperasional();
 }
 
 
