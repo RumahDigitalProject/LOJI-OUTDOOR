@@ -316,10 +316,10 @@
         <small>💰 Penghasilan</small>
         <b id="incomeBox">Rp 0</b>
       </div>
-      <div>
-        <small>🧾 Operasional</small>
-        <b id="expenseBox">Rp 0</b>
-      </div>
+      <div id="btnOperasional" style="cursor:pointer">
+  <small>🧾 Operasional</small>
+  <b id="expenseBox">Rp 0</b>
+</div>
       <div>
         <small>📊 Bersih</small>
         <b id="netBox">Rp 0</b>
@@ -360,6 +360,16 @@
 
 <script>
 
+function renderOperasional(){
+  let total = 0;
+  operasional.forEach(o => {
+    total += o.amount;
+  });
+
+  document.getElementById('expenseBox').innerText = rupiah(total);
+}
+
+  
 let operasional = JSON.parse(localStorage.getItem('operasional')) || [];
 
 function saveOperasional(){
@@ -643,6 +653,7 @@ function showLaporan(){
   menuOverlay.style.display='none';
   renderLaporan();
   hitungOmzet(); // ⬅️ TAMBAHKAN INI
+  renderOperasional();
 }
 
 
