@@ -360,6 +360,13 @@
 
 <script>
 
+let operasional = JSON.parse(localStorage.getItem('operasional')) || [];
+
+function saveOperasional(){
+  localStorage.setItem('operasional', JSON.stringify(operasional));
+}
+
+
 function resetFilter(){
   filterFrom.value = '';
   filterTo.value = '';
