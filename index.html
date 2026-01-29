@@ -331,7 +331,9 @@
       <input type="date" id="filterFrom">
       <span>–</span>
       <input type="date" id="filterTo">
-      <button class="btn-primary" onclick="renderLaporan();hitungOmzet()">Terapkan</button>
+      <button class="btn-primary" onclick="renderLaporan();hitungOmzet()">
+  Terapkan
+</button>
       <button class="btn-danger" onclick="resetFilter()">Reset</button>
     </div>
 
@@ -362,7 +364,7 @@ function resetFilter(){
   filterFrom.value = '';
   filterTo.value = '';
   renderLaporan();
-  hitungOmzet();
+  hitungOmzet(); // ⬅️ WAJIB
 }
 
   
@@ -633,6 +635,7 @@ function showLaporan(){
   pageLaporan.style.display='block';
   menuOverlay.style.display='none';
   renderLaporan();
+  hitungOmzet(); // ⬅️ TAMBAHKAN INI
 }
 
 
@@ -662,38 +665,41 @@ function formatTgl(iso){
   });
 }
 
-
+// === Hitung omzet ===
   
 function hitungOmzet(){
   const from = filterFrom.value;
   const to = filterTo.value;
 
-  // FILTER LAPORAN (PENGHASILAN)
-  const laporanFiltered = reports.filter(r=>{
-    if(!from && !to) return true;
-    const t = r.tgl.slice(0,10);
-    if(from && t < from) return false;
-    if(to && t > to) return false;
-    return true;
-  });
+  let laporanDipakai = reports;
+  let biayaDipakai = expenses;
 
-  // FILTER BIAYA
-  const expenseFiltered = expenses.filter(e=>{
-    if(!from && !to) return true;
-    const t = e.tgl.slice(0,10);
-    if(from && t < from) return false;
-    if(to && t > to) return false;
-    return true;
-  });
+  // ✅ JIKA FILTER DIPAKAI
+  if(from || to){
+    laporanDipakai = reports.filter(r=>{
+      const t = r.tgl?.slice(0,10);
+      if(from && t < from) return false;
+      if(to && t > to) return false;
+      return true;
+    });
 
-  const income = laporanFiltered.reduce((a,b)=>a + b.total, 0);
-  const expense = expenseFiltered.reduce((a,b)=>a + b.amount, 0);
+    biayaDipakai = expenses.filter(e=>{
+      const t = e.tgl?.slice(0,10);
+      if(from && t < from) return false;
+      if(to && t > to) return false;
+      return true;
+    });
+  }
+
+  const income = laporanDipakai.reduce((a,b)=>a + b.total, 0);
+  const expense = biayaDipakai.reduce((a,b)=>a + b.amount, 0);
   const net = income - expense;
 
-  document.getElementById('incomeBox').innerText = rupiah(income);
-  document.getElementById('expenseBox').innerText = rupiah(expense);
-  document.getElementById('netBox').innerText = rupiah(net);
+  incomeBox.innerText = rupiah(income);
+  expenseBox.innerText = rupiah(expense);
+  netBox.innerText = rupiah(net);
 }
+
 
 // === KATALOG ===
 function renderCatalog(){
