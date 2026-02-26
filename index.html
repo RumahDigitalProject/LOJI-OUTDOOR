@@ -2,8 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Spin THR</title>
 
@@ -13,80 +12,55 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
 body{
 margin:0;
-background:#111;
+background:#0f172a;
 font-family:Arial;
-color:white;
 display:flex;
-flex-direction:column;
-align-items:center;
 justify-content:center;
+align-items:center;
 height:100vh;
-overflow:hidden;
+color:white;
 }
 
-/* FULLSCREEN HP */
 .app{
 width:100%;
 max-width:420px;
-height:100vh;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
+text-align:center;
 }
 
+/* POINTER */
 .pointer{
 width:0;
 height:0;
-border-left:18px solid transparent;
-border-right:18px solid transparent;
-border-bottom:35px solid gold;
-z-index:2;
+border-left:20px solid transparent;
+border-right:20px solid transparent;
+border-bottom:40px solid gold;
+margin:auto;
+z-index:10;
 }
 
+/* WHEEL */
 canvas{
+margin-top:-5px;
 border-radius:50%;
-border:8px solid white;
-transition:transform 5s cubic-bezier(.17,.67,.2,1);
+border:10px solid white;
+transition:transform 5s cubic-bezier(.15,.8,.25,1);
 }
 
 button{
-margin-top:20px;
-padding:14px 35px;
-font-size:20px;
+margin-top:25px;
+padding:15px 40px;
+font-size:22px;
+background:gold;
 border:none;
 border-radius:12px;
-background:gold;
 font-weight:bold;
 cursor:pointer;
 }
 
 .result{
-margin-top:15px;
-font-size:22px;
+margin-top:20px;
+font-size:26px;
 font-weight:bold;
-}
-
-/* ADMIN PANEL */
-.admin{
-position:fixed;
-bottom:0;
-background:#222;
-width:100%;
-max-width:420px;
-padding:10px;
-}
-
-input{
-padding:8px;
-width:60%;
-border:none;
-border-radius:6px;
-}
-
-.smallbtn{
-padding:8px;
-margin-left:5px;
 }
 
 </style>
@@ -99,6 +73,7 @@ margin-left:5px;
 <h2>🎁 SPIN THR 🎁</h2>
 
 <div class="pointer"></div>
+
 <canvas id="wheel"
 width="320"
 height="320"></canvas>
@@ -110,70 +85,55 @@ class="result"></div>
 
 </div>
 
-<!-- ADMIN -->
-<div class="admin">
-<input id="nominal"
-placeholder="Tambah Nominal">
-<button class="smallbtn"
-onclick="addNominal()">Tambah</button>
-</div>
-
-<audio id="spinSound"
+<audio id="sound"
 src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
 
 <script>
 
-let rewards =
-JSON.parse(localStorage.getItem("thr")) ||
-[
-"10000",
-"20000",
-"50000",
-"100000"
+/* NOMINAL THR */
+const rewards=[
+10000,
+20000,
+50000,
+100000,
+25000,
+75000
 ];
 
-const canvas =
-document.getElementById("wheel");
-const ctx =
-canvas.getContext("2d");
+const canvas=document.getElementById("wheel");
+const ctx=canvas.getContext("2d");
 
-let angle=0;
+const center=160;
+const radius=160;
 
-function save(){
-localStorage.setItem(
-"thr",
-JSON.stringify(rewards)
-);
-}
+let currentRotation=0;
+let spinning=false;
 
-function draw(){
+/* DRAW WHEEL */
+function drawWheel(){
 
-ctx.clearRect(0,0,320,320);
-
-const arc =
-Math.PI*2/rewards.length;
+const arc=(Math.PI*2)/rewards.length;
 
 const colors=[
-"#ff4757",
-"#1e90ff",
-"#2ed573",
-"#ffa502",
-"#e84393",
-"#00cec9",
-"#ff6b81"
+"#ef4444",
+"#22c55e",
+"#3b82f6",
+"#f59e0b",
+"#a855f7",
+"#06b6d4"
 ];
 
 for(let i=0;i<rewards.length;i++){
 
 ctx.beginPath();
-ctx.fillStyle=
-colors[i%colors.length];
+ctx.fillStyle=colors[i%colors.length];
 
-ctx.moveTo(160,160);
+ctx.moveTo(center,center);
 
 ctx.arc(
-160,160,
-160,
+center,
+center,
+radius,
 i*arc,
 (i+1)*arc
 );
@@ -181,15 +141,13 @@ i*arc,
 ctx.fill();
 
 ctx.save();
-
-ctx.translate(160,160);
+ctx.translate(center,center);
 ctx.rotate(i*arc+arc/2);
 
 ctx.fillStyle="white";
 ctx.font="bold 16px Arial";
-
 ctx.fillText(
-"Rp"+rewards[i],
+"Rp"+rewards[i].toLocaleString(),
 70,5
 );
 
@@ -197,66 +155,55 @@ ctx.restore();
 }
 }
 
-draw();
+drawWheel();
 
+/* SPIN FIX AKURAT */
 function spin(){
 
-document.getElementById(
-"spinSound").play();
+if(spinning)return;
+spinning=true;
 
-let spinDeg =
-Math.floor(Math.random()*360)
-+1800;
+document.getElementById("sound").play();
 
-angle+=spinDeg;
+const slice=360/rewards.length;
+
+/* pilih hadiah dulu */
+const index=
+Math.floor(Math.random()*rewards.length);
+
+/* hitung posisi berhenti tepat di pointer */
+const stopAngle=
+360-(index*slice)-(slice/2);
+
+/* tambah putaran */
+const extraSpin=360*5;
+
+const finalRotation=
+extraSpin+stopAngle;
+
+currentRotation+=finalRotation;
 
 canvas.style.transform=
-`rotate(${angle}deg)`;
+`rotate(${currentRotation}deg)`;
 
 setTimeout(()=>{
 
-let deg=angle%360;
-let slice=360/rewards.length;
+let hadiah=rewards[index];
 
-let index=
-Math.floor(
-(360-deg)/slice
-)%rewards.length;
-
-let hadiah=
-rewards[index];
-
-document.getElementById(
-"result"
-).innerHTML=
-"🎉 Rp"+hadiah;
+document.getElementById("result")
+.innerHTML=
+"🎉 Rp "+
+hadiah.toLocaleString();
 
 confetti({
-particleCount:150,
-spread:90,
-origin:{y:0.6}
+particleCount:180,
+spread:100
 });
 
+spinning=false;
+
 },5000);
-}
 
-function addNominal(){
-
-let val=
-document.getElementById(
-"nominal"
-).value;
-
-if(!val)return;
-
-rewards.push(val);
-
-save();
-draw();
-
-document.getElementById(
-"nominal"
-).value="";
 }
 
 </script>
