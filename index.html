@@ -22,12 +22,21 @@ color:white;
 }
 
 .app{
-width:100%;
 max-width:420px;
+width:100%;
 text-align:center;
 }
 
-/* POINTER */
+input{
+padding:12px;
+width:80%;
+border:none;
+border-radius:8px;
+font-size:18px;
+margin-bottom:15px;
+text-align:center;
+}
+
 .pointer{
 width:0;
 height:0;
@@ -35,24 +44,21 @@ border-left:20px solid transparent;
 border-right:20px solid transparent;
 border-bottom:40px solid gold;
 margin:auto;
-z-index:10;
 }
 
-/* WHEEL */
 canvas{
-margin-top:-5px;
 border-radius:50%;
 border:10px solid white;
 transition:transform 5s cubic-bezier(.15,.8,.25,1);
 }
 
 button{
-margin-top:25px;
-padding:15px 40px;
-font-size:22px;
+margin-top:15px;
+padding:14px 35px;
+font-size:20px;
 background:gold;
 border:none;
-border-radius:12px;
+border-radius:10px;
 font-weight:bold;
 cursor:pointer;
 }
@@ -72,6 +78,9 @@ font-weight:bold;
 
 <h2>🎁 SPIN THR 🎁</h2>
 
+<input id="playerName"
+placeholder="Masukkan Nama Peserta">
+
 <div class="pointer"></div>
 
 <canvas id="wheel"
@@ -90,15 +99,29 @@ src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
 
 <script>
 
-/* NOMINAL THR */
+/* ======================
+ADMIN SETTING
+EDIT DISINI SAJA
+====================== */
+
+const playerRewards={
+"andi":10000,
+"budi":50000,
+"siti":100000,
+"rina":25000,
+"dodi":75000
+};
+
+/* NOMINAL DI RODA */
 const rewards=[
 10000,
-20000,
-50000,
-100000,
 25000,
-75000
+50000,
+75000,
+100000
 ];
+
+/* ====================== */
 
 const canvas=document.getElementById("wheel");
 const ctx=canvas.getContext("2d");
@@ -106,11 +129,11 @@ const ctx=canvas.getContext("2d");
 const center=160;
 const radius=160;
 
-let currentRotation=0;
+let rotation=0;
 let spinning=false;
 
 /* DRAW WHEEL */
-function drawWheel(){
+function draw(){
 
 const arc=(Math.PI*2)/rewards.length;
 
@@ -119,25 +142,17 @@ const colors=[
 "#22c55e",
 "#3b82f6",
 "#f59e0b",
-"#a855f7",
-"#06b6d4"
+"#a855f7"
 ];
 
 for(let i=0;i<rewards.length;i++){
 
 ctx.beginPath();
-ctx.fillStyle=colors[i%colors.length];
+ctx.fillStyle=colors[i];
 
 ctx.moveTo(center,center);
-
-ctx.arc(
-center,
-center,
-radius,
-i*arc,
-(i+1)*arc
-);
-
+ctx.arc(center,center,radius,
+i*arc,(i+1)*arc);
 ctx.fill();
 
 ctx.save();
@@ -155,45 +170,56 @@ ctx.restore();
 }
 }
 
-drawWheel();
+draw();
 
-/* SPIN FIX AKURAT */
+/* SPIN TERKONTROL */
 function spin(){
 
 if(spinning)return;
+
+let name=
+document.getElementById(
+"playerName"
+).value
+.toLowerCase()
+.trim();
+
+if(!playerRewards[name]){
+alert("Nama tidak terdaftar!");
+return;
+}
+
 spinning=true;
 
 document.getElementById("sound").play();
 
+/* ambil hadiah sesuai setting */
+let hadiah=
+playerRewards[name];
+
+/* cari posisi nominal */
+let index=
+rewards.indexOf(hadiah);
+
 const slice=360/rewards.length;
 
-/* pilih hadiah dulu */
-const index=
-Math.floor(Math.random()*rewards.length);
-
-/* hitung posisi berhenti tepat di pointer */
 const stopAngle=
 360-(index*slice)-(slice/2);
 
-/* tambah putaran */
 const extraSpin=360*5;
 
-const finalRotation=
-extraSpin+stopAngle;
-
-currentRotation+=finalRotation;
+rotation+=extraSpin+stopAngle;
 
 canvas.style.transform=
-`rotate(${currentRotation}deg)`;
+`rotate(${rotation}deg)`;
 
 setTimeout(()=>{
 
-let hadiah=rewards[index];
-
-document.getElementById("result")
-.innerHTML=
-"🎉 Rp "+
-hadiah.toLocaleString();
+document.getElementById(
+"result"
+).innerHTML=
+`🎉 ${name.toUpperCase()}
+mendapat Rp ${hadiah.toLocaleString()}`;
 
 confetti({
 particleCount:180,
@@ -203,7 +229,6 @@ spread:100
 spinning=false;
 
 },5000);
-
 }
 
 </script>
