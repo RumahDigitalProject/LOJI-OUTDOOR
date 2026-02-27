@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Spin THR</title>
 
@@ -23,23 +23,22 @@ overflow:hidden;
 }
 
 .app{
-width:100%;
 max-width:420px;
+width:100%;
 text-align:center;
 }
 
-/* INPUT */
 input{
 padding:12px;
 width:80%;
+font-size:18px;
 border:none;
 border-radius:8px;
-font-size:18px;
 text-align:center;
 margin-bottom:15px;
 }
 
-/* POINTER ↓ */
+/* PANAH KE BAWAH */
 .pointer{
 width:0;
 height:0;
@@ -47,75 +46,55 @@ border-left:22px solid transparent;
 border-right:22px solid transparent;
 border-top:45px solid gold;
 margin:auto;
-z-index:10;
 }
 
-/* WHEEL */
+/* RODA */
 canvas{
 border-radius:50%;
 border:10px solid white;
-transition:transform 5s cubic-bezier(.15,.85,.25,1);
+transition:transform 5s cubic-bezier(.12,.8,.25,1);
 }
 
 button{
 margin-top:20px;
-padding:15px 40px;
+padding:14px 40px;
 font-size:22px;
 background:gold;
 border:none;
 border-radius:12px;
-font-weight:bold;
 cursor:pointer;
 }
 
 /* POPUP */
 .popup{
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+inset:0;
 background:rgba(0,0,0,.85);
 display:flex;
 justify-content:center;
 align-items:center;
-visibility:hidden;
 opacity:0;
+visibility:hidden;
 transition:.4s;
 }
 
 .popup.show{
-visibility:visible;
 opacity:1;
+visibility:visible;
 }
 
 .card{
-background:linear-gradient(135deg,#facc15,#f59e0b);
+background:linear-gradient(135deg,#fde047,#f59e0b);
 color:black;
 padding:35px;
 border-radius:20px;
 text-align:center;
-animation:pop .5s ease;
+animation:pop .4s ease;
 }
 
 @keyframes pop{
 from{transform:scale(.5)}
 to{transform:scale(1)}
-}
-
-.card h1{
-margin:10px 0;
-font-size:32px;
-}
-
-.close{
-margin-top:15px;
-padding:10px 25px;
-border:none;
-background:black;
-color:white;
-border-radius:8px;
-cursor:pointer;
 }
 
 </style>
@@ -132,36 +111,28 @@ placeholder="Masukkan Nama">
 
 <div class="pointer"></div>
 
-<canvas id="wheel"
-width="320"
-height="320"></canvas>
+<canvas id="wheel" width="320" height="320"></canvas>
 
 <button onclick="spin()">SPIN</button>
 
 </div>
 
-<!-- POPUP -->
 <div id="popup" class="popup">
 <div class="card">
-<h2>SELAMAT 🎉</h2>
-<h1 id="winner"></h1>
+<h2 id="winner"></h2>
 <h1 id="amount"></h1>
-<button class="close"
-onclick="closePopup()">Tutup</button>
+<button onclick="closePopup()">Tutup</button>
 </div>
 </div>
-
-<audio id="sound"
-src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
 
 <script>
 
-/* ================= ADMIN ================= */
+/* ========= ADMIN SETTING ========= */
 
 const playerRewards={
+"siti":50000,
 "andi":100000,
 "budi":25000,
-"siti":50000,
 "rina":75000
 };
 
@@ -173,7 +144,7 @@ const rewards=[
 100000
 ];
 
-/* ========================================== */
+/* ================================= */
 
 const canvas=document.getElementById("wheel");
 const ctx=canvas.getContext("2d");
@@ -181,10 +152,9 @@ const ctx=canvas.getContext("2d");
 const center=160;
 const radius=160;
 
-let rotation=0;
 let spinning=false;
 
-/* DRAW WHEEL */
+/* DRAW */
 function draw(){
 
 const arc=(Math.PI*2)/rewards.length;
@@ -203,11 +173,8 @@ ctx.beginPath();
 ctx.fillStyle=colors[i];
 
 ctx.moveTo(center,center);
-
-ctx.arc(center,center,
-radius,
-i*arc,
-(i+1)*arc);
+ctx.arc(center,center,radius,
+i*arc,(i+1)*arc);
 
 ctx.fill();
 
@@ -217,11 +184,9 @@ ctx.rotate(i*arc+arc/2);
 
 ctx.fillStyle="white";
 ctx.font="bold 16px Arial";
-
 ctx.fillText(
 "Rp"+rewards[i].toLocaleString(),
-70,5
-);
+70,5);
 
 ctx.restore();
 }
@@ -229,39 +194,39 @@ ctx.restore();
 
 draw();
 
-/* SPIN AKURAT */
+/* ===== SPIN AKURAT ===== */
 function spin(){
 
 if(spinning)return;
 
-let name=
-document.getElementById("playerName")
+let name=document
+.getElementById("playerName")
 .value.toLowerCase().trim();
 
 if(!playerRewards[name]){
-alert("Nama tidak terdaftar!");
+alert("Nama tidak terdaftar");
 return;
 }
 
 spinning=true;
-document.getElementById("sound").play();
 
 let hadiah=playerRewards[name];
-
 let index=rewards.indexOf(hadiah);
 
-/* pointer di atas = 270deg */
 const slice=360/rewards.length;
-const targetAngle=
+
+/* posisi pointer di atas = 270deg */
+const target =
 270-(index*slice)-(slice/2);
 
-const extraSpin=360*5;
+/* reset absolut */
+const finalRotation =
+360*6 + target;
 
-rotation+=extraSpin+targetAngle;
+canvas.style.transform =
+`rotate(${finalRotation}deg)`;
 
-canvas.style.transform=
-`rotate(${rotation}deg)`;
-
+/* popup */
 setTimeout(()=>{
 
 showPopup(name,hadiah);
@@ -274,6 +239,7 @@ spread:120
 spinning=false;
 
 },5000);
+
 }
 
 /* POPUP */
