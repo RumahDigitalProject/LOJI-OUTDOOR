@@ -215,6 +215,66 @@ let index=rewards.indexOf(hadiah);
 
 const slice=360/rewards.length;
 
+/* posisi pointer atas */
+const targetAngle =
+270-(index*slice)-(slice/2);
+
+/* baca rotasi sekarang */
+let current =
+rotation % 360;
+
+/* hitung selisih agar tetap maju */
+let correction =
+(targetAngle - current + 360) % 360;
+
+/* jumlah putaran random */
+let spins =
+6 + Math.floor(Math.random()*4);
+
+/* TOTAL ROTASI SEARAH JARUM JAM */
+rotation +=
+(spins*360) + correction;
+
+/* animasi realistis */
+canvas.style.transition =
+"transform 6s cubic-bezier(0.08,0.9,0.2,1)";
+
+canvas.style.transform =
+`rotate(${rotation}deg)`;
+
+/* hasil */
+setTimeout(()=>{
+
+showPopup(name,hadiah);
+
+confetti({
+particleCount:300,
+spread:140
+});
+
+spinning=false;
+
+},6000);
+}
+
+if(spinning)return;
+
+let name=document
+.getElementById("playerName")
+.value.toLowerCase().trim();
+
+if(!playerRewards[name]){
+alert("Nama tidak terdaftar");
+return;
+}
+
+spinning=true;
+
+let hadiah=playerRewards[name];
+let index=rewards.indexOf(hadiah);
+
+const slice=360/rewards.length;
+
 /* posisi pointer di atas = 270deg */
 const target =
 270-(index*slice)-(slice/2);
