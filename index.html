@@ -9,7 +9,6 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
-
 body{
 margin:0;
 background:#020617;
@@ -91,7 +90,6 @@ animation:pop .4s ease;
 from{transform:scale(.5)}
 to{transform:scale(1)}
 }
-
 </style>
 </head>
 
@@ -115,7 +113,7 @@ to{transform:scale(1)}
 <div class="card">
 <h2 id="winner"></h2>
 <h1 id="amount"></h1>
-<button onclick="claimReward()">CLAIM</button>
+<button id="actionBtn" onclick="claimReward()">CLAIM</button>
 </div>
 </div>
 
@@ -124,32 +122,27 @@ to{transform:scale(1)}
 /* ========= ADMIN SETTING ========= */
 
 const playerRewards={
-"siti":50000,
-"andi":100000,
-"budi":25000,
-"rina":75000
+
+"siti":{hadiah:50000,mode:"zonkFirst"},
+"andi":{hadiah:100000,mode:"direct"},
+"rina":{hadiah:75000,mode:"zonkFirst"}
+
 };
 
-/* roda + zonk */
+/* roda */
 const rewards=[
-10000,
-25000,
-50000,
-75000,
-100000,
-0,
-25000,
-0
+10000,25000,50000,75000,100000,0,25000,0
 ];
 
 const canvas=document.getElementById("wheel");
 const ctx=canvas.getContext("2d");
 
-const center=160;
-const radius=160;
-
 let spinning=false;
 let visualRotation=0;
+let playerTurn={};
+
+const center=160;
+const radius=160;
 
 /* DRAW */
 function draw(){
@@ -168,9 +161,7 @@ ctx.beginPath();
 ctx.fillStyle=colors[i];
 
 ctx.moveTo(center,center);
-ctx.arc(center,center,radius,
-i*arc,(i+1)*arc);
-
+ctx.arc(center,center,radius,i*arc,(i+1)*arc);
 ctx.fill();
 
 ctx.save();
@@ -188,7 +179,6 @@ rewards[i]==0?"ZONK":
 ctx.restore();
 }
 }
-
 draw();
 
 /* ===== SPIN ===== */
@@ -206,20 +196,31 @@ alert("Masukkan nama dulu");
 return;
 }
 
+if(!playerTurn[name])playerTurn[name]=1;
+
 spinning=true;
 
-/* CEK HADIAH */
 let hadiah;
 
+/* ADMIN PLAYER */
 if(playerRewards[name]){
-hadiah=playerRewards[name];
+
+let data=playerRewards[name];
+
+if(data.mode==="zonkFirst"
+&& playerTurn[name]===1){
+hadiah=0;
 }else{
+hadiah=data.hadiah;
+}
+
+}else{
+
 hadiah=
 rewards[Math.floor(
 Math.random()*rewards.length)];
 }
 
-/* posisi target */
 let index=rewards.indexOf(hadiah);
 
 const slice=360/rewards.length;
@@ -227,25 +228,20 @@ const slice=360/rewards.length;
 const targetAngle=
 270-(index*slice)-(slice/2);
 
-/* reset smooth */
 canvas.style.transition="none";
 canvas.style.transform=
 `rotate(${visualRotation%360}deg)`;
 
 canvas.offsetHeight;
 
-/* spin natural */
-let spins=
-7+Math.floor(Math.random()*3);
+let spins=7+Math.floor(Math.random()*3);
 
-let current=
-visualRotation%360;
+let current=visualRotation%360;
 
 let correction=
 (targetAngle-current+360)%360;
 
-visualRotation+=
-(spins*360)+correction;
+visualRotation+=(spins*360)+correction;
 
 canvas.style.transition=
 "transform 6s cubic-bezier(0.12,0.95,0.18,1)";
@@ -253,15 +249,15 @@ canvas.style.transition=
 canvas.style.transform=
 `rotate(${visualRotation}deg)`;
 
-/* RESULT */
 setTimeout(()=>{
+
+playerTurn[name]++;
 
 showPopup(name,hadiah);
 
-confetti({
-particleCount:300,
-spread:140
-});
+if(hadiah!==0){
+confetti({particleCount:300,spread:140});
+}
 
 spinning=false;
 
@@ -275,21 +271,42 @@ function showPopup(name,amount){
 document.getElementById("winner")
 .innerText=name.toUpperCase();
 
+const btn=document.getElementById("actionBtn");
+
+if(amount===0 &&
+playerRewards[name] &&
+playerRewards[name].mode==="zonkFirst"){
+
+document.getElementById("amount")
+.innerText="😢 ZONK";
+
+btn.innerText="ULANG";
+btn.onclick=retrySpin;
+
+}else{
+
 document.getElementById("amount")
 .innerText=
-amount==0
-?"😢 ZONK"
-:"Rp "+amount.toLocaleString();
+amount==0?"😢 ZONK":
+"Rp "+amount.toLocaleString();
+
+btn.innerText="CLAIM";
+btn.onclick=claimReward;
+}
 
 document.getElementById("popup")
 .classList.add("show");
 }
 
-function claimReward(){
-
+function retrySpin(){
 document.getElementById("popup")
 .classList.remove("show");
+spin();
+}
 
+function claimReward(){
+document.getElementById("popup")
+.classList.remove("show");
 document.getElementById("playerName").value="";
 }
 
