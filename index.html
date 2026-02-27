@@ -38,7 +38,6 @@ text-align:center;
 margin-bottom:15px;
 }
 
-/* PANAH KE BAWAH */
 .pointer{
 width:0;
 height:0;
@@ -48,11 +47,9 @@ border-top:45px solid gold;
 margin:auto;
 }
 
-/* RODA */
 canvas{
 border-radius:50%;
 border:10px solid white;
-transition:transform 5s cubic-bezier(.12,.8,.25,1);
 }
 
 button{
@@ -65,7 +62,6 @@ border-radius:12px;
 cursor:pointer;
 }
 
-/* POPUP */
 .popup{
 position:fixed;
 inset:0;
@@ -88,7 +84,6 @@ background:linear-gradient(135deg,#fde047,#f59e0b);
 color:black;
 padding:35px;
 border-radius:20px;
-text-align:center;
 animation:pop .4s ease;
 }
 
@@ -106,8 +101,7 @@ to{transform:scale(1)}
 
 <h2>🎁 SPIN THR 🎁</h2>
 
-<input id="playerName"
-placeholder="Masukkan Nama">
+<input id="playerName" placeholder="Masukkan Nama">
 
 <div class="pointer"></div>
 
@@ -136,15 +130,17 @@ const playerRewards={
 "rina":75000
 };
 
+/* roda + zonk */
 const rewards=[
 10000,
 25000,
 50000,
 75000,
-100000
+100000,
+0,
+25000,
+0
 ];
-
-/* ================================= */
 
 const canvas=document.getElementById("wheel");
 const ctx=canvas.getContext("2d");
@@ -153,6 +149,7 @@ const center=160;
 const radius=160;
 
 let spinning=false;
+let visualRotation=0;
 
 /* DRAW */
 function draw(){
@@ -160,11 +157,9 @@ function draw(){
 const arc=(Math.PI*2)/rewards.length;
 
 const colors=[
-"#ef4444",
-"#22c55e",
-"#3b82f6",
-"#f59e0b",
-"#a855f7"
+"#ef4444","#22c55e","#3b82f6",
+"#f59e0b","#a855f7","#111827",
+"#14b8a6","#111827"
 ];
 
 for(let i=0;i<rewards.length;i++){
@@ -184,7 +179,9 @@ ctx.rotate(i*arc+arc/2);
 
 ctx.fillStyle="white";
 ctx.font="bold 16px Arial";
+
 ctx.fillText(
+rewards[i]==0?"ZONK":
 "Rp"+rewards[i].toLocaleString(),
 70,5);
 
@@ -194,8 +191,7 @@ ctx.restore();
 
 draw();
 
-/* ===== SPIN AKURAT ===== */
-let visualRotation=0;
+/* ===== SPIN ===== */
 
 function spin(){
 
@@ -212,23 +208,18 @@ return;
 
 spinning=true;
 
-/* =========================
-CEK ADMIN ATAU RANDOM
-========================= */
-
+/* CEK HADIAH */
 let hadiah;
 
 if(playerRewards[name]){
 hadiah=playerRewards[name];
 }else{
 hadiah=
-rewards[
-Math.floor(Math.random()*rewards.length)
-];
+rewards[Math.floor(
+Math.random()*rewards.length)];
 }
 
-/* ========================= */
-
+/* posisi target */
 let index=rewards.indexOf(hadiah);
 
 const slice=360/rewards.length;
@@ -236,7 +227,7 @@ const slice=360/rewards.length;
 const targetAngle=
 270-(index*slice)-(slice/2);
 
-/* reset visual */
+/* reset smooth */
 canvas.style.transition="none";
 canvas.style.transform=
 `rotate(${visualRotation%360}deg)`;
@@ -268,14 +259,15 @@ setTimeout(()=>{
 showPopup(name,hadiah);
 
 confetti({
-particleCount:250,
-spread:120
+particleCount:300,
+spread:140
 });
 
 spinning=false;
 
 },6000);
 }
+
 /* POPUP */
 
 function showPopup(name,amount){
@@ -285,19 +277,20 @@ document.getElementById("winner")
 
 document.getElementById("amount")
 .innerText=
-"Rp "+amount.toLocaleString();
+amount==0
+?"😢 ZONK"
+:"Rp "+amount.toLocaleString();
 
 document.getElementById("popup")
 .classList.add("show");
 }
+
 function claimReward(){
 
 document.getElementById("popup")
 .classList.remove("show");
 
-/* kosongkan nama */
 document.getElementById("playerName").value="";
-
 }
 
 </script>
