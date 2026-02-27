@@ -121,7 +121,7 @@ placeholder="Masukkan Nama">
 <div class="card">
 <h2 id="winner"></h2>
 <h1 id="amount"></h1>
-<button onclick="closePopup()">Tutup</button>
+<button onclick="claimReward()">CLAIM</button>
 </div>
 </div>
 
@@ -195,7 +195,7 @@ ctx.restore();
 draw();
 
 /* ===== SPIN AKURAT ===== */
-let visualRotation = 0;
+let visualRotation=0;
 
 function spin(){
 
@@ -203,53 +203,63 @@ if(spinning)return;
 
 let name=document
 .getElementById("playerName")
-.value.toLowerCase().trim();
+.value.trim().toLowerCase();
 
-if(!playerRewards[name]){
-alert("Nama tidak terdaftar");
+if(!name){
+alert("Masukkan nama dulu");
 return;
 }
 
 spinning=true;
 
-let hadiah=playerRewards[name];
+/* =========================
+CEK ADMIN ATAU RANDOM
+========================= */
+
+let hadiah;
+
+if(playerRewards[name]){
+hadiah=playerRewards[name];
+}else{
+hadiah=
+rewards[
+Math.floor(Math.random()*rewards.length)
+];
+}
+
+/* ========================= */
+
 let index=rewards.indexOf(hadiah);
 
 const slice=360/rewards.length;
 
-/* target sektor pointer atas */
-const targetAngle =
+const targetAngle=
 270-(index*slice)-(slice/2);
 
-/* ======================
-RESET TANPA ANIMASI
-====================== */
+/* reset visual */
 canvas.style.transition="none";
 canvas.style.transform=
 `rotate(${visualRotation%360}deg)`;
 
 canvas.offsetHeight;
 
-/* ======================
-SPIN SELALU CEPAT
-====================== */
+/* spin natural */
+let spins=
+7+Math.floor(Math.random()*3);
 
-let spins =
-7 + Math.floor(Math.random()*3);
-
-let current =
+let current=
 visualRotation%360;
 
-let correction =
+let correction=
 (targetAngle-current+360)%360;
 
-visualRotation +=
+visualRotation+=
 (spins*360)+correction;
 
-canvas.style.transition =
+canvas.style.transition=
 "transform 6s cubic-bezier(0.12,0.95,0.18,1)";
 
-canvas.style.transform =
+canvas.style.transform=
 `rotate(${visualRotation}deg)`;
 
 /* RESULT */
@@ -258,8 +268,8 @@ setTimeout(()=>{
 showPopup(name,hadiah);
 
 confetti({
-particleCount:300,
-spread:140
+particleCount:250,
+spread:120
 });
 
 spinning=false;
@@ -267,6 +277,7 @@ spinning=false;
 },6000);
 }
 /* POPUP */
+
 function showPopup(name,amount){
 
 document.getElementById("winner")
@@ -279,10 +290,14 @@ document.getElementById("amount")
 document.getElementById("popup")
 .classList.add("show");
 }
+function claimReward(){
 
-function closePopup(){
 document.getElementById("popup")
 .classList.remove("show");
+
+/* kosongkan nama */
+document.getElementById("playerName").value="";
+
 }
 
 </script>
