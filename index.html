@@ -4,15 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Spin THR Kasino</title>
+<title>Spin THR</title>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-<audio id="tickSound"
-src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
-
 <style>
-
 body{
 margin:0;
 background:#020617;
@@ -41,7 +37,6 @@ text-align:center;
 margin-bottom:15px;
 }
 
-/* POINTER */
 .pointer{
 width:0;
 height:0;
@@ -49,25 +44,11 @@ border-left:22px solid transparent;
 border-right:22px solid transparent;
 border-top:45px solid gold;
 margin:auto;
-transition:.08s;
-}
-
-.pointer.hit{
-transform:rotate(-12deg);
-}
-
-/* 3D WHEEL */
-.wheel3d{
-perspective:900px;
 }
 
 canvas{
 border-radius:50%;
 border:10px solid white;
-box-shadow:
-0 25px 40px rgba(0,0,0,.7),
-inset 0 10px 20px rgba(255,255,255,.3),
-inset 0 -20px 40px rgba(0,0,0,.6);
 }
 
 button{
@@ -109,7 +90,6 @@ animation:pop .4s ease;
 from{transform:scale(.5)}
 to{transform:scale(1)}
 }
-
 </style>
 </head>
 
@@ -117,15 +97,13 @@ to{transform:scale(1)}
 
 <div class="app">
 
-<h2>🎰 SPIN THR 🎰</h2>
+<h2>🎁 SPIN THR 🎁</h2>
 
 <input id="playerName" placeholder="Masukkan Nama">
 
 <div class="pointer"></div>
 
-<div class="wheel3d">
 <canvas id="wheel" width="320" height="320"></canvas>
-</div>
 
 <button onclick="spin()">SPIN</button>
 
@@ -135,26 +113,32 @@ to{transform:scale(1)}
 <div class="card">
 <h2 id="winner"></h2>
 <h1 id="amount"></h1>
-<button id="actionBtn">CLAIM</button>
+<button id="actionBtn" onclick="claimReward()">CLAIM</button>
 </div>
 </div>
 
 <script>
 
-/* ========= ADMIN ========= */
+/* ========= ADMIN SETTING ========= */
 
 const playerRewards={
+
 "siti":{hadiah:50000,mode:"zonkFirst"},
-"andi":{hadiah:100000,mode:"direct"}
+"andi":{hadiah:100000,mode:"direct"},
+"rina":{hadiah:75000,mode:"zonkFirst"}
+
 };
 
-const rewards=[10000,25000,50000,75000,100000,0,25000,0];
+/* roda */
+const rewards=[
+10000,25000,50000,75000,100000,0,25000,0
+];
 
 const canvas=document.getElementById("wheel");
 const ctx=canvas.getContext("2d");
 
 let spinning=false;
-let rotation=0;
+let visualRotation=0;
 let playerTurn={};
 
 const center=160;
@@ -162,15 +146,19 @@ const radius=160;
 
 /* DRAW */
 function draw(){
+
 const arc=(Math.PI*2)/rewards.length;
+
+const colors=[
+"#ef4444","#22c55e","#3b82f6",
+"#f59e0b","#a855f7","#111827",
+"#14b8a6","#111827"
+];
 
 for(let i=0;i<rewards.length;i++){
 
 ctx.beginPath();
-ctx.fillStyle=
-["#ef4444","#22c55e","#3b82f6",
-"#f59e0b","#a855f7","#111827",
-"#14b8a6","#111827"][i];
+ctx.fillStyle=colors[i];
 
 ctx.moveTo(center,center);
 ctx.arc(center,center,radius,i*arc,(i+1)*arc);
@@ -193,19 +181,6 @@ ctx.restore();
 }
 draw();
 
-/* CLICK EFFECT */
-let lastSlice=0;
-
-function playTick(){
-const sound=document.getElementById("tickSound");
-sound.currentTime=0;
-sound.play();
-
-const p=document.querySelector(".pointer");
-p.classList.add("hit");
-setTimeout(()=>p.classList.remove("hit"),70);
-}
-
 /* ===== SPIN ===== */
 
 function spin(){
@@ -214,9 +189,12 @@ if(spinning)return;
 
 let name=document
 .getElementById("playerName")
-.value.toLowerCase().trim();
+.value.trim().toLowerCase();
 
-if(!name)return alert("Isi nama");
+if(!name){
+alert("Masukkan nama dulu");
+return;
+}
 
 if(!playerTurn[name])playerTurn[name]=1;
 
@@ -224,77 +202,66 @@ spinning=true;
 
 let hadiah;
 
+/* ADMIN PLAYER */
 if(playerRewards[name]){
+
 let data=playerRewards[name];
-hadiah=
-(data.mode==="zonkFirst" &&
-playerTurn[name]===1)
-?0:data.hadiah;
+
+if(data.mode==="zonkFirst"
+&& playerTurn[name]===1){
+hadiah=0;
 }else{
-hadiah=rewards[Math.floor(Math.random()*rewards.length)];
+hadiah=data.hadiah;
+}
+
+}else{
+
+hadiah=
+rewards[Math.floor(
+Math.random()*rewards.length)];
 }
 
 let index=rewards.indexOf(hadiah);
+
 const slice=360/rewards.length;
 
-const target=
+const targetAngle=
 270-(index*slice)-(slice/2);
 
-let spins=8+Math.random()*3;
+canvas.style.transition="none";
+canvas.style.transform=
+`rotate(${visualRotation%360}deg)`;
 
-let startRot=rotation;
-let endRot=rotation+(spins*360)+target;
+canvas.offsetHeight;
 
-let duration=6000;
-let start=null;
+let spins=7+Math.floor(Math.random()*3);
 
-function animate(t){
+let current=visualRotation%360;
 
-if(!start)start=t;
+let correction=
+(targetAngle-current+360)%360;
 
-let progress=(t-start)/duration;
-if(progress>1)progress=1;
+visualRotation+=(spins*360)+correction;
 
-let ease=1-Math.pow(1-progress,3);
-
-let current=
-startRot+(endRot-startRot)*ease;
-
-/* near stop drama */
-if(progress>0.92){
-current+=Math.sin(progress*80)*0.5;
-}
+canvas.style.transition=
+"transform 6s cubic-bezier(0.12,0.95,0.18,1)";
 
 canvas.style.transform=
-`rotateX(25deg) rotate(${current}deg)`;
+`rotate(${visualRotation}deg)`;
 
-/* tick */
-let sliceDeg=360/rewards.length;
-let passed=Math.floor(current/sliceDeg);
-
-if(passed!=lastSlice){
-playTick();
-lastSlice=passed;
-}
-
-if(progress<1){
-requestAnimationFrame(animate);
-}else{
-
-rotation=endRot;
+setTimeout(()=>{
 
 playerTurn[name]++;
 
 showPopup(name,hadiah);
 
-if(hadiah!==0)
-confetti({particleCount:350,spread:150});
+if(hadiah!==0){
+confetti({particleCount:300,spread:140});
+}
 
 spinning=false;
-}
-}
 
-requestAnimationFrame(animate);
+},6000);
 }
 
 /* POPUP */
@@ -310,13 +277,11 @@ if(amount===0 &&
 playerRewards[name] &&
 playerRewards[name].mode==="zonkFirst"){
 
-document.getElementById("amount").innerText="😢 ZONK";
+document.getElementById("amount")
+.innerText="😢 ZONK";
 
 btn.innerText="ULANG";
-btn.onclick=()=>{
-popup.classList.remove("show");
-spin();
-};
+btn.onclick=retrySpin;
 
 }else{
 
@@ -326,13 +291,23 @@ amount==0?"😢 ZONK":
 "Rp "+amount.toLocaleString();
 
 btn.innerText="CLAIM";
-btn.onclick=()=>{
-popup.classList.remove("show");
-playerName.value="";
-};
+btn.onclick=claimReward;
 }
 
-popup.classList.add("show");
+document.getElementById("popup")
+.classList.add("show");
+}
+
+function retrySpin(){
+document.getElementById("popup")
+.classList.remove("show");
+spin();
+}
+
+function claimReward(){
+document.getElementById("popup")
+.classList.remove("show");
+document.getElementById("playerName").value="";
 }
 
 </script>
