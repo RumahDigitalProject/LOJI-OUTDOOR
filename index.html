@@ -195,6 +195,8 @@ ctx.restore();
 draw();
 
 /* ===== SPIN AKURAT ===== */
+let visualRotation = 0;
+
 function spin(){
 
 if(spinning)return;
@@ -215,34 +217,42 @@ let index=rewards.indexOf(hadiah);
 
 const slice=360/rewards.length;
 
-/* posisi pointer atas */
+/* target sektor pointer atas */
 const targetAngle =
 270-(index*slice)-(slice/2);
 
-/* baca rotasi sekarang */
-let current =
-rotation % 360;
+/* ======================
+RESET TANPA ANIMASI
+====================== */
+canvas.style.transition="none";
+canvas.style.transform=
+`rotate(${visualRotation%360}deg)`;
 
-/* hitung selisih agar tetap maju */
-let correction =
-(targetAngle - current + 360) % 360;
+canvas.offsetHeight;
 
-/* jumlah putaran random */
+/* ======================
+SPIN SELALU CEPAT
+====================== */
+
 let spins =
-6 + Math.floor(Math.random()*4);
+7 + Math.floor(Math.random()*3);
 
-/* TOTAL ROTASI SEARAH JARUM JAM */
-rotation +=
-(spins*360) + correction;
+let current =
+visualRotation%360;
 
-/* animasi realistis */
+let correction =
+(targetAngle-current+360)%360;
+
+visualRotation +=
+(spins*360)+correction;
+
 canvas.style.transition =
-"transform 6s cubic-bezier(0.08,0.9,0.2,1)";
+"transform 6s cubic-bezier(0.12,0.95,0.18,1)";
 
 canvas.style.transform =
-`rotate(${rotation}deg)`;
+`rotate(${visualRotation}deg)`;
 
-/* hasil */
+/* RESULT */
 setTimeout(()=>{
 
 showPopup(name,hadiah);
@@ -256,52 +266,6 @@ spinning=false;
 
 },6000);
 }
-
-if(spinning)return;
-
-let name=document
-.getElementById("playerName")
-.value.toLowerCase().trim();
-
-if(!playerRewards[name]){
-alert("Nama tidak terdaftar");
-return;
-}
-
-spinning=true;
-
-let hadiah=playerRewards[name];
-let index=rewards.indexOf(hadiah);
-
-const slice=360/rewards.length;
-
-/* posisi pointer di atas = 270deg */
-const target =
-270-(index*slice)-(slice/2);
-
-/* reset absolut */
-const finalRotation =
-360*6 + target;
-
-canvas.style.transform =
-`rotate(${finalRotation}deg)`;
-
-/* popup */
-setTimeout(()=>{
-
-showPopup(name,hadiah);
-
-confetti({
-particleCount:250,
-spread:120
-});
-
-spinning=false;
-
-},5000);
-
-}
-
 /* POPUP */
 function showPopup(name,amount){
 
