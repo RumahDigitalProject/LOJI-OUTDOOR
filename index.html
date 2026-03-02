@@ -9,6 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
+
 body{
 margin:0;
 background:#020617;
@@ -61,6 +62,8 @@ border-radius:12px;
 cursor:pointer;
 }
 
+/* ===== POPUP CLEAN ===== */
+
 .popup{
 position:fixed;
 inset:0;
@@ -84,12 +87,63 @@ color:black;
 padding:35px;
 border-radius:20px;
 animation:pop .4s ease;
+border:none; /* ✅ garis lingkaran dihapus */
+box-shadow:none;
 }
 
 @keyframes pop{
 from{transform:scale(.5)}
 to{transform:scale(1)}
 }
+
+/* ===== ADMIN MODERN ===== */
+
+#adminPanel .card{
+width:90%;
+max-width:650px;
+background:#0f172a;
+color:white;
+}
+
+.admin-row{
+display:grid;
+grid-template-columns:1.2fr 1fr 1fr 40px;
+gap:10px;
+margin-bottom:10px;
+align-items:center;
+}
+
+.admin-row input,
+.admin-row select{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:none;
+background:#1e293b;
+color:white;
+}
+
+.deleteBtn{
+background:#ef4444;
+border:none;
+color:white;
+border-radius:8px;
+cursor:pointer;
+height:38px;
+}
+
+.admin-actions{
+display:flex;
+gap:10px;
+justify-content:center;
+margin-top:15px;
+}
+
+.admin-actions button{
+font-size:16px;
+padding:10px 20px;
+}
+
 </style>
 </head>
 
@@ -109,34 +163,38 @@ to{transform:scale(1)}
 
 </div>
 
-<!-- RESULT POPUP -->
+<!-- RESULT -->
 <div id="popup" class="popup">
 <div class="card">
 <h2 id="winner"></h2>
 <h1 id="amount"></h1>
-<button id="actionBtn" onclick="claimReward()">CLAIM</button>
+<button id="actionBtn">CLAIM</button>
 </div>
 </div>
 
-<!-- ✅ ADMIN PANEL -->
+<!-- ADMIN -->
 <div id="adminPanel" class="popup">
-<div class="card" style="max-height:80vh;overflow:auto">
-<h2>ADMIN PANEL</h2>
+<div class="card">
+
+<h2>⚙️ ADMIN PANEL</h2>
+
 <div id="adminList"></div>
-<br>
-<button onclick="addRow()">+ Tambah Nama</button>
+
+<div class="admin-actions">
+<button onclick="addRow()">+ Tambah</button>
 <button onclick="saveAdmin()">💾 Simpan</button>
+</div>
+
 </div>
 </div>
 
 <script>
 
-/* ========= DATA ADMIN (AUTO SAVE) ========= */
+/* ========= ADMIN DATA ========= */
 
-let playerRewards =
-JSON.parse(localStorage.getItem("thrData")) || {};
+let playerRewards=
+JSON.parse(localStorage.getItem("thrData"))||{};
 
-/* roda */
 const rewards=[
 10000,20000,50000,0,100000,200000,500000,0
 ];
@@ -152,6 +210,7 @@ const center=160;
 const radius=160;
 
 /* DRAW */
+
 function draw(){
 
 const arc=(Math.PI*2)/rewards.length;
@@ -166,7 +225,6 @@ for(let i=0;i<rewards.length;i++){
 
 ctx.beginPath();
 ctx.fillStyle=colors[i];
-
 ctx.moveTo(center,center);
 ctx.arc(center,center,radius,i*arc,(i+1)*arc);
 ctx.fill();
@@ -188,15 +246,11 @@ ctx.restore();
 }
 draw();
 
-/* ========= ADMIN ========= */
+/* ===== ADMIN ===== */
 
 function openAdmin(){
 document.getElementById("adminPanel").classList.add("show");
 renderAdmin();
-}
-
-function closeAdmin(){
-document.getElementById("adminPanel").classList.remove("show");
 }
 
 function renderAdmin(){
@@ -207,38 +261,55 @@ wrap.innerHTML="";
 Object.keys(playerRewards).forEach(name=>{
 
 wrap.innerHTML+=`
-<div style="margin:8px 0">
+<div class="admin-row">
+
 <input class="name" value="${name}">
+
 <select class="mode">
 <option value="direct"
 ${playerRewards[name].mode=="direct"?"selected":""}>
-Langsung Menang
+Langsung
 </option>
+
 <option value="zonkFirst"
 ${playerRewards[name].mode=="zonkFirst"?"selected":""}>
-Zonk Dulu
+Zonk dulu
 </option>
 </select>
+
 <input type="number"
 class="hadiah"
 value="${playerRewards[name].hadiah}"
-placeholder="Hadiah">
+placeholder="Nominal">
+
+<button class="deleteBtn"
+onclick="this.parentElement.remove()">✕</button>
+
 </div>`;
 });
 }
 
 function addRow(){
+
 document.getElementById("adminList")
 .innerHTML+=`
-<div>
+
+<div class="admin-row">
+
 <input class="name" placeholder="Nama">
+
 <select class="mode">
 <option value="direct">Langsung</option>
 <option value="zonkFirst">Zonk dulu</option>
 </select>
+
 <input type="number"
 class="hadiah"
-placeholder="Hadiah">
+placeholder="Nominal">
+
+<button class="deleteBtn"
+onclick="this.parentElement.remove()">✕</button>
+
 </div>`;
 }
 
@@ -247,7 +318,7 @@ function saveAdmin(){
 playerRewards={};
 
 document
-.querySelectorAll("#adminList div")
+.querySelectorAll("#adminList .admin-row")
 .forEach(row=>{
 
 let name=row.querySelector(".name")
@@ -269,7 +340,9 @@ localStorage.setItem(
 JSON.stringify(playerRewards)
 );
 
-closeAdmin();
+document.getElementById("adminPanel")
+.classList.remove("show");
+
 alert("Data tersimpan ✅");
 }
 
@@ -283,18 +356,15 @@ let name=document
 .getElementById("playerName")
 .value.trim().toLowerCase();
 
-if(!name){
-alert("Masukkan nama dulu");
-return;
-}
+if(!name)return alert("Masukkan nama");
 
-/* LOGIN ADMIN */
 if(name==="admin"){
 openAdmin();
 return;
 }
 
-if(!playerTurn[name])playerTurn[name]=1;
+if(!playerTurn[name])
+playerTurn[name]=1;
 
 spinning=true;
 
@@ -331,7 +401,7 @@ canvas.style.transform=
 
 canvas.offsetHeight;
 
-let spins=7+Math.floor(Math.random()*3);
+let spins=8;
 
 let current=visualRotation%360;
 
@@ -341,7 +411,7 @@ let correction=
 visualRotation+=(spins*360)+correction;
 
 canvas.style.transition=
-"transform 6s cubic-bezier(0.12,0.95,0.18,1)";
+"transform 6s cubic-bezier(.12,.95,.18,1)";
 
 canvas.style.transform=
 `rotate(${visualRotation}deg)`;
@@ -352,9 +422,8 @@ playerTurn[name]++;
 
 showPopup(name,hadiah);
 
-if(hadiah!==0){
-confetti({particleCount:300,spread:140});
-}
+if(hadiah!==0)
+confetti({particleCount:300});
 
 spinning=false;
 
@@ -370,35 +439,15 @@ document.getElementById("winner")
 
 const btn=document.getElementById("actionBtn");
 
-if(amount===0 &&
-playerRewards[name] &&
-playerRewards[name].mode==="zonkFirst"){
-
-document.getElementById("amount")
-.innerText="😢 ZONK";
-
-btn.innerText="ULANG";
-btn.onclick=retrySpin;
-
-}else{
+btn.onclick=claimReward;
 
 document.getElementById("amount")
 .innerText=
 amount==0?"😢 ZONK":
 "Rp "+amount.toLocaleString();
 
-btn.innerText="CLAIM";
-btn.onclick=claimReward;
-}
-
 document.getElementById("popup")
 .classList.add("show");
-}
-
-function retrySpin(){
-document.getElementById("popup")
-.classList.remove("show");
-spin();
 }
 
 function claimReward(){
