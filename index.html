@@ -116,73 +116,123 @@ to{transform:scale(1)}
 <button id="actionBtn" onclick="claimReward()">CLAIM</button>
 </div>
 </div>
+<div id="adminPanel" class="popup">
+<div class="card" style="max-height:80vh;overflow:auto">
+
+<h2>ADMIN PANEL</h2>
+
+<div id="adminList"></div>
+
+<br>
+<button onclick="addRow()">+ Tambah Nama</button>
+<button onclick="saveAdmin()">💾 Simpan</button>
+
+</div>
+</div>
+  
 
 <script>
 
-/* ========= ADMIN SETTING ========= */
+let playerRewards =
+JSON.parse(localStorage.getItem("thrData")) || {};
 
-const playerRewards={
+function openAdmin(){
+document.getElementById("adminPanel")
+.classList.add("show");
+renderAdmin();
+}
 
-"nyokap":{hadiah:500000,mode:"zonkFirst"},
-"bokap":{hadiah:500000,mode:"direct"},
-"mboke":{hadiah:200000,mode:"zonkFirst"},
-"suyono":{hadiah:100000,mode:"zonkFirst"}
+function closeAdmin(){
+document.getElementById("adminPanel")
+.classList.remove("show");
+}
 
+/* ========= ADMIN UI ========= */
+
+function renderAdmin(){
+
+let wrap=document.getElementById("adminList");
+wrap.innerHTML="";
+
+Object.keys(playerRewards).forEach(name=>{
+
+wrap.innerHTML+=`
+<div style="margin:8px 0">
+<input value="${name}" class="name">
+<select class="mode">
+<option value="direct"
+${playerRewards[name].mode=="direct"?"selected":""}>
+Langsung Menang
+</option>
+
+<option value="zonkFirst"
+${playerRewards[name].mode=="zonkFirst"?"selected":""}>
+Zonk Dulu
+</option>
+</select>
+
+<input type="number"
+value="${playerRewards[name].hadiah}"
+class="hadiah"
+placeholder="Hadiah">
+</div>`;
+});
+}
+
+function addRow(){
+
+document.getElementById("adminList")
+.innerHTML+=`
+<div>
+<input class="name" placeholder="Nama">
+<select class="mode">
+<option value="direct">Langsung</option>
+<option value="zonkFirst">Zonk dulu</option>
+</select>
+<input type="number"
+class="hadiah"
+placeholder="Hadiah">
+</div>`;
+}
+
+/* SAVE */
+
+function saveAdmin(){
+
+playerRewards={};
+
+document
+.querySelectorAll("#adminList div")
+.forEach(row=>{
+
+let name=row.querySelector(".name")
+.value.trim().toLowerCase();
+
+let mode=row.querySelector(".mode").value;
+
+let hadiah=parseInt(
+row.querySelector(".hadiah").value);
+
+if(name){
+playerRewards[name]={
+mode,
+hadiah
 };
-
-/* roda */
-const rewards=[
-10000,20000,50000,0,100000,200000,500000,0
-];
-
-const canvas=document.getElementById("wheel");
-const ctx=canvas.getContext("2d");
-
-let spinning=false;
-let visualRotation=0;
-let playerTurn={};
-
-const center=160;
-const radius=160;
-
-/* DRAW */
-function draw(){
-
-const arc=(Math.PI*2)/rewards.length;
-
-const colors=[
-"#ef4444","#22c55e","#3b82f6",
-"#f59e0b","#a855f7","#111827",
-"#14b8a6","#111827"
-];
-
-for(let i=0;i<rewards.length;i++){
-
-ctx.beginPath();
-ctx.fillStyle=colors[i];
-
-ctx.moveTo(center,center);
-ctx.arc(center,center,radius,i*arc,(i+1)*arc);
-ctx.fill();
-
-ctx.save();
-ctx.translate(center,center);
-ctx.rotate(i*arc+arc/2);
-
-ctx.fillStyle="white";
-ctx.font="bold 16px Arial";
-
-ctx.fillText(
-rewards[i]==0?"ZONK":
-"Rp"+rewards[i].toLocaleString(),
-70,5);
-
-ctx.restore();
 }
-}
-draw();
 
-/* ===== SPIN ===== */
+});
+
+localStorage.setItem(
+"thrData",
+JSON.stringify(playerRewards)
+);
+
+closeAdmin();
+
+alert("Data tersimpan ✅");
+}
+
+/* ========= SPIN ========= */
 
 function spin(){
 
@@ -192,24 +242,29 @@ let name=document
 .getElementById("playerName")
 .value.trim().toLowerCase();
 
-if(!name){
-alert("Masukkan nama dulu");
+if(!name)return alert("Isi nama");
+
+/* ADMIN LOGIN */
+if(name==="admin"){
+openAdmin();
 return;
 }
 
-if(!playerTurn[name])playerTurn[name]=1;
+if(!playerTurn[name])
+playerTurn[name]=1;
 
 spinning=true;
 
 let hadiah;
 
-/* ADMIN PLAYER */
 if(playerRewards[name]){
 
 let data=playerRewards[name];
 
-if(data.mode==="zonkFirst"
-&& playerTurn[name]===1){
+if(
+data.mode==="zonkFirst"
+&& playerTurn[name]===1
+){
 hadiah=0;
 }else{
 hadiah=data.hadiah;
@@ -235,7 +290,7 @@ canvas.style.transform=
 
 canvas.offsetHeight;
 
-let spins=7+Math.floor(Math.random()*3);
+let spins=8;
 
 let current=visualRotation%360;
 
@@ -245,7 +300,7 @@ let correction=
 visualRotation+=(spins*360)+correction;
 
 canvas.style.transition=
-"transform 6s cubic-bezier(0.12,0.95,0.18,1)";
+"transform 6s cubic-bezier(.12,.95,.18,1)";
 
 canvas.style.transform=
 `rotate(${visualRotation}deg)`;
@@ -256,59 +311,12 @@ playerTurn[name]++;
 
 showPopup(name,hadiah);
 
-if(hadiah!==0){
-confetti({particleCount:300,spread:140});
-}
+if(hadiah!==0)
+confetti({particleCount:300});
 
 spinning=false;
 
 },6000);
-}
-
-/* POPUP */
-
-function showPopup(name,amount){
-
-document.getElementById("winner")
-.innerText=name.toUpperCase();
-
-const btn=document.getElementById("actionBtn");
-
-if(amount===0 &&
-playerRewards[name] &&
-playerRewards[name].mode==="zonkFirst"){
-
-document.getElementById("amount")
-.innerText="😢 ZONK";
-
-btn.innerText="ULANG";
-btn.onclick=retrySpin;
-
-}else{
-
-document.getElementById("amount")
-.innerText=
-amount==0?"😢 ZONK":
-"Rp "+amount.toLocaleString();
-
-btn.innerText="CLAIM";
-btn.onclick=claimReward;
-}
-
-document.getElementById("popup")
-.classList.add("show");
-}
-
-function retrySpin(){
-document.getElementById("popup")
-.classList.remove("show");
-spin();
-}
-
-function claimReward(){
-document.getElementById("popup")
-.classList.remove("show");
-document.getElementById("playerName").value="";
 }
 
 </script>
