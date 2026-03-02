@@ -28,6 +28,36 @@ width:100%;
 text-align:center;
 }
 
+/* ================= HISTORY ================= */
+
+.history-box{
+height:80px;
+overflow:hidden;
+position:relative;
+margin-bottom:15px;
+}
+
+.history-item{
+position:absolute;
+left:0;
+right:0;
+bottom:-40px;
+background:#0f172a;
+padding:6px 10px;
+border-radius:8px;
+font-size:14px;
+animation:rise 6s linear forwards;
+}
+
+@keyframes rise{
+0%{transform:translateY(0);opacity:0}
+15%{opacity:1}
+85%{opacity:1}
+100%{transform:translateY(-120px);opacity:0}
+}
+
+/* ================= ORIGINAL STYLE ================= */
+
 input{
 padding:8px;
 width:60%;
@@ -95,7 +125,7 @@ from{transform:scale(.5)}
 to{transform:scale(1)}
 }
 
-/* ===== ADMIN MODERN ===== */
+/* ===== ADMIN ===== */
 
 #adminPanel{
 overflow-y:auto;
@@ -157,6 +187,9 @@ padding:10px 20px;
 
 <h2>THR 2026</h2>
 
+<!-- ✅ HISTORY TAMBAHAN -->
+<div class="history-box" id="historyBox"></div>
+
 <input id="playerName" placeholder="Masukkan Nama">
 
 <div class="pointer"></div>
@@ -187,12 +220,57 @@ padding:10px 20px;
 <div class="admin-actions">
 <button onclick="addRow()">+ Tambah</button>
 <button onclick="saveAdmin()">💾 Simpan</button>
+<button onclick="resetHistory()">🧹 Reset History</button>
 </div>
 
 </div>
 </div>
 
 <script>
+
+/* ================= HISTORY SYSTEM ================= */
+
+let spinHistory=
+JSON.parse(localStorage.getItem("thrHistory"))||[];
+
+function showHistory(name,amount){
+
+const box=document.getElementById("historyBox");
+
+let div=document.createElement("div");
+div.className="history-item";
+
+div.innerText=
+amount==0
+?`😢 ${name.toUpperCase()} ZONK`
+:`🎉 ${name.toUpperCase()} mendapatkan Rp ${amount.toLocaleString()}`;
+
+box.appendChild(div);
+
+setTimeout(()=>div.remove(),6000);
+}
+
+function pushHistory(name,amount){
+spinHistory.push({name,amount});
+localStorage.setItem("thrHistory",
+JSON.stringify(spinHistory));
+showHistory(name,amount);
+}
+
+function resetHistory(){
+spinHistory=[];
+localStorage.removeItem("thrHistory");
+document.getElementById("historyBox").innerHTML="";
+alert("History direset");
+}
+
+window.onload=function(){
+spinHistory.slice(-5).forEach((h,i)=>{
+setTimeout(()=>{
+showHistory(h.name,h.amount);
+},i*700);
+});
+};
 
 /* ========= DATA ========= */
 
