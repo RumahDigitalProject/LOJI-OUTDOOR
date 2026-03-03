@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Spin THR</title>
 
-<!-- CONFETTI FIXED -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
@@ -34,7 +33,7 @@ font-size:14px;
 border:none;
 border-radius:8px;
 text-align:center;
-margin-bottom:50px;
+margin-bottom:20px;
 }
 
 .pointer{
@@ -60,6 +59,8 @@ border:none;
 border-radius:12px;
 cursor:pointer;
 }
+
+/* POPUP */
 
 .popup{
 position:fixed;
@@ -100,6 +101,79 @@ font-weight:bold;
 from{transform:scale(.5)}
 to{transform:scale(1)}
 }
+
+/* ADMIN */
+
+#adminPanel .card{
+width:90%;
+max-width:700px;
+background:#0f172a;
+color:white;
+max-height:90vh;
+overflow-y:auto;
+}
+
+.admin-row{
+display:grid;
+grid-template-columns:1.2fr 1fr 1fr 40px;
+gap:10px;
+margin-bottom:10px;
+align-items:center;
+}
+
+.admin-row input,
+.admin-row select{
+padding:10px;
+border-radius:8px;
+border:none;
+background:#1e293b;
+color:white;
+}
+
+.deleteBtn{
+background:#ef4444;
+border:none;
+color:white;
+border-radius:8px;
+cursor:pointer;
+height:38px;
+}
+
+.admin-actions{
+display:flex;
+gap:10px;
+justify-content:center;
+margin-top:15px;
+}
+
+/* HISTORY */
+
+.history-box{
+height:90px;
+overflow:hidden;
+position:relative;
+margin-bottom:15px;
+}
+
+.history-item{
+position:absolute;
+left:0;
+right:0;
+bottom:-40px;
+background:#0f172a;
+padding:6px 10px;
+border-radius:8px;
+font-size:14px;
+white-space:nowrap;
+animation:rise 5s linear forwards;
+}
+
+@keyframes rise{
+0%{transform:translateY(0);opacity:0}
+15%{opacity:1}
+85%{opacity:1}
+100%{transform:translateY(-110px);opacity:0}
+}
 </style>
 </head>
 
@@ -108,17 +182,34 @@ to{transform:scale(1)}
 <div class="app">
 <h2>THR 2026</h2>
 <input id="playerName" placeholder="Masukkan Nama">
+
+<div id="historyBox" class="history-box"></div>
+
 <div class="pointer"></div>
 <canvas id="wheel" width="320" height="320"></canvas>
 <button onclick="spin()">SPIN</button>
 </div>
 
+<!-- POPUP -->
 <div id="popup" class="popup">
 <div class="card">
 <h2 id="winner"></h2>
 <p id="message"></p>
 <h1 id="amount"></h1>
 <button id="actionBtn">CLAIM</button>
+</div>
+</div>
+
+<!-- ADMIN -->
+<div id="adminPanel" class="popup">
+<div class="card">
+<h2>⚙️ ADMIN PANEL</h2>
+<div id="adminList"></div>
+<div class="admin-actions">
+<button onclick="addRow()">+ Tambah</button>
+<button onclick="saveAdmin()">💾 Simpan</button>
+<button onclick="resetHistory()">Reset History</button>
+</div>
 </div>
 </div>
 
@@ -129,19 +220,117 @@ to{transform:scale(1)}
 let playerRewards =
 JSON.parse(localStorage.getItem("thrData")) || {};
 
-let playerTurn = {};
+let savedHistory =
+JSON.parse(localStorage.getItem("thrHistory")) || [];
 
-const rewards=[
-10000,20000,50000,0,100000,200000,500000,0
-];
+let historyIndex=0;
+let playerTurn={};
 
+function addHistory(name,amount){
+const data={name,amount};
+savedHistory.push(data);
+localStorage.setItem("thrHistory",JSON.stringify(savedHistory));
+}
+
+function startHistoryLoop(){
+if(savedHistory.length===0){
+setTimeout(startHistoryLoop,2000);
+return;
+}
+const item=savedHistory[historyIndex];
+spawnHistory(item.name,item.amount);
+historyIndex++;
+if(historyIndex>=savedHistory.length) historyIndex=0;
+setTimeout(startHistoryLoop,2000);
+}
+
+function spawnHistory(name,amount){
+const box=document.getElementById("historyBox");
+if(!box) return;
+const div=document.createElement("div");
+div.className="history-item";
+div.innerText=
+amount==0
+?`😢 ${name.toUpperCase()} ZONK`
+:`🎉 ${name.toUpperCase()} mendapatkan Rp ${Number(amount).toLocaleString()}`;
+box.appendChild(div);
+setTimeout(()=>div.remove(),5000);
+}
+
+startHistoryLoop();
+
+function resetHistory(){
+savedHistory=[];
+localStorage.removeItem("thrHistory");
+document.getElementById("historyBox").innerHTML="";
+alert("History direset ✅");
+}
+
+/* ================= ADMIN ================= */
+
+function autoSave(){
+playerRewards={};
+document.querySelectorAll("#adminList .admin-row")
+.forEach(row=>{
+let name=row.querySelector(".name").value.trim().toLowerCase();
+let mode=row.querySelector(".mode").value;
+let hadiah=parseInt(row.querySelector(".hadiah").value);
+if(name){
+playerRewards[name]={mode,hadiah};
+}
+});
+localStorage.setItem("thrData",JSON.stringify(playerRewards));
+}
+
+function openAdmin(){
+document.getElementById("adminPanel").classList.add("show");
+renderAdmin();
+}
+
+function renderAdmin(){
+let wrap=document.getElementById("adminList");
+wrap.innerHTML="";
+Object.keys(playerRewards).forEach(name=>{
+wrap.innerHTML+=rowHTML(
+name,
+playerRewards[name].mode,
+playerRewards[name].hadiah
+);
+});
+}
+
+function rowHTML(name="",mode="direct",hadiah=""){
+return `
+<div class="admin-row">
+<input class="name" value="${name}" oninput="autoSave()" placeholder="Nama">
+<select class="mode" onchange="autoSave()">
+<option value="direct" ${mode=="direct"?"selected":""}>Langsung</option>
+<option value="zonkFirst" ${mode=="zonkFirst"?"selected":""}>Zonk dulu</option>
+</select>
+<input type="number" class="hadiah" value="${hadiah}" oninput="autoSave()" placeholder="Nominal">
+<button class="deleteBtn" onclick="this.parentElement.remove();autoSave()">✕</button>
+</div>`;
+}
+
+function addRow(){
+autoSave();
+document.getElementById("adminList")
+.insertAdjacentHTML("beforeend",rowHTML());
+}
+
+function saveAdmin(){
+autoSave();
+document.getElementById("adminPanel").classList.remove("show");
+alert("Data tersimpan ✅");
+}
+
+/* ================= WHEEL ================= */
+
+const rewards=[10000,20000,50000,0,100000,200000,500000,0];
 const canvas=document.getElementById("wheel");
 const ctx=canvas.getContext("2d");
-
 let spinning=false;
 let visualRotation=0;
-
-/* ================= DRAW WHEEL ================= */
 
 const center=160;
 const radius=160;
@@ -153,14 +342,12 @@ const colors=[
 "#f59e0b","#a855f7","#111827",
 "#14b8a6","#111827"
 ];
-
 for(let i=0;i<rewards.length;i++){
 ctx.beginPath();
 ctx.fillStyle=colors[i];
 ctx.moveTo(center,center);
 ctx.arc(center,center,radius,i*arc,(i+1)*arc);
 ctx.fill();
-
 ctx.save();
 ctx.translate(center,center);
 ctx.rotate(i*arc+arc/2);
@@ -175,27 +362,22 @@ ctx.restore();
 }
 draw();
 
-/* ================= SOUND SYSTEM (CLICK REALISTIC) ================= */
+/* ================= SOUND ================= */
 
 let audioCtx;
 
 function playClick(){
 if(!audioCtx){
-audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+audioCtx=new (window.AudioContext||window.webkitAudioContext)();
 }
-
-let osc = audioCtx.createOscillator();
-let gain = audioCtx.createGain();
-
+let osc=audioCtx.createOscillator();
+let gain=audioCtx.createGain();
 osc.type="triangle";
-osc.frequency.value=1000;
-
+osc.frequency.value=1200;
 gain.gain.setValueAtTime(0.2,audioCtx.currentTime);
 gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.05);
-
 osc.connect(gain);
 gain.connect(audioCtx.destination);
-
 osc.start();
 osc.stop(audioCtx.currentTime+0.05);
 }
@@ -203,15 +385,11 @@ osc.stop(audioCtx.currentTime+0.05);
 function startClickSound(duration){
 let start=Date.now();
 let delay=40;
-
 function loop(){
 let elapsed=Date.now()-start;
 let progress=elapsed/duration;
-
 playClick();
-
 delay=40+(progress*200);
-
 if(progress<1){
 setTimeout(loop,delay);
 }
@@ -219,31 +397,30 @@ setTimeout(loop,delay);
 loop();
 }
 
-/* ================= SPIN FUNCTION ================= */
+/* ================= SPIN ================= */
 
 function spin(){
 
-if(spinning)return;
+if(spinning) return;
 
-let name=document
-.getElementById("playerName")
-.value.trim().toLowerCase();
+let name=document.getElementById("playerName").value.trim().toLowerCase();
+if(!name) return alert("Masukkan nama");
 
-if(!name)return alert("Masukkan nama");
+if(name==="admin"){
+openAdmin();
+return;
+}
 
 if(!playerTurn[name]) playerTurn[name]=1;
 
 spinning=true;
-
 startClickSound(6000);
 
 let hadiah;
 
 if(playerRewards[name]){
 let data=playerRewards[name];
-
-if(data.mode==="zonkFirst"
-&& playerTurn[name]===1){
+if(data.mode==="zonkFirst" && playerTurn[name]===1){
 hadiah=0;
 }else{
 hadiah=data.hadiah;
@@ -253,7 +430,6 @@ hadiah=rewards[Math.floor(Math.random()*rewards.length)];
 }
 
 let index=rewards.indexOf(hadiah);
-
 const slice=360/rewards.length;
 const targetAngle=270-(index*slice)-(slice/2);
 
@@ -267,16 +443,13 @@ canvas.style.transition="transform 6s cubic-bezier(.12,.95,.18,1)";
 canvas.style.transform=`rotate(${visualRotation}deg)`;
 
 setTimeout(()=>{
-
 playerTurn[name]++;
+addHistory(name,hadiah);
 showPopup(name,hadiah);
-
 if(hadiah!==0){
 confetti({particleCount:300});
 }
-
 spinning=false;
-
 },6000);
 }
 
@@ -292,27 +465,21 @@ let btn=document.getElementById("actionBtn");
 winner.innerText=name.toUpperCase();
 
 if(amount==0){
-
 message.innerText="Maaf anda mendapat";
 amountText.innerText="ZONK";
 btn.innerText="COBA LAGI";
-
 btn.onclick=function(){
 document.getElementById("popup").classList.remove("show");
 setTimeout(()=>{ spin(); },300);
 };
-
 }else{
-
 message.innerText="Selamat anda mendapatkan";
 amountText.innerText="Rp "+amount.toLocaleString();
 btn.innerText="CLAIM";
-
 btn.onclick=function(){
 document.getElementById("popup").classList.remove("show");
 document.getElementById("playerName").value="";
 };
-
 }
 
 document.getElementById("popup").classList.add("show");
