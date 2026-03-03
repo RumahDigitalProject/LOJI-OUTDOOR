@@ -431,6 +431,50 @@ let spinning=false;
 let visualRotation=0;
 let playerTurn={};
 
+/* ===== SOUND SPIN ===== */
+
+let audioCtx;
+let spinInterval;
+
+function startSpinSound(duration){
+
+audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+let startTime = Date.now();
+
+spinInterval = setInterval(()=>{
+
+let elapsed = Date.now() - startTime;
+let progress = elapsed / duration;
+
+// suara makin lambat
+let intervalSpeed = 30 + (progress * 200);
+
+let osc = audioCtx.createOscillator();
+let gain = audioCtx.createGain();
+
+osc.type = "square";
+osc.frequency.value = 1000 - (progress * 700);
+
+gain.gain.value = 0.05;
+
+osc.connect(gain);
+gain.connect(audioCtx.destination);
+
+osc.start();
+osc.stop(audioCtx.currentTime + 0.03);
+
+clearInterval(spinInterval);
+spinInterval = setInterval(()=>{}, intervalSpeed);
+
+},30);
+
+setTimeout(()=>{
+clearInterval(spinInterval);
+},duration);
+
+}
+
 const center=160;
 const radius=160;
 
@@ -488,6 +532,7 @@ if(!playerTurn[name])
 playerTurn[name]=1;
 
 spinning=true;
+startSpinSound(6000);
 
 let hadiah;
 
