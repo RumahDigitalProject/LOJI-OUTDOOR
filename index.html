@@ -33,7 +33,7 @@ font-size:14px;
 border:none;
 border-radius:8px;
 text-align:center;
-margin-bottom:20px;
+margin-bottom:40px;
 }
 
 .pointer{
@@ -145,35 +145,6 @@ gap:10px;
 justify-content:center;
 margin-top:15px;
 }
-
-/* HISTORY */
-
-.history-box{
-height:90px;
-overflow:hidden;
-position:relative;
-margin-bottom:15px;
-}
-
-.history-item{
-position:absolute;
-left:0;
-right:0;
-bottom:-40px;
-background:#0f172a;
-padding:6px 10px;
-border-radius:8px;
-font-size:14px;
-white-space:nowrap;
-animation:rise 5s linear forwards;
-}
-
-@keyframes rise{
-0%{transform:translateY(0);opacity:0}
-15%{opacity:1}
-85%{opacity:1}
-100%{transform:translateY(-110px);opacity:0}
-}
 </style>
 </head>
 
@@ -182,9 +153,6 @@ animation:rise 5s linear forwards;
 <div class="app">
 <h2>THR 2026</h2>
 <input id="playerName" placeholder="Masukkan Nama">
-
-<div id="historyBox" class="history-box"></div>
-
 <div class="pointer"></div>
 <canvas id="wheel" width="320" height="320"></canvas>
 <button onclick="spin()">SPIN</button>
@@ -208,7 +176,6 @@ animation:rise 5s linear forwards;
 <div class="admin-actions">
 <button onclick="addRow()">+ Tambah</button>
 <button onclick="saveAdmin()">💾 Simpan</button>
-<button onclick="resetHistory()">Reset History</button>
 </div>
 </div>
 </div>
@@ -220,53 +187,7 @@ animation:rise 5s linear forwards;
 let playerRewards =
 JSON.parse(localStorage.getItem("thrData")) || {};
 
-let savedHistory =
-JSON.parse(localStorage.getItem("thrHistory")) || [];
-
-let historyIndex=0;
 let playerTurn={};
-
-function addHistory(name,amount){
-const data={name,amount};
-savedHistory.push(data);
-localStorage.setItem("thrHistory",JSON.stringify(savedHistory));
-}
-
-function startHistoryLoop(){
-if(savedHistory.length===0){
-setTimeout(startHistoryLoop,2000);
-return;
-}
-const item=savedHistory[historyIndex];
-spawnHistory(item.name,item.amount);
-historyIndex++;
-if(historyIndex>=savedHistory.length) historyIndex=0;
-setTimeout(startHistoryLoop,2000);
-}
-
-function spawnHistory(name,amount){
-const box=document.getElementById("historyBox");
-if(!box) return;
-const div=document.createElement("div");
-div.className="history-item";
-div.innerText=
-amount==0
-?`😢 ${name.toUpperCase()} ZONK`
-:`🎉 ${name.toUpperCase()} mendapatkan Rp ${Number(amount).toLocaleString()}`;
-box.appendChild(div);
-setTimeout(()=>div.remove(),5000);
-}
-
-startHistoryLoop();
-
-function resetHistory(){
-savedHistory=[];
-localStorage.removeItem("thrHistory");
-document.getElementById("historyBox").innerHTML="";
-alert("History direset ✅");
-}
-
-/* ================= ADMIN ================= */
 
 function autoSave(){
 playerRewards={};
@@ -329,6 +250,7 @@ alert("Data tersimpan ✅");
 const rewards=[10000,20000,50000,0,100000,200000,500000,0];
 const canvas=document.getElementById("wheel");
 const ctx=canvas.getContext("2d");
+
 let spinning=false;
 let visualRotation=0;
 
@@ -444,7 +366,6 @@ canvas.style.transform=`rotate(${visualRotation}deg)`;
 
 setTimeout(()=>{
 playerTurn[name]++;
-addHistory(name,hadiah);
 showPopup(name,hadiah);
 if(hadiah!==0){
 confetti({particleCount:300});
