@@ -431,59 +431,52 @@ let spinning=false;
 let visualRotation=0;
 let playerTurn={};
 
-/* ===== SOUND SPIN REALISTIC ===== */
+/* ===== REAL WHEEL CLICK SOUND ===== */
 
 let audioCtx;
-let noiseSource;
-let gainNode;
+let clickInterval;
 
-function startSpinSound(duration){
+function playClick(){
+    if(!audioCtx){
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
 
-audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
 
-const bufferSize = 2 * audioCtx.sampleRate;
-const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-const output = noiseBuffer.getChannelData(0);
+    osc.type = "triangle";
+    osc.frequency.value = 1000;
 
-for (let i = 0; i < bufferSize; i++) {
-    output[i] = Math.random() * 2 - 1;
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.04);
 }
 
-noiseSource = audioCtx.createBufferSource();
-noiseSource.buffer = noiseBuffer;
-noiseSource.loop = true;
+function startClickSound(duration){
 
-gainNode = audioCtx.createGain();
-gainNode.gain.value = 0.15;
+    let start = Date.now();
+    let delay = 40; // awal cepat
 
-noiseSource.connect(gainNode);
-gainNode.connect(audioCtx.destination);
+    function loop(){
+        let elapsed = Date.now() - start;
+        let progress = elapsed / duration;
 
-noiseSource.start();
+        playClick();
 
-let startTime = Date.now();
+        delay = 40 + (progress * 200); // makin lama makin lambat
 
-let fade = setInterval(()=>{
+        if(progress < 1){
+            clickInterval = setTimeout(loop, delay);
+        }
+    }
 
-let elapsed = Date.now() - startTime;
-let progress = elapsed / duration;
-
-// volume makin kecil (seperti roda melambat)
-gainNode.gain.value = 0.15 * (1 - progress);
-
-if(progress >= 1){
-    clearInterval(fade);
-    stopSpinSound();
-}
-
-},50);
-}
-
-function stopSpinSound(){
-if(noiseSource){
-    noiseSource.stop();
-}
-}
+    loop();
+                                }
 
 const center=160;
 const radius=160;
@@ -542,7 +535,7 @@ if(!playerTurn[name])
 playerTurn[name]=1;
 
 spinning=true;
-startSpinSound(6000);
+
 
 let hadiah;
 
@@ -580,7 +573,7 @@ canvas.style.transform=`rotate(${visualRotation}deg)`;
 
 setTimeout(()=>{
 
-stopSpinSound();
+clearInterval(checkSound);
   
 playerTurn[name]++;
 showPopup(name,hadiah);
