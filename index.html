@@ -60,6 +60,20 @@ border-radius:12px;
 cursor:pointer;
 }
 
+/* OPENING SCREEN */
+#openingScreen{
+position:fixed;
+inset:0;
+background:#020617;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+color:white;
+z-index:9999;
+text-align:center;
+}
+
 /* POPUP */
 
 .popup{
@@ -150,40 +164,13 @@ margin-top:15px;
 
 <body>
 
-<!-- OPENING SCREEN -->
-<div id="openingScreen" style="
-position:fixed;
-inset:0;
-background:#020617;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-color:white;
-z-index:9999;
-text-align:center;
-">
-
-<h1 style="margin-bottom:20px;">
-Selamat Hari Raya Idulfitri 1447 H
-</h1>
-
-<p style="margin-bottom:30px;">
-Semoga Allah menerima seluruh amal ibadah kita dan menjadikan kita pribadi yang lebih baik di hari yang suci ini.” “Di hari kemenangan ini, mari kita sucikan hati, pererat tali silaturahmi, dan saling memaafkan.
-</p>
-
-<button onclick="startApp()" style="
-padding:14px 40px;
-font-size:20px;
-background:gold;
-border:none;
-border-radius:12px;
-cursor:pointer;">
-Mulai
-</button>
-
+<!-- OPENING -->
+<div id="openingScreen">
+<h1>🌙 Selamat Hari Raya 2026 🌙</h1>
+<p>Semoga keberuntungan menyertai Anda hari ini</p>
+<button onclick="startApp()">Mulai</button>
 </div>
-  
+
 <div class="app">
 <h2>THR 2026</h2>
 <input id="playerName" placeholder="Masukkan Nama">
@@ -213,6 +200,9 @@ Mulai
 </div>
 </div>
 </div>
+
+<!-- MUSIC -->
+<audio id="bgMusic" src="musik.mp3" loop></audio>
 
 <script>
 
@@ -321,6 +311,21 @@ draw();
 /* ================= SOUND ================= */
 
 let audioCtx;
+const bgMusic = document.getElementById("bgMusic");
+
+function startApp(){
+bgMusic.volume=0.7;
+bgMusic.play();
+document.getElementById("openingScreen").style.display="none";
+}
+
+function lowerMusic(){
+bgMusic.volume=0.2;
+}
+
+function normalMusic(){
+bgMusic.volume=0.7;
+}
 
 function playClick(){
 if(!audioCtx){
@@ -330,7 +335,7 @@ let osc=audioCtx.createOscillator();
 let gain=audioCtx.createGain();
 osc.type="triangle";
 osc.frequency.value=1200;
-gain.gain.setValueAtTime(0.2,audioCtx.currentTime);
+gain.gain.setValueAtTime(0.3,audioCtx.currentTime);
 gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.05);
 osc.connect(gain);
 gain.connect(audioCtx.destination);
@@ -351,18 +356,6 @@ setTimeout(loop,delay);
 }
 }
 loop();
-}
-
-/* ===== MUSIC CONTROL ===== */
-
-const bgMusic = document.getElementById("bgMusic");
-
-function lowerMusic(){
-bgMusic.volume = 0.2; // kecil saat spin
-}
-
-function normalMusic(){
-bgMusic.volume = 0.7; // kembali normal
 }
 
 /* ================= SPIN ================= */
@@ -418,7 +411,6 @@ showPopup(name,hadiah);
 if(hadiah!==0){
 confetti({particleCount:300});
 }
-
 normalMusic();
 spinning=false;
 },6000);
@@ -456,20 +448,6 @@ document.getElementById("playerName").value="";
 document.getElementById("popup").classList.add("show");
 }
 
-/* ===== OPENING + MUSIC ===== */
-
-function startApp(){
-
-const music = document.getElementById("bgMusic");
-
-music.volume = 0.7;
-music.play();
-
-document.getElementById("openingScreen").style.display="none";
-}
-
 </script>
-
-<audio id="bgMusic" src="musik.mp3" loop></audio>
 </body>
 </html>
