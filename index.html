@@ -165,11 +165,11 @@ text-align:center;
 ">
 
 <h1 style="margin-bottom:20px;">
-🌙 Selamat Hari Raya 2026 🌙
+Selamat Hari Raya Idulfitri 1447 H
 </h1>
 
 <p style="margin-bottom:30px;">
-Semoga keberuntungan menyertai Anda hari ini
+Semoga Allah menerima seluruh amal ibadah kita dan menjadikan kita pribadi yang lebih baik di hari yang suci ini.” “Di hari kemenangan ini, mari kita sucikan hati, pererat tali silaturahmi, dan saling memaafkan.
 </p>
 
 <button onclick="startApp()" style="
@@ -353,6 +353,18 @@ setTimeout(loop,delay);
 loop();
 }
 
+/* ===== MUSIC CONTROL ===== */
+
+const bgMusic = document.getElementById("bgMusic");
+
+function lowerMusic(){
+bgMusic.volume = 0.2; // kecil saat spin
+}
+
+function normalMusic(){
+bgMusic.volume = 0.7; // kembali normal
+}
+
 /* ================= SPIN ================= */
 
 function spin(){
@@ -370,6 +382,8 @@ return;
 if(!playerTurn[name]) playerTurn[name]=1;
 
 spinning=true;
+
+lowerMusic();
 startClickSound(6000);
 
 let hadiah;
@@ -404,6 +418,8 @@ showPopup(name,hadiah);
 if(hadiah!==0){
 confetti({particleCount:300});
 }
+
+normalMusic();
 spinning=false;
 },6000);
 }
