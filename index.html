@@ -527,28 +527,31 @@ document.getElementById("amount")
 amount==0?"😢 ZONK":
 "Rp "+amount.toLocaleString();
 
+let btn=document.getElementById("actionBtn");
+
+if(amount==0){
+
+btn.innerText="ULANG";
+
+btn.onclick=function(){
+document.getElementById("popup").classList.remove("show");
+setTimeout(()=>{ spin(); },300);
+};
+
+}else{
+
+btn.innerText="CLAIM";
+
+btn.onclick=function(){
+document.getElementById("popup").classList.remove("show");
+document.getElementById("playerName").value="";
+};
+
+}
+
 document.getElementById("popup")
 .classList.add("show");
 }
-
-document.getElementById("actionBtn")
-.onclick=function(){
-
-addHistory(
-document.getElementById("winner").innerText,
-document.getElementById("amount").innerText.includes("ZONK")
-?0
-:parseInt(
-document.getElementById("amount")
-.innerText.replace(/\D/g,"")
-)
-);
-
-document.getElementById("popup")
-.classList.remove("show");
-
-document.getElementById("playerName").value="";
-};
 
 /* ================= LIVE HISTORY ENGINE ================= */
 
