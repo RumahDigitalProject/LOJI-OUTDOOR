@@ -60,7 +60,7 @@ border-radius:12px;
 cursor:pointer;
 }
 
-/* OPENING SCREEN */
+/* OPENING */
 #openingScreen{
 position:fixed;
 inset:0;
@@ -75,7 +75,6 @@ text-align:center;
 }
 
 /* POPUP */
-
 .popup{
 position:fixed;
 inset:0;
@@ -98,7 +97,6 @@ background:linear-gradient(135deg,#fde047,#f59e0b);
 color:black;
 padding:35px;
 border-radius:20px;
-animation:pop .4s ease;
 text-align:center;
 }
 
@@ -111,13 +109,7 @@ font-weight:bold;
 #message{font-size:20px;}
 #amount{font-size:36px;}
 
-@keyframes pop{
-from{transform:scale(.5)}
-to{transform:scale(1)}
-}
-
 /* ADMIN */
-
 #adminPanel .card{
 width:90%;
 max-width:700px;
@@ -164,7 +156,6 @@ margin-top:15px;
 
 <body>
 
-<!-- OPENING -->
 <div id="openingScreen">
 <h1>🌙 Selamat Hari Raya 2026 🌙</h1>
 <p>Semoga keberuntungan menyertai Anda hari ini</p>
@@ -179,7 +170,6 @@ margin-top:15px;
 <button onclick="spin()">SPIN</button>
 </div>
 
-<!-- POPUP -->
 <div id="popup" class="popup">
 <div class="card">
 <h2 id="winner"></h2>
@@ -189,7 +179,6 @@ margin-top:15px;
 </div>
 </div>
 
-<!-- ADMIN -->
 <div id="adminPanel" class="popup">
 <div class="card">
 <h2>⚙️ ADMIN PANEL</h2>
@@ -201,13 +190,11 @@ margin-top:15px;
 </div>
 </div>
 
-<!-- MUSIC -->
 <audio id="bgMusic" src="musik.mp3" loop></audio>
 
 <script>
 
-/* ================= DATA ================= */
-
+/* DATA */
 let playerRewards =
 JSON.parse(localStorage.getItem("thrData")) || {};
 
@@ -266,11 +253,9 @@ document.getElementById("adminList")
 function saveAdmin(){
 autoSave();
 document.getElementById("adminPanel").classList.remove("show");
-alert("Data tersimpan ✅");
 }
 
-/* ================= WHEEL ================= */
-
+/* WHEEL */
 const rewards=[10000,20000,50000,0,100000,200000,500000,0];
 const canvas=document.getElementById("wheel");
 const ctx=canvas.getContext("2d");
@@ -283,11 +268,7 @@ const radius=160;
 
 function draw(){
 const arc=(Math.PI*2)/rewards.length;
-const colors=[
-"#ef4444","#22c55e","#3b82f6",
-"#f59e0b","#a855f7","#111827",
-"#14b8a6","#111827"
-];
+const colors=["#ef4444","#22c55e","#3b82f6","#f59e0b","#a855f7","#111827","#14b8a6","#111827"];
 for(let i=0;i<rewards.length;i++){
 ctx.beginPath();
 ctx.fillStyle=colors[i];
@@ -299,43 +280,49 @@ ctx.translate(center,center);
 ctx.rotate(i*arc+arc/2);
 ctx.fillStyle="white";
 ctx.font="bold 16px Arial";
-ctx.fillText(
-rewards[i]==0?"ZONK":
-"Rp"+rewards[i].toLocaleString(),
-70,5);
+ctx.fillText(rewards[i]==0?"ZONK":"Rp"+rewards[i].toLocaleString(),70,5);
 ctx.restore();
 }
 }
 draw();
 
-/* ================= SOUND ================= */
-
+/* SOUND SYSTEM STABLE */
 let audioCtx;
 const bgMusic = document.getElementById("bgMusic");
+let normalVolume = 0.7;
+let spinVolume = 0.15;
 
 function startApp(){
-bgMusic.volume=0.7;
+bgMusic.volume = normalVolume;
 bgMusic.play();
 document.getElementById("openingScreen").style.display="none";
 }
 
-function lowerMusic(){
-bgMusic.volume=0.2;
+function fadeVolume(target, duration){
+let start = bgMusic.volume;
+let diff = target - start;
+let steps = 20;
+let stepTime = duration / steps;
+let currentStep = 0;
+let fade = setInterval(()=>{
+currentStep++;
+bgMusic.volume = start + (diff * (currentStep/steps));
+if(currentStep >= steps){
+clearInterval(fade);
+bgMusic.volume = target;
 }
-
-function normalMusic(){
-bgMusic.volume=0.7;
+}, stepTime);
 }
 
 function playClick(){
 if(!audioCtx){
-audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 }
-let osc=audioCtx.createOscillator();
-let gain=audioCtx.createGain();
+let osc = audioCtx.createOscillator();
+let gain = audioCtx.createGain();
 osc.type="triangle";
 osc.frequency.value=1200;
-gain.gain.setValueAtTime(0.3,audioCtx.currentTime);
+gain.gain.setValueAtTime(0.4,audioCtx.currentTime);
 gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.05);
 osc.connect(gain);
 gain.connect(audioCtx.destination);
@@ -358,10 +345,8 @@ setTimeout(loop,delay);
 loop();
 }
 
-/* ================= SPIN ================= */
-
+/* SPIN */
 function spin(){
-
 if(spinning) return;
 
 let name=document.getElementById("playerName").value.trim().toLowerCase();
@@ -375,8 +360,7 @@ return;
 if(!playerTurn[name]) playerTurn[name]=1;
 
 spinning=true;
-
-lowerMusic();
+fadeVolume(spinVolume,300);
 startClickSound(6000);
 
 let hadiah;
@@ -408,18 +392,14 @@ canvas.style.transform=`rotate(${visualRotation}deg)`;
 setTimeout(()=>{
 playerTurn[name]++;
 showPopup(name,hadiah);
-if(hadiah!==0){
-confetti({particleCount:300});
-}
-normalMusic();
+if(hadiah!==0){confetti({particleCount:300});}
+fadeVolume(normalVolume,600);
 spinning=false;
 },6000);
 }
 
-/* ================= POPUP ================= */
-
+/* POPUP */
 function showPopup(name,amount){
-
 let winner=document.getElementById("winner");
 let message=document.getElementById("message");
 let amountText=document.getElementById("amount");
@@ -430,7 +410,7 @@ winner.innerText=name.toUpperCase();
 if(amount==0){
 message.innerText="Maaf anda mendapat";
 amountText.innerText="ZONK";
-btn.innerText="COBA LAGI";
+btn.innerText="ULANG";
 btn.onclick=function(){
 document.getElementById("popup").classList.remove("show");
 setTimeout(()=>{ spin(); },300);
