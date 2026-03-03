@@ -272,6 +272,7 @@ animation:rise 5s linear forwards;
 <div id="popup" class="popup">
 <div class="card">
 <h2 id="winner"></h2>
+<p id="message"></p>
 <h1 id="amount"></h1>
 <button id="actionBtn">CLAIM</button>
 </div>
@@ -519,19 +520,19 @@ spinning=false;
 
 function showPopup(name,amount){
 
-document.getElementById("winner")
-.innerText=name.toUpperCase();
-
-document.getElementById("amount")
-.innerText=
-amount==0?"😢 ZONK":
-"Rp "+amount.toLocaleString();
-
+let winner=document.getElementById("winner");
+let message=document.getElementById("message");
+let amountText=document.getElementById("amount");
 let btn=document.getElementById("actionBtn");
+
+winner.innerText=name.toUpperCase();
 
 if(amount==0){
 
-btn.innerText="ULANG";
+message.innerText="Maaf anda mendapat";
+amountText.innerText="ZONK";
+
+btn.innerText="COBA LAGI";
 
 btn.onclick=function(){
 document.getElementById("popup").classList.remove("show");
@@ -539,6 +540,9 @@ setTimeout(()=>{ spin(); },300);
 };
 
 }else{
+
+message.innerText="Selamat anda mendapatkan";
+amountText.innerText="Rp "+amount.toLocaleString();
 
 btn.innerText="CLAIM";
 
@@ -549,31 +553,7 @@ document.getElementById("playerName").value="";
 
 }
 
-document.getElementById("popup")
-.classList.add("show");
-}
-
-/* ================= LIVE HISTORY ENGINE ================= */
-
-let historyLoop=[];
-let historyIndex=0;
-
-let savedHistory=
-JSON.parse(localStorage.getItem("thrHistory"))||[];
-
-historyLoop=[...savedHistory];
-
-function addHistory(name,amount){
-
-const data={name,amount};
-
-historyLoop.push(data);
-savedHistory.push(data);
-
-localStorage.setItem(
-"thrHistory",
-JSON.stringify(savedHistory)
-);
+document.getElementById("popup").classList.add("show");
 }
 
 /* LOOP TAK BERHENTI */
