@@ -431,48 +431,57 @@ let spinning=false;
 let visualRotation=0;
 let playerTurn={};
 
-/* ===== SOUND SPIN ===== */
+/* ===== SOUND SPIN REALISTIC ===== */
 
 let audioCtx;
-let spinInterval;
+let noiseSource;
+let gainNode;
 
 function startSpinSound(duration){
 
 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+const bufferSize = 2 * audioCtx.sampleRate;
+const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+const output = noiseBuffer.getChannelData(0);
+
+for (let i = 0; i < bufferSize; i++) {
+    output[i] = Math.random() * 2 - 1;
+}
+
+noiseSource = audioCtx.createBufferSource();
+noiseSource.buffer = noiseBuffer;
+noiseSource.loop = true;
+
+gainNode = audioCtx.createGain();
+gainNode.gain.value = 0.15;
+
+noiseSource.connect(gainNode);
+gainNode.connect(audioCtx.destination);
+
+noiseSource.start();
+
 let startTime = Date.now();
 
-spinInterval = setInterval(()=>{
+let fade = setInterval(()=>{
 
 let elapsed = Date.now() - startTime;
 let progress = elapsed / duration;
 
-// suara makin lambat
-let intervalSpeed = 30 + (progress * 200);
+// volume makin kecil (seperti roda melambat)
+gainNode.gain.value = 0.15 * (1 - progress);
 
-let osc = audioCtx.createOscillator();
-let gain = audioCtx.createGain();
+if(progress >= 1){
+    clearInterval(fade);
+    stopSpinSound();
+}
 
-osc.type = "square";
-osc.frequency.value = 1000 - (progress * 700);
+},50);
+}
 
-gain.gain.value = 0.05;
-
-osc.connect(gain);
-gain.connect(audioCtx.destination);
-
-osc.start();
-osc.stop(audioCtx.currentTime + 0.03);
-
-clearInterval(spinInterval);
-spinInterval = setInterval(()=>{}, intervalSpeed);
-
-},30);
-
-setTimeout(()=>{
-clearInterval(spinInterval);
-},duration);
-
+function stopSpinSound(){
+if(noiseSource){
+    noiseSource.stop();
 }
 
 const center=160;
@@ -570,6 +579,8 @@ canvas.style.transform=`rotate(${visualRotation}deg)`;
 
 setTimeout(()=>{
 
+stopSpinSound();
+  
 playerTurn[name]++;
 showPopup(name,hadiah);
 
