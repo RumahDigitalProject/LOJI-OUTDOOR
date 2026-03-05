@@ -50,6 +50,29 @@ border-radius:50%;
 border:10px solid white;
 }
 
+/* === GLOW PRO === */
+@keyframes glowPulse{
+  0%{
+    box-shadow:
+      0 0 15px gold,
+      0 0 30px orange;
+  }
+  50%{
+    box-shadow:
+      0 0 35px yellow,
+      0 0 70px gold;
+  }
+  100%{
+    box-shadow:
+      0 0 15px gold,
+      0 0 30px orange;
+  }
+}
+
+canvas.spinning{
+  animation: glowPulse 1s infinite;
+}
+
 button{
 margin-top:20px;
 padding:14px 40px;
@@ -286,7 +309,7 @@ ctx.restore();
 }
 draw();
 
-/* SOUND SYSTEM STABLE */
+/* SOUND SYSTEM */
 let audioCtx;
 const bgMusic = document.getElementById("bgMusic");
 let normalVolume = 0.7;
@@ -360,8 +383,14 @@ return;
 if(!playerTurn[name]) playerTurn[name]=1;
 
 spinning=true;
+canvas.classList.add("spinning");
+
 fadeVolume(spinVolume,300);
 startClickSound(6000);
+
+setTimeout(()=>{
+canvas.style.animationDuration="0.3s";
+},4500);
 
 let hadiah;
 
@@ -394,6 +423,8 @@ playerTurn[name]++;
 showPopup(name,hadiah);
 if(hadiah!==0){confetti({particleCount:300});}
 fadeVolume(normalVolume,600);
+canvas.classList.remove("spinning");
+canvas.style.animationDuration="1s";
 spinning=false;
 },6000);
 }
