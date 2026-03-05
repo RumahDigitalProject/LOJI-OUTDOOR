@@ -163,24 +163,11 @@ margin-top:15px;
 </div>
 
 <div class="app">
-<h2 id="secretResetTitle">THR 2026</h2>
+<h2>THR 2026</h2>
 <input id="playerName" placeholder="Masukkan Nama">
 <div class="pointer"></div>
 <canvas id="wheel" width="320" height="320"></canvas>
 <button onclick="spin()">SPIN</button>
-</div>
-
-<div id="liveBoard" style="
-margin-top:25px;
-background:#0f172a;
-padding:15px;
-border-radius:15px;
-max-height:200px;
-overflow-y:auto;
-text-align:left;
-font-size:14px;">
-<h3 style="text-align:center;margin-top:0;">🏆 Daftar Pemain</h3>
-<div id="boardList"></div>
 </div>
 
 <div id="popup" class="popup">
@@ -405,66 +392,11 @@ canvas.style.transform=`rotate(${visualRotation}deg)`;
 setTimeout(()=>{
 playerTurn[name]++;
 showPopup(name,hadiah);
-if(hadiah!==0){
-updateTotal(name,hadiah);
-}
 if(hadiah!==0){confetti({particleCount:300});}
 fadeVolume(normalVolume,600);
 spinning=false;
 },6000);
 }
-
-/* ================= LIVE BOARD ================= */
-
-let totalRewards =
-JSON.parse(localStorage.getItem("thrTotals")) || {};
-
-let playOrder =
-JSON.parse(localStorage.getItem("thrOrder")) || [];
-
-function updateTotal(name, amount){
-
-if(!totalRewards[name]){
-totalRewards[name]=0;
-playOrder.push(name);
-localStorage.setItem("thrOrder",JSON.stringify(playOrder));
-}
-
-totalRewards[name]+=amount;
-localStorage.setItem("thrTotals",JSON.stringify(totalRewards));
-
-renderBoard();
-}
-
-function renderBoard(){
-
-let html="";
-
-if(playOrder.length===0){
-html="<p style='text-align:center;'>Belum ada yang main</p>";
-}else{
-
-playOrder.forEach((name,index)=>{
-
-html+=`
-<div style="
-display:flex;
-justify-content:space-between;
-padding:6px 10px;
-margin-bottom:6px;
-background:#1e293b;
-border-radius:8px;">
-<span>${index+1}. ${name.toUpperCase()}</span>
-<span>Rp ${(totalRewards[name]||0).toLocaleString()}</span>
-</div>
-`;
-});
-}
-
-document.getElementById("boardList").innerHTML=html;
-}
-
-renderBoard();
 
 /* POPUP */
 function showPopup(name,amount){
@@ -495,37 +427,6 @@ document.getElementById("playerName").value="";
 
 document.getElementById("popup").classList.add("show");
 }
-
-/* ================= SECRET RESET FOR MOBILE ================= */
-
-let holdTimer;
-
-const secretTitle = document.getElementById("secretResetTitle");
-
-secretTitle.addEventListener("touchstart", function(){
-
-holdTimer = setTimeout(function(){
-
-if(confirm("Reset semua data uji coba?")){
-localStorage.removeItem("thrTotals");
-localStorage.removeItem("thrOrder");
-totalRewards = {};
-playOrder = [];
-renderBoard();
-alert("Data berhasil direset ✅");
-}
-
-}, 5000); // tahan 5 detik
-
-});
-
-secretTitle.addEventListener("touchend", function(){
-clearTimeout(holdTimer);
-});
-
-secretTitle.addEventListener("touchcancel", function(){
-clearTimeout(holdTimer);
-});
 
 </script>
 </body>
