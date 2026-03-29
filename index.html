@@ -38,10 +38,20 @@
         .b-item > * { position: relative; z-index: 1; }
         
         .b-item span { font-size: 10px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
-        .b-item p { font-size: clamp(14px, 4.5vw, 18px); font-weight: 900; margin: 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 10px rgba(0,0,0,0.5); width: 100%; }
+        
+        /* FIX: Angka tidak akan kepotong (ellipsis dihapus) */
+        .b-item p { 
+            font-size: clamp(12px, 4.2vw, 18px); /* Minimum font size diturunkan jadi 12px agar lebih muat banyak */
+            font-weight: 900; 
+            margin: 4px 0; 
+            word-break: break-all; /* Jika sudah mentok, angka diizinkan turun ke bawah agar terlihat semua */
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5); 
+            width: 100%;
+            line-height: 1.2;
+        }
         
         .card-total { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.4)); border: 1px solid rgba(14, 165, 233, 0.5); grid-column: span 2; text-align: center; align-items: center; padding: 20px 15px; }
-        .card-total p { color: #38bdf8; font-size: clamp(20px, 6vw, 26px); } 
+        .card-total p { color: #38bdf8; font-size: clamp(20px, 6vw, 26px); word-break: normal; } 
         .card-total span { justify-content: center; font-size: 12px; }
 
         .card-wajib { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4)); border: 1px solid rgba(16, 185, 129, 0.5); }
@@ -53,7 +63,7 @@
         .card-ortu { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.4)); border: 1px solid rgba(245, 158, 11, 0.5); }
         .card-ortu p { color: #fbbf24; }
         .card-darurat { background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4)); border: 1px solid rgba(244, 63, 94, 0.5); grid-column: span 2; align-items: center; }
-        .card-darurat p { color: #fda4af; font-size: clamp(18px, 5vw, 22px); text-align: center; }
+        .card-darurat p { color: #fda4af; font-size: clamp(18px, 5vw, 22px); text-align: center; word-break: normal; }
         .card-darurat span { justify-content: center; }
 
         .progress-container { width: 100%; height: 6px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; margin-top: 8px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
@@ -70,11 +80,9 @@
         .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; margin-top: 15px; }
         .btn:active { transform: scale(0.95); }
 
-        /* History Styling - PERBAIKAN TEKS AGAR TERLIHAT SEMUA */
+        /* History Styling */
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 18px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); }
         .history-item .info { flex: 1; min-width: 0; padding-right: 8px; }
-        
-        /* FIX: Teks Keterangan tidak akan kepotong lagi, akan turun ke bawah jika panjang */
         .history-item b { font-size: 14px; font-weight: 800; display: block; color: white; word-break: break-word; line-height: 1.4; margin-bottom: 4px; }
         .history-item small { opacity: 0.6; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: block; }
         
@@ -109,8 +117,9 @@
         <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900; letter-spacing: 1px;">✏️ EDIT DATA</h3>
         <input type="hidden" id="editIndex">
         
-        <label class="label">Kategori Saat Ini</label>
-        <select id="editKat" disabled style="opacity: 0.6; cursor: not-allowed;"></select>
+        <label class="label">Kategori</label>
+        <select id="editKat">
+            </select>
         
         <label class="label">Nama / Keterangan</label>
         <input type="text" id="editKet" placeholder="Masukkan keterangan baru...">
@@ -211,7 +220,7 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v11')) || {
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v12')) || {
         saldo: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         initial: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         totalGaji: 0, logs: [], hints: []
@@ -232,7 +241,6 @@
     }
 
     function update() {
-        // Logika Time Travel Dashboard
         const fDash = document.getElementById('fBulanDash').value;
         const dashTitle = document.getElementById('title-gaji');
         
@@ -266,7 +274,6 @@
             document.getElementById('p-'+id).style.width = Math.min(Math.max(perc, 0), 100) + "%";
         });
 
-        // Logika Riwayat & Filter
         const fMonth = document.getElementById('fBulan').value;
         const fKey = document.getElementById('fKeyword').value.toLowerCase();
         const logList = document.getElementById('logList');
@@ -295,15 +302,14 @@
         document.getElementById('statsBox').style.display = (fKey || fMonth !== 'all') ? "block" : "none";
         document.getElementById('totalFiltered').innerText = fmt(totalF);
 
-        // Autocomplete
         const hintList = document.getElementById('hintList');
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v11', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v12', JSON.stringify(db));
     }
 
-    // --- POP-UP EDIT FITUR ---
+    // --- POP-UP EDIT FITUR (KATEGORI SEKARANG BISA DIGANTI) ---
     function openModal(index) {
         const l = db.logs[index];
         document.getElementById('editIndex').value = index;
@@ -311,10 +317,24 @@
         document.getElementById('editNom').value = l.amt;
         
         const katSelect = document.getElementById('editKat');
+        katSelect.innerHTML = ""; // Bersihkan opsi lama
+        
         if (l.type === 'IN') {
+            // Jika yang diedit adalah Gaji Masuk, tetap kunci di Pemasukan
             katSelect.innerHTML = `<option value="PEMASUKAN">🌟 PEMASUKAN GAJI</option>`;
+            katSelect.disabled = true;
+            katSelect.style.opacity = "0.6";
         } else {
-            katSelect.innerHTML = `<option value="${l.kat}">Kategori: ${l.kat.toUpperCase()}</option>`;
+            // Jika pengeluaran, buka kunci dan berikan semua opsi
+            katSelect.disabled = false;
+            katSelect.style.opacity = "1";
+            katSelect.innerHTML = `
+                <option value="wajib" ${l.kat === 'wajib' ? 'selected' : ''}>🟢 Wajib</option>
+                <option value="main" ${l.kat === 'main' ? 'selected' : ''}>🎮 Main</option>
+                <option value="tabung" ${l.kat === 'tabung' ? 'selected' : ''}>💎 Tabung</option>
+                <option value="ortu" ${l.kat === 'ortu' ? 'selected' : ''}>👨‍👩‍👧 Ortu</option>
+                <option value="darurat" ${l.kat === 'darurat' ? 'selected' : ''}>🔥 Darurat</option>
+            `;
         }
         
         document.getElementById('editModal').style.display = "flex";
@@ -326,40 +346,42 @@
         const index = document.getElementById('editIndex').value;
         const newKet = document.getElementById('editKet').value;
         const newAmt = parseFloat(document.getElementById('editNom').value);
+        const newKat = document.getElementById('editKat').value; // Mengambil kategori baru
         
         if (!newKet || isNaN(newAmt) || newAmt < 0) return alert("Mohon isi keterangan dan nominal dengan benar!");
 
         let l = db.logs[index];
         
-        // 1. Tarik kembali uang lama
+        // 1. Tarik kembali uang lama dari kategori LAMA
         if(l.type === 'IN') {
             db.totalGaji -= l.amt;
             const w = l.amt*0.45, m = l.amt*0.2, t = l.amt*0.2, o = l.amt*0.1, d = l.amt*0.05;
             db.saldo.wajib -= w; db.saldo.main -= m; db.saldo.tabung -= t; db.saldo.ortu -= o; db.saldo.darurat -= d;
             db.initial.wajib -= w; db.initial.main -= m; db.initial.tabung -= t; db.initial.ortu -= o; db.initial.darurat -= d;
         } else {
-            db.saldo[l.kat] += l.amt; 
+            db.saldo[l.kat] += l.amt; // Kembalikan saldo ke kategori yang lama
         }
 
-        // 2. Terapkan angka baru
+        // 2. Terapkan angka baru ke kategori BARU
         if(l.type === 'IN') {
             db.totalGaji += newAmt;
             const w = newAmt*0.45, m = newAmt*0.2, t = newAmt*0.2, o = newAmt*0.1, d = newAmt*0.05;
             db.saldo.wajib += w; db.saldo.main += m; db.saldo.tabung += t; db.saldo.ortu += o; db.saldo.darurat += d;
             db.initial.wajib += w; db.initial.main += m; db.initial.tabung += t; db.initial.ortu += o; db.initial.darurat += d;
         } else {
-            if(newAmt > db.saldo[l.kat]) {
-                alert("Gagal Edit: Nominal baru lebih besar dari sisa saldo di kategori ini!");
-                db.saldo[l.kat] -= l.amt; // Kembalikan ke angka lama
+            if(newAmt > db.saldo[newKat]) { // Cek saldo di kategori yang baru
+                alert("Gagal Edit: Nominal baru lebih besar dari sisa saldo di kategori " + newKat.toUpperCase() + "!");
+                db.saldo[l.kat] -= l.amt; // Rollback ke keadaan awal
                 closeModal();
                 return update(); 
             }
-            db.saldo[l.kat] -= newAmt;
+            db.saldo[newKat] -= newAmt; // Kurangi saldo di kategori yang baru
         }
 
-        // 3. Simpan perubahan
+        // 3. Simpan perubahan ke history
         l.ket = newKet;
         l.amt = newAmt;
+        l.kat = newKat; // Update kategori di log
 
         kirimCloud({ date: l.date, kat: l.kat, ket: "[DIEDIT] " + l.ket, type: 'CORRECTION', amt: l.amt, month: l.month });
         
@@ -469,3 +491,4 @@
 </script>
 </body>
 </html>
+
