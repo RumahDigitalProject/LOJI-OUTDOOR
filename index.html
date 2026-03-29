@@ -31,43 +31,27 @@
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .filter-mini { width: auto; padding: 8px 10px; margin-bottom: 0; font-size: 11px; border-radius: 12px; background: rgba(0,0,0,0.4); color: var(--accent); border: 1px solid var(--accent); cursor: pointer; text-transform: uppercase; font-weight: 800; }
 
-        /* Dashboard Grid - FIX ANGKA KEPOTONG */
+        /* Dashboard Grid */
         .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .b-item { padding: 15px; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s; display: flex; flex-direction: column; justify-content: center; }
         .b-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; z-index: 0; }
         .b-item > * { position: relative; z-index: 1; }
         
         .b-item span { font-size: 10px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+        .b-item p { font-size: clamp(14px, 4.5vw, 18px); font-weight: 900; margin: 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 10px rgba(0,0,0,0.5); width: 100%; }
         
-        /* Ini kuncinya: Flex shrink, font sedikit dikecilkan, dan word-break jika terpaksa */
-        .b-item p { 
-            font-size: clamp(14px, 4.5vw, 18px); /* Ukuran font dinamis menyesuaikan lebar HP */
-            font-weight: 900; 
-            margin: 4px 0; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5); 
-            width: 100%;
-        }
-        
-        /* Tema Warna Khusus Tiap Kotak */
         .card-total { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.4)); border: 1px solid rgba(14, 165, 233, 0.5); grid-column: span 2; text-align: center; align-items: center; padding: 20px 15px; }
-        .card-total p { color: #38bdf8; font-size: clamp(20px, 6vw, 26px); } /* Lebih dinamis untuk angka miliaran */
+        .card-total p { color: #38bdf8; font-size: clamp(20px, 6vw, 26px); } 
         .card-total span { justify-content: center; font-size: 12px; }
 
         .card-wajib { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4)); border: 1px solid rgba(16, 185, 129, 0.5); }
         .card-wajib p { color: #34d399; }
-        
         .card-main { background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.4)); border: 1px solid rgba(236, 72, 153, 0.5); }
         .card-main p { color: #f472b6; }
-        
         .card-tabung { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(59, 130, 246, 0.4)); border: 1px solid rgba(99, 102, 241, 0.5); }
         .card-tabung p { color: #818cf8; }
-        
         .card-ortu { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.4)); border: 1px solid rgba(245, 158, 11, 0.5); }
         .card-ortu p { color: #fbbf24; }
-        
         .card-darurat { background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4)); border: 1px solid rgba(244, 63, 94, 0.5); grid-column: span 2; align-items: center; }
         .card-darurat p { color: #fda4af; font-size: clamp(18px, 5vw, 22px); text-align: center; }
         .card-darurat span { justify-content: center; }
@@ -86,11 +70,20 @@
         .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; margin-top: 15px; }
         .btn:active { transform: scale(0.95); }
 
+        /* History Styling */
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 18px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); }
-        .history-item .info { flex: 1; min-width: 0; padding-right: 12px; }
+        .history-item .info { flex: 1; min-width: 0; padding-right: 8px; }
         .history-item b { font-size: 14px; font-weight: 800; display: block; color: white; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .history-item small { opacity: 0.5; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-        .amt { font-weight: 900; font-size: 13px; white-space: nowrap; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 12px; display: flex; align-items: center; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1); }
+        
+        .history-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .amt { font-weight: 900; font-size: 13px; white-space: nowrap; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 12px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
+        
+        /* Tombol Edit/Hapus */
+        .action-btns { display: flex; gap: 5px; }
+        .btn-mini { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 6px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+        .btn-mini:hover { background: rgba(255,255,255,0.3); }
+        .btn-mini:active { transform: scale(0.9); }
 
         .stats-highlight { background: linear-gradient(45deg, var(--danger), var(--warning)); color: white; padding: 25px; border-radius: 25px; margin-top: 15px; text-align: center; box-shadow: 0 10px 30px rgba(244, 63, 94, 0.3); }
     </style>
@@ -184,7 +177,7 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v9')) || {
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v10')) || {
         saldo: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         initial: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         totalGaji: 0,
@@ -206,6 +199,7 @@
     }
 
     function update() {
+        // Logika Time Travel Dashboard
         const fDash = document.getElementById('fBulanDash').value;
         const dashTitle = document.getElementById('title-gaji');
         
@@ -241,20 +235,27 @@
             document.getElementById('p-'+id).style.width = Math.min(Math.max(perc, 0), 100) + "%";
         });
 
+        // Logika Riwayat & Filter
         const fMonth = document.getElementById('fBulan').value;
         const fKey = document.getElementById('fKeyword').value.toLowerCase();
         const logList = document.getElementById('logList');
         let totalF = 0;
 
         logList.innerHTML = "";
-        db.logs.forEach(l => {
+        db.logs.forEach((l, index) => {
             if((fMonth === 'all' || l.month === fMonth) && l.ket.toLowerCase().includes(fKey)) {
                 if(l.type === 'OUT') totalF += l.amt;
                 logList.innerHTML += `
                     <div class="history-item">
                         <div class="info"><b>${l.ket}</b><small>${l.date} | ${l.kat}</small></div>
-                        <div class="amt" style="color:${l.type==='IN'?'#34d399':'#fb7185'}">
-                            ${l.type==='IN'?'+':'-'}${fmt(l.amt)}
+                        <div class="history-right">
+                            <div class="amt" style="color:${l.type==='IN'?'#34d399':'#fb7185'}">
+                                ${l.type==='IN'?'+':'-'}${fmt(l.amt)}
+                            </div>
+                            <div class="action-btns">
+                                <button class="btn-mini" onclick="editLog(${index})" title="Edit">✏️</button>
+                                <button class="btn-mini" onclick="deleteLog(${index})" title="Hapus">🗑️</button>
+                            </div>
                         </div>
                     </div>`;
             }
@@ -263,11 +264,84 @@
         document.getElementById('statsBox').style.display = (fKey || fMonth !== 'all') ? "block" : "none";
         document.getElementById('totalFiltered').innerText = fmt(totalF);
 
+        // Autocomplete
         const hintList = document.getElementById('hintList');
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v9', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v10', JSON.stringify(db));
+    }
+
+    // --- FITUR BARU: HAPUS TRANSAKSI ---
+    function deleteLog(index) {
+        if(!confirm("Yakin mau hapus transaksi ini? Saldo akan dihitung ulang otomatis.")) return;
+        
+        let l = db.logs[index];
+        
+        // Kembalikan saldo
+        if(l.type === 'IN') {
+            db.totalGaji -= l.amt;
+            const w = l.amt*0.45, m = l.amt*0.2, t = l.amt*0.2, o = l.amt*0.1, d = l.amt*0.05;
+            db.saldo.wajib -= w; db.saldo.main -= m; db.saldo.tabung -= t; db.saldo.ortu -= o; db.saldo.darurat -= d;
+            db.initial.wajib -= w; db.initial.main -= m; db.initial.tabung -= t; db.initial.ortu -= o; db.initial.darurat -= d;
+        } else {
+            db.saldo[l.kat] += l.amt; // Kembalikan uang jajan ke kantong
+        }
+
+        // Catat sebagai pembatalan di Cloud
+        kirimCloud({ date: l.date, kat: l.kat, ket: "[DIHAPUS] " + l.ket, type: 'CORRECTION', amt: 0, month: l.month });
+        
+        // Hapus dari memori HP
+        db.logs.splice(index, 1);
+        update();
+    }
+
+    // --- FITUR BARU: EDIT TRANSAKSI ---
+    function editLog(index) {
+        let l = db.logs[index];
+        
+        let newKet = prompt("Edit Nama/Keterangan:", l.ket);
+        if(newKet === null) return; // Batal
+        
+        let newAmt = prompt("Edit Nominal (Rp):", l.amt);
+        if(newAmt === null) return; // Batal
+        
+        newAmt = parseFloat(newAmt);
+        if(isNaN(newAmt) || newAmt < 0) return alert("Angka tidak valid!");
+
+        // 1. Kembalikan saldo dari transaksi lama
+        if(l.type === 'IN') {
+            db.totalGaji -= l.amt;
+            const w = l.amt*0.45, m = l.amt*0.2, t = l.amt*0.2, o = l.amt*0.1, d = l.amt*0.05;
+            db.saldo.wajib -= w; db.saldo.main -= m; db.saldo.tabung -= t; db.saldo.ortu -= o; db.saldo.darurat -= d;
+            db.initial.wajib -= w; db.initial.main -= m; db.initial.tabung -= t; db.initial.ortu -= o; db.initial.darurat -= d;
+        } else {
+            db.saldo[l.kat] += l.amt; 
+        }
+
+        // 2. Terapkan data baru
+        l.ket = newKet;
+        l.amt = newAmt;
+
+        // 3. Kurangi/Tambahi saldo dengan nominal baru
+        if(l.type === 'IN') {
+            db.totalGaji += l.amt;
+            const w = l.amt*0.45, m = l.amt*0.2, t = l.amt*0.2, o = l.amt*0.1, d = l.amt*0.05;
+            db.saldo.wajib += w; db.saldo.main += m; db.saldo.tabung += t; db.saldo.ortu += o; db.saldo.darurat += d;
+            db.initial.wajib += w; db.initial.main += m; db.initial.tabung += t; db.initial.ortu += o; db.initial.darurat += d;
+        } else {
+            // Cek apakah saldo cukup dengan nominal baru
+            if(l.amt > db.saldo[l.kat]) {
+                alert("Nominal baru melebihi sisa saldo! Mengembalikan ke angka lama.");
+                // Rollback ke angka awal jika gagal
+                db.saldo[l.kat] -= l.amt;
+                return update(); 
+            }
+            db.saldo[l.kat] -= l.amt;
+        }
+
+        kirimCloud({ date: l.date, kat: l.kat, ket: "[DIEDIT] " + l.ket, type: 'CORRECTION', amt: l.amt, month: l.month });
+        update();
     }
 
     function tambahGaji() {
