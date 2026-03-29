@@ -70,25 +70,60 @@
         .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; margin-top: 15px; }
         .btn:active { transform: scale(0.95); }
 
-        /* History Styling */
+        /* History Styling - PERBAIKAN TEKS AGAR TERLIHAT SEMUA */
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 18px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); }
         .history-item .info { flex: 1; min-width: 0; padding-right: 8px; }
-        .history-item b { font-size: 14px; font-weight: 800; display: block; color: white; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .history-item small { opacity: 0.5; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        /* FIX: Teks Keterangan tidak akan kepotong lagi, akan turun ke bawah jika panjang */
+        .history-item b { font-size: 14px; font-weight: 800; display: block; color: white; word-break: break-word; line-height: 1.4; margin-bottom: 4px; }
+        .history-item small { opacity: 0.6; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: block; }
         
         .history-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         .amt { font-weight: 900; font-size: 13px; white-space: nowrap; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 12px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
         
-        /* Tombol Edit/Hapus */
         .action-btns { display: flex; gap: 5px; }
         .btn-mini { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 6px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 12px; display: flex; align-items: center; justify-content: center; }
         .btn-mini:hover { background: rgba(255,255,255,0.3); }
         .btn-mini:active { transform: scale(0.9); }
 
         .stats-highlight { background: linear-gradient(45deg, var(--danger), var(--warning)); color: white; padding: 25px; border-radius: 25px; margin-top: 15px; text-align: center; box-shadow: 0 10px 30px rgba(244, 63, 94, 0.3); }
+
+        /* MODAL POP-UP UNTUK EDIT */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
+        }
+        .modal-card {
+            width: 100%; max-width: 400px; margin: 0; animation: popIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-gradient); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
     </style>
 </head>
 <body>
+
+<div id="editModal" class="modal-overlay">
+    <div class="modal-card card">
+        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900; letter-spacing: 1px;">✏️ EDIT DATA</h3>
+        <input type="hidden" id="editIndex">
+        
+        <label class="label">Kategori Saat Ini</label>
+        <select id="editKat" disabled style="opacity: 0.6; cursor: not-allowed;"></select>
+        
+        <label class="label">Nama / Keterangan</label>
+        <input type="text" id="editKet" placeholder="Masukkan keterangan baru...">
+        
+        <label class="label">Nominal (Rp)</label>
+        <input type="number" id="editNom" placeholder="Nominal Rp...">
+        
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn btn-outline" style="margin-top:0; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal()">BATAL</button>
+            <button class="btn btn-success" style="margin-top:0;" onclick="saveEdit()">SIMPAN PERUBAHAN</button>
+        </div>
+    </div>
+</div>
 
 <div class="container">
     <header>
@@ -107,7 +142,6 @@
                 <span id="title-gaji">🌟 TOTAL GAJI TERKUMPUL</span>
                 <p id="v-totalgaji">0</p>
             </div>
-
             <div class="b-item card-wajib">
                 <span>🟢 WAJIB (45%)</span><p id="v-wajib">0</p>
                 <div class="progress-container"><div id="p-wajib" class="progress-fill" style="background:var(--success); color:var(--success);"></div></div>
@@ -177,11 +211,10 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v10')) || {
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v11')) || {
         saldo: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         initial: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
-        totalGaji: 0,
-        logs: [], hints: []
+        totalGaji: 0, logs: [], hints: []
     };
     if(db.totalGaji === undefined) db.totalGaji = 0;
 
@@ -208,9 +241,7 @@
         let dGaji = 0;
 
         if (fDash === 'all') {
-            dSaldo = { ...db.saldo };
-            dInit = { ...db.initial };
-            dGaji = db.totalGaji;
+            dSaldo = { ...db.saldo }; dInit = { ...db.initial }; dGaji = db.totalGaji;
             dashTitle.innerText = "🌟 TOTAL GAJI TERKUMPUL";
         } else {
             db.logs.forEach(l => {
@@ -253,8 +284,8 @@
                                 ${l.type==='IN'?'+':'-'}${fmt(l.amt)}
                             </div>
                             <div class="action-btns">
-                                <button class="btn-mini" onclick="editLog(${index})" title="Edit">✏️</button>
-                                <button class="btn-mini" onclick="deleteLog(${index})" title="Hapus">🗑️</button>
+                                <button class="btn-mini" onclick="openModal(${index})" title="Edit Transaksi">✏️</button>
+                                <button class="btn-mini" onclick="deleteLog(${index})" title="Hapus Transaksi">🗑️</button>
                             </div>
                         </div>
                     </div>`;
@@ -269,47 +300,38 @@
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v10', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v11', JSON.stringify(db));
     }
 
-    // --- FITUR BARU: HAPUS TRANSAKSI ---
-    function deleteLog(index) {
-        if(!confirm("Yakin mau hapus transaksi ini? Saldo akan dihitung ulang otomatis.")) return;
+    // --- POP-UP EDIT FITUR ---
+    function openModal(index) {
+        const l = db.logs[index];
+        document.getElementById('editIndex').value = index;
+        document.getElementById('editKet').value = l.ket;
+        document.getElementById('editNom').value = l.amt;
         
-        let l = db.logs[index];
-        
-        // Kembalikan saldo
-        if(l.type === 'IN') {
-            db.totalGaji -= l.amt;
-            const w = l.amt*0.45, m = l.amt*0.2, t = l.amt*0.2, o = l.amt*0.1, d = l.amt*0.05;
-            db.saldo.wajib -= w; db.saldo.main -= m; db.saldo.tabung -= t; db.saldo.ortu -= o; db.saldo.darurat -= d;
-            db.initial.wajib -= w; db.initial.main -= m; db.initial.tabung -= t; db.initial.ortu -= o; db.initial.darurat -= d;
+        const katSelect = document.getElementById('editKat');
+        if (l.type === 'IN') {
+            katSelect.innerHTML = `<option value="PEMASUKAN">🌟 PEMASUKAN GAJI</option>`;
         } else {
-            db.saldo[l.kat] += l.amt; // Kembalikan uang jajan ke kantong
+            katSelect.innerHTML = `<option value="${l.kat}">Kategori: ${l.kat.toUpperCase()}</option>`;
         }
-
-        // Catat sebagai pembatalan di Cloud
-        kirimCloud({ date: l.date, kat: l.kat, ket: "[DIHAPUS] " + l.ket, type: 'CORRECTION', amt: 0, month: l.month });
         
-        // Hapus dari memori HP
-        db.logs.splice(index, 1);
-        update();
+        document.getElementById('editModal').style.display = "flex";
     }
 
-    // --- FITUR BARU: EDIT TRANSAKSI ---
-    function editLog(index) {
+    function closeModal() { document.getElementById('editModal').style.display = "none"; }
+
+    function saveEdit() {
+        const index = document.getElementById('editIndex').value;
+        const newKet = document.getElementById('editKet').value;
+        const newAmt = parseFloat(document.getElementById('editNom').value);
+        
+        if (!newKet || isNaN(newAmt) || newAmt < 0) return alert("Mohon isi keterangan dan nominal dengan benar!");
+
         let l = db.logs[index];
         
-        let newKet = prompt("Edit Nama/Keterangan:", l.ket);
-        if(newKet === null) return; // Batal
-        
-        let newAmt = prompt("Edit Nominal (Rp):", l.amt);
-        if(newAmt === null) return; // Batal
-        
-        newAmt = parseFloat(newAmt);
-        if(isNaN(newAmt) || newAmt < 0) return alert("Angka tidak valid!");
-
-        // 1. Kembalikan saldo dari transaksi lama
+        // 1. Tarik kembali uang lama
         if(l.type === 'IN') {
             db.totalGaji -= l.amt;
             const w = l.amt*0.45, m = l.amt*0.2, t = l.amt*0.2, o = l.amt*0.1, d = l.amt*0.05;
@@ -319,28 +341,47 @@
             db.saldo[l.kat] += l.amt; 
         }
 
-        // 2. Terapkan data baru
-        l.ket = newKet;
-        l.amt = newAmt;
-
-        // 3. Kurangi/Tambahi saldo dengan nominal baru
+        // 2. Terapkan angka baru
         if(l.type === 'IN') {
-            db.totalGaji += l.amt;
-            const w = l.amt*0.45, m = l.amt*0.2, t = l.amt*0.2, o = l.amt*0.1, d = l.amt*0.05;
+            db.totalGaji += newAmt;
+            const w = newAmt*0.45, m = newAmt*0.2, t = newAmt*0.2, o = newAmt*0.1, d = newAmt*0.05;
             db.saldo.wajib += w; db.saldo.main += m; db.saldo.tabung += t; db.saldo.ortu += o; db.saldo.darurat += d;
             db.initial.wajib += w; db.initial.main += m; db.initial.tabung += t; db.initial.ortu += o; db.initial.darurat += d;
         } else {
-            // Cek apakah saldo cukup dengan nominal baru
-            if(l.amt > db.saldo[l.kat]) {
-                alert("Nominal baru melebihi sisa saldo! Mengembalikan ke angka lama.");
-                // Rollback ke angka awal jika gagal
-                db.saldo[l.kat] -= l.amt;
+            if(newAmt > db.saldo[l.kat]) {
+                alert("Gagal Edit: Nominal baru lebih besar dari sisa saldo di kategori ini!");
+                db.saldo[l.kat] -= l.amt; // Kembalikan ke angka lama
+                closeModal();
                 return update(); 
             }
-            db.saldo[l.kat] -= l.amt;
+            db.saldo[l.kat] -= newAmt;
         }
 
+        // 3. Simpan perubahan
+        l.ket = newKet;
+        l.amt = newAmt;
+
         kirimCloud({ date: l.date, kat: l.kat, ket: "[DIEDIT] " + l.ket, type: 'CORRECTION', amt: l.amt, month: l.month });
+        
+        closeModal();
+        update();
+    }
+
+    function deleteLog(index) {
+        if(!confirm("Hapus transaksi ini? Saldo akan dikembalikan secara otomatis.")) return;
+        let l = db.logs[index];
+        
+        if(l.type === 'IN') {
+            db.totalGaji -= l.amt;
+            const w = l.amt*0.45, m = l.amt*0.2, t = l.amt*0.2, o = l.amt*0.1, d = l.amt*0.05;
+            db.saldo.wajib -= w; db.saldo.main -= m; db.saldo.tabung -= t; db.saldo.ortu -= o; db.saldo.darurat -= d;
+            db.initial.wajib -= w; db.initial.main -= m; db.initial.tabung -= t; db.initial.ortu -= o; db.initial.darurat -= d;
+        } else {
+            db.saldo[l.kat] += l.amt; 
+        }
+
+        kirimCloud({ date: l.date, kat: l.kat, ket: "[DIHAPUS] " + l.ket, type: 'CORRECTION', amt: 0, month: l.month });
+        db.logs.splice(index, 1);
         update();
     }
 
