@@ -25,25 +25,36 @@
         .status-cloud { font-size: 10px; font-weight: 800; padding: 6px 15px; border-radius: 50px; background: rgba(0,0,0,0.3); color: white; display: inline-block; margin-top: 10px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
         .online { border-color: var(--success); color: var(--success); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
 
-        .card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 30px; padding: 25px; margin-bottom: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
+        .card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 30px; padding: 20px; margin-bottom: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
         .label { font-size: 12px; font-weight: 800; opacity: 0.8; text-transform: uppercase; margin-bottom: 0; letter-spacing: 1.5px; color: #94a3b8; }
         
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .filter-mini { width: auto; padding: 8px 12px; margin-bottom: 0; font-size: 11px; border-radius: 12px; background: rgba(0,0,0,0.4); color: var(--accent); border: 1px solid var(--accent); cursor: pointer; text-transform: uppercase; }
+        .filter-mini { width: auto; padding: 8px 10px; margin-bottom: 0; font-size: 11px; border-radius: 12px; background: rgba(0,0,0,0.4); color: var(--accent); border: 1px solid var(--accent); cursor: pointer; text-transform: uppercase; font-weight: 800; }
 
-        /* Dashboard Grid - NEON COLORFUL CARDS */
-        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .b-item { padding: 20px; border-radius: 24px; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s; }
+        /* Dashboard Grid - FIX ANGKA KEPOTONG */
+        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .b-item { padding: 15px; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s; display: flex; flex-direction: column; justify-content: center; }
         .b-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; z-index: 0; }
         .b-item > * { position: relative; z-index: 1; }
         
-        .b-item span { font-size: 11px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 5px; }
-        .b-item p { font-size: 19px; font-weight: 900; margin: 8px 0; white-space: nowrap; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .b-item span { font-size: 10px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+        
+        /* Ini kuncinya: Flex shrink, font sedikit dikecilkan, dan word-break jika terpaksa */
+        .b-item p { 
+            font-size: clamp(14px, 4.5vw, 18px); /* Ukuran font dinamis menyesuaikan lebar HP */
+            font-weight: 900; 
+            margin: 4px 0; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5); 
+            width: 100%;
+        }
         
         /* Tema Warna Khusus Tiap Kotak */
-        .card-total { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.4)); border: 1px solid rgba(14, 165, 233, 0.5); grid-column: span 2; text-align: center; }
-        .card-total p { color: #38bdf8; font-size: 26px; }
-        .card-total span { justify-content: center; font-size: 13px; }
+        .card-total { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.4)); border: 1px solid rgba(14, 165, 233, 0.5); grid-column: span 2; text-align: center; align-items: center; padding: 20px 15px; }
+        .card-total p { color: #38bdf8; font-size: clamp(20px, 6vw, 26px); } /* Lebih dinamis untuk angka miliaran */
+        .card-total span { justify-content: center; font-size: 12px; }
 
         .card-wajib { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4)); border: 1px solid rgba(16, 185, 129, 0.5); }
         .card-wajib p { color: #34d399; }
@@ -57,29 +68,29 @@
         .card-ortu { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.4)); border: 1px solid rgba(245, 158, 11, 0.5); }
         .card-ortu p { color: #fbbf24; }
         
-        .card-darurat { background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4)); border: 1px solid rgba(244, 63, 94, 0.5); grid-column: span 2; }
-        .card-darurat p { color: #fda4af; font-size: 24px; text-align: center; }
+        .card-darurat { background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4)); border: 1px solid rgba(244, 63, 94, 0.5); grid-column: span 2; align-items: center; }
+        .card-darurat p { color: #fda4af; font-size: clamp(18px, 5vw, 22px); text-align: center; }
         .card-darurat span { justify-content: center; }
 
-        .progress-container { width: 100%; height: 6px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; margin-top: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
+        .progress-container { width: 100%; height: 6px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; margin-top: 8px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
         .progress-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px; box-shadow: 0 0 10px currentColor; }
 
-        input, select { width: 100%; background: rgba(0,0,0,0.2); border: 2px solid rgba(255,255,255,0.1); color: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; font-size: 16px; font-weight: 700; outline: none; transition: 0.3s; }
+        input, select { width: 100%; background: rgba(0,0,0,0.2); border: 2px solid rgba(255,255,255,0.1); color: white; padding: 16px; border-radius: 18px; margin-bottom: 12px; font-size: 15px; font-weight: 700; outline: none; transition: 0.3s; }
         input:focus { border-color: var(--accent); background: rgba(0,0,0,0.4); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
         input::placeholder { color: rgba(255,255,255,0.4); }
         select option { background: #1e1b4b; color: white; font-weight: 700; }
 
-        .btn { width: 100%; padding: 20px; border-radius: 20px; border: none; font-weight: 900; cursor: pointer; transition: 0.2s; font-size: 15px; text-transform: uppercase; letter-spacing: 1.5px; }
+        .btn { width: 100%; padding: 18px; border-radius: 18px; border: none; font-weight: 900; cursor: pointer; transition: 0.2s; font-size: 15px; text-transform: uppercase; letter-spacing: 1.5px; }
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
-        .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); }
-        .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; margin-top: 20px; }
+        .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); margin-top: 5px; }
+        .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; margin-top: 15px; }
         .btn:active { transform: scale(0.95); }
 
-        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; background: rgba(0,0,0,0.2); border-radius: 20px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
-        .history-item .info { flex: 1; min-width: 0; padding-right: 15px; }
-        .history-item b { font-size: 15px; font-weight: 800; display: block; color: white; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .history-item small { opacity: 0.5; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-        .amt { font-weight: 900; font-size: 14px; white-space: nowrap; background: rgba(0,0,0,0.4); padding: 8px 15px; border-radius: 14px; display: flex; align-items: center; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 18px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        .history-item .info { flex: 1; min-width: 0; padding-right: 12px; }
+        .history-item b { font-size: 14px; font-weight: 800; display: block; color: white; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .history-item small { opacity: 0.5; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .amt { font-weight: 900; font-size: 13px; white-space: nowrap; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 12px; display: flex; align-items: center; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1); }
 
         .stats-highlight { background: linear-gradient(45deg, var(--danger), var(--warning)); color: white; padding: 25px; border-radius: 25px; margin-top: 15px; text-align: center; box-shadow: 0 10px 30px rgba(244, 63, 94, 0.3); }
     </style>
@@ -128,16 +139,16 @@
     </div>
 
     <div class="card">
-        <span class="label" style="margin-bottom: 15px;">📥 Masukkan Pendapatan</span>
-        <div style="display: flex; gap: 10px;">
+        <span class="label" style="margin-bottom: 12px;">📥 Masukkan Pendapatan</span>
+        <div style="display: flex; gap: 8px;">
             <input type="number" id="inGaji" placeholder="Nominal Gaji...">
-            <select id="blnGaji" style="width: 150px;"></select>
+            <select id="blnGaji" style="width: 140px;"></select>
         </div>
         <button class="btn btn-primary" onclick="tambahGaji()">ALOKASIKAN & SINKRON</button>
     </div>
 
     <div class="card">
-        <span class="label" style="margin-bottom: 15px;">💸 Catat Pengeluaran</span>
+        <span class="label" style="margin-bottom: 12px;">💸 Catat Pengeluaran</span>
         <select id="katKeluar">
             <option value="wajib">🟢 Wajib (Makan, Kos, dll)</option>
             <option value="main">🎮 Main (Game, Hobi, Nongkrong)</option>
@@ -152,8 +163,8 @@
     </div>
 
     <div class="card">
-        <span class="label" style="margin-bottom: 15px;">📊 Riwayat & Analisis</span>
-        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+        <span class="label" style="margin-bottom: 12px;">📊 Riwayat & Analisis</span>
+        <div style="display: flex; gap: 8px; margin-bottom: 15px;">
             <select id="fBulan" onchange="update()"></select>
             <input type="text" id="fKeyword" onkeyup="update()" placeholder="Cari data..." style="margin-bottom:0;">
         </div>
@@ -164,16 +175,16 @@
         </div>
 
         <button class="btn btn-outline" onclick="unduhLaporan()">📥 DOWNLOAD LAPORAN (CSV)</button>
-        <div id="logList" style="margin-top:20px;"></div>
+        <div id="logList" style="margin-top:15px;"></div>
     </div>
 
-    <button onclick="hapusSemua()" style="background:none; border:none; color:#94a3b8; font-size: 11px; width: 100%; font-weight: 800; margin: 30px 0; opacity: 0.6; text-decoration: underline; letter-spacing: 1px;">RESET SEMUA DATA SERVER & HP</button>
+    <button onclick="hapusSemua()" style="background:none; border:none; color:#94a3b8; font-size: 11px; width: 100%; font-weight: 800; margin: 20px 0 40px 0; opacity: 0.5; text-decoration: underline; letter-spacing: 1px;">RESET SEMUA DATA SERVER & HP</button>
 </div>
 
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v8')) || {
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v9')) || {
         saldo: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         initial: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         totalGaji: 0,
@@ -195,7 +206,6 @@
     }
 
     function update() {
-        // --- LOGIKA AJAIB DASHBOARD (TIME TRAVEL) ---
         const fDash = document.getElementById('fBulanDash').value;
         const dashTitle = document.getElementById('title-gaji');
         
@@ -209,7 +219,6 @@
             dGaji = db.totalGaji;
             dashTitle.innerText = "🌟 TOTAL GAJI TERKUMPUL";
         } else {
-            // Hitung Ulang Hanya Untuk Bulan Tersebut dari Riwayat (Logs)
             db.logs.forEach(l => {
                 if (l.month === fDash) {
                     if (l.type === 'IN') {
@@ -225,7 +234,6 @@
             dashTitle.innerText = "🌟 GAJI BULAN " + namaBulan;
         }
 
-        // Terapkan ke Tampilan Dashboard
         document.getElementById('v-totalgaji').innerText = fmt(dGaji);
         ['wajib','main','tabung','ortu','darurat'].forEach(id => {
             document.getElementById('v-'+id).innerText = fmt(dSaldo[id]);
@@ -233,7 +241,6 @@
             document.getElementById('p-'+id).style.width = Math.min(Math.max(perc, 0), 100) + "%";
         });
 
-        // --- LOGIKA FILTER RIWAYAT (TETAP SAMA SEPERTI SEBELUMNYA) ---
         const fMonth = document.getElementById('fBulan').value;
         const fKey = document.getElementById('fKeyword').value.toLowerCase();
         const logList = document.getElementById('logList');
@@ -256,12 +263,11 @@
         document.getElementById('statsBox').style.display = (fKey || fMonth !== 'all') ? "block" : "none";
         document.getElementById('totalFiltered').innerText = fmt(totalF);
 
-        // Autocomplete
         const hintList = document.getElementById('hintList');
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v8', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v9', JSON.stringify(db));
     }
 
     function tambahGaji() {
@@ -348,4 +354,3 @@
 </script>
 </body>
 </html>
-
