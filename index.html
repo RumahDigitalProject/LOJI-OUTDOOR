@@ -9,7 +9,7 @@
         :root {
             --primary: #6366f1; --accent: #a855f7; 
             --success: #10b981; --danger: #f43f5e; 
-            --warning: #f59e0b; --parent: #ec4899;
+            --warning: #f59e0b; --parent: #ec4899; --cyan: #0ea5e9;
             --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
             --glass: rgba(20, 20, 40, 0.6); 
             --text: #f8fafc;
@@ -34,10 +34,14 @@
         .b-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; z-index: 0; }
         .b-item > * { position: relative; z-index: 1; }
         
-        .b-item span { font-size: 12px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 5px; }
+        .b-item span { font-size: 11px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 5px; }
         .b-item p { font-size: 19px; font-weight: 900; margin: 8px 0; white-space: nowrap; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         
         /* Tema Warna Khusus Tiap Kotak */
+        .card-total { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.4)); border: 1px solid rgba(14, 165, 233, 0.5); grid-column: span 2; text-align: center; }
+        .card-total p { color: #38bdf8; font-size: 26px; }
+        .card-total span { justify-content: center; font-size: 13px; }
+
         .card-wajib { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4)); border: 1px solid rgba(16, 185, 129, 0.5); }
         .card-wajib p { color: #34d399; }
         
@@ -68,7 +72,7 @@
         .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; }
         .btn:active { transform: scale(0.95); }
 
-        /* History Styling */
+        /* History Styling - FIXED ROW */
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; background: rgba(0,0,0,0.2); border-radius: 20px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
         .history-item .info { flex: 1; min-width: 0; padding-right: 15px; }
         .history-item b { font-size: 15px; font-weight: 800; display: block; color: white; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -89,6 +93,12 @@
     <div class="card">
         <span class="label">💳 Dashboard Keuangan</span>
         <div class="balance-grid">
+            
+            <div class="b-item card-total">
+                <span>🌟 TOTAL GAJI TERKUMPUL</span>
+                <p id="v-totalgaji">0</p>
+            </div>
+
             <div class="b-item card-wajib">
                 <span>🟢 WAJIB (45%)</span><p id="v-wajib">0</p>
                 <div class="progress-container"><div id="p-wajib" class="progress-fill" style="background:var(--success); color:var(--success);"></div></div>
@@ -116,7 +126,7 @@
         <span class="label">📥 Masukkan Pendapatan</span>
         <div style="display: flex; gap: 10px;">
             <input type="number" id="inGaji" placeholder="Nominal Gaji...">
-            <select id="blnGaji" style="width: 140px;"></select>
+            <select id="blnGaji" style="width: 150px;"></select>
         </div>
         <button class="btn btn-primary" onclick="tambahGaji()">ALOKASIKAN & SINKRON</button>
     </div>
@@ -158,11 +168,14 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v6')) || {
+    // V7 Database setup
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v7')) || {
         saldo: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         initial: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
+        totalGaji: 0,
         logs: [], hints: []
     };
+    if(db.totalGaji === undefined) db.totalGaji = 0; // Safeguard
 
     const fmt = (n) => "Rp " + Math.round(n).toLocaleString('id-ID');
 
@@ -178,6 +191,10 @@
     }
 
     function update() {
+        // Tampilkan Total Gaji
+        document.getElementById('v-totalgaji').innerText = fmt(db.totalGaji);
+
+        // Tampilkan Saldo dan Progress Bar per Kotak
         ['wajib','main','tabung','ortu','darurat'].forEach(id => {
             document.getElementById('v-'+id).innerText = fmt(db.saldo[id]);
             const perc = db.initial[id] > 0 ? (db.saldo[id] / db.initial[id]) * 100 : 0;
@@ -210,22 +227,32 @@
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v6', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v7', JSON.stringify(db));
     }
 
     function tambahGaji() {
         const amt = parseFloat(document.getElementById('inGaji').value);
-        const bln = document.getElementById('blnGaji').value;
+        const blnDropdown = document.getElementById('blnGaji');
+        const blnVal = blnDropdown.value;
+        const blnText = blnDropdown.options[blnDropdown.selectedIndex].text; // Ambil Teks Bulan, misal: "FEBRUARI"
+
         if(!amt) return;
         
         const now = new Date();
         const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
         
+        // Alokasi
         const w = amt * 0.45, m = amt * 0.2, t = amt * 0.2, o = amt * 0.1, d = amt * 0.05;
         db.saldo.wajib += w; db.saldo.main += m; db.saldo.tabung += t; db.saldo.ortu += o; db.saldo.darurat += d;
         db.initial.wajib += w; db.initial.main += m; db.initial.tabung += t; db.initial.ortu += o; db.initial.darurat += d;
         
-        const payload = { date: dateStr, kat: 'PEMASUKAN', ket: 'Gaji Masuk', type: 'IN', amt: amt, month: bln };
+        // Tambah ke Total Gaji Terkumpul
+        db.totalGaji += amt;
+        
+        // Nama Keterangan Otomatis Sesuai Pilihan Bulan
+        const namaKeterangan = "Gaji Bulan " + blnText;
+
+        const payload = { date: dateStr, kat: 'PEMASUKAN', ket: namaKeterangan, type: 'IN', amt: amt, month: blnVal };
         db.logs.unshift(payload);
         kirimCloud(payload);
         document.getElementById('inGaji').value = "";
