@@ -4,135 +4,161 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dompetku Neon Ultimate</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1; --accent: #a855f7; --success: #22c55e; --danger: #ff4757; --warning: #f1c40f; --parent: #ec4899;
-            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --glass: rgba(255, 255, 255, 0.9); --text: #1e293b;
+            --primary: #6366f1; --accent: #a855f7; 
+            --success: #10b981; --danger: #f43f5e; 
+            --warning: #f59e0b; --parent: #ec4899;
+            --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            --glass: rgba(20, 20, 40, 0.6); 
+            --text: #f8fafc;
         }
-        @media (prefers-color-scheme: dark) {
-            :root { --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); --glass: rgba(30, 41, 59, 0.85); --text: #f1f5f9; }
-        }
+        
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg-gradient); background-attachment: fixed; color: var(--text); padding: 15px; min-height: 100vh; overflow-x: hidden; }
         .container { max-width: 480px; margin: auto; }
-        header { margin-bottom: 25px; text-align: center; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        header h1 { font-size: 32px; font-weight: 800; letter-spacing: -1.5px; }
-        .status-cloud { font-size: 10px; font-weight: 800; padding: 6px 15px; border-radius: 50px; background: rgba(255,255,255,0.1); color: white; display: inline-block; margin-top: 10px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); transition: 0.3s; }
-        .online { background: var(--success); box-shadow: 0 0 12px var(--success); }
+        
+        header { margin-bottom: 25px; text-align: center; color: white; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        header h1 { font-size: 34px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .status-cloud { font-size: 10px; font-weight: 800; padding: 6px 15px; border-radius: 50px; background: rgba(0,0,0,0.3); color: white; display: inline-block; margin-top: 10px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+        .online { border-color: var(--success); color: var(--success); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
 
-        .card { background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 28px; padding: 25px; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.2); }
-        .label { font-size: 11px; font-weight: 800; opacity: 0.6; text-transform: uppercase; margin-bottom: 15px; display: block; letter-spacing: 1px; }
+        .card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 30px; padding: 25px; margin-bottom: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
+        .label { font-size: 12px; font-weight: 800; opacity: 0.8; text-transform: uppercase; margin-bottom: 15px; display: block; letter-spacing: 1.5px; color: #94a3b8; }
 
-        /* Dashboard Grid - 5 Items */
-        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .b-item { padding: 18px; border-radius: 22px; background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.3); }
-        .b-item span { font-size: 11px; font-weight: 700; opacity: 0.7; }
-        .b-item p { font-size: 16px; font-weight: 800; margin: 6px 0; white-space: nowrap; }
-        .progress-container { width: 100%; height: 5px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; margin-top: 8px; }
-        .progress-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); }
+        /* Dashboard Grid - NEON COLORFUL CARDS */
+        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .b-item { padding: 20px; border-radius: 24px; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .b-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; z-index: 0; }
+        .b-item > * { position: relative; z-index: 1; }
+        
+        .b-item span { font-size: 12px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 5px; }
+        .b-item p { font-size: 19px; font-weight: 900; margin: 8px 0; white-space: nowrap; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        
+        /* Tema Warna Khusus Tiap Kotak */
+        .card-wajib { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4)); border: 1px solid rgba(16, 185, 129, 0.5); }
+        .card-wajib p { color: #34d399; }
+        
+        .card-main { background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.4)); border: 1px solid rgba(236, 72, 153, 0.5); }
+        .card-main p { color: #f472b6; }
+        
+        .card-tabung { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(59, 130, 246, 0.4)); border: 1px solid rgba(99, 102, 241, 0.5); }
+        .card-tabung p { color: #818cf8; }
+        
+        .card-ortu { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.4)); border: 1px solid rgba(245, 158, 11, 0.5); }
+        .card-ortu p { color: #fbbf24; }
+        
+        .card-darurat { background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4)); border: 1px solid rgba(244, 63, 94, 0.5); grid-column: span 2; }
+        .card-darurat p { color: #fda4af; font-size: 24px; text-align: center; }
+        .card-darurat span { justify-content: center; }
 
-        input, select { width: 100%; background: rgba(255,255,255,0.7); border: 2px solid transparent; color: #1e293b; padding: 16px; border-radius: 18px; margin-bottom: 15px; font-size: 16px; font-weight: 600; outline: none; }
-        input:focus { border-color: var(--primary); background: white; }
+        .progress-container { width: 100%; height: 6px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; margin-top: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
+        .progress-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px; box-shadow: 0 0 10px currentColor; }
 
-        .btn { width: 100%; padding: 18px; border-radius: 18px; border: none; font-weight: 800; cursor: pointer; transition: 0.2s; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3); }
-        .btn-success { background: var(--success); color: white; box-shadow: 0 6px 15px rgba(34, 197, 94, 0.3); }
-        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-        .btn:active { transform: scale(0.96); }
+        input, select { width: 100%; background: rgba(0,0,0,0.2); border: 2px solid rgba(255,255,255,0.1); color: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; font-size: 16px; font-weight: 700; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--accent); background: rgba(0,0,0,0.4); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
+        input::placeholder { color: rgba(255,255,255,0.4); }
+        select option { background: #1e1b4b; color: white; }
+
+        .btn { width: 100%; padding: 20px; border-radius: 20px; border: none; font-weight: 900; cursor: pointer; transition: 0.2s; font-size: 15px; text-transform: uppercase; letter-spacing: 1.5px; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
+        .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); }
+        .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; }
+        .btn:active { transform: scale(0.95); }
 
         /* History Styling */
-        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.3); border-radius: 20px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.2); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; background: rgba(0,0,0,0.2); border-radius: 20px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
         .history-item .info { flex: 1; min-width: 0; padding-right: 15px; }
-        .history-item b { font-size: 14px; font-weight: 700; display: block; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .history-item small { opacity: 0.5; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-        .amt { font-weight: 800; font-size: 13px; white-space: nowrap; background: rgba(255,255,255,0.5); padding: 6px 12px; border-radius: 12px; display: flex; align-items: center; flex-shrink: 0; }
+        .history-item b { font-size: 15px; font-weight: 800; display: block; color: white; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .history-item small { opacity: 0.5; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .amt { font-weight: 900; font-size: 14px; white-space: nowrap; background: rgba(0,0,0,0.4); padding: 8px 15px; border-radius: 14px; display: flex; align-items: center; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1); }
 
-        .stats-highlight { background: linear-gradient(45deg, var(--primary), var(--accent)); color: white; padding: 25px; border-radius: 25px; margin-top: 15px; text-align: center; }
+        .stats-highlight { background: linear-gradient(45deg, var(--danger), var(--warning)); color: white; padding: 25px; border-radius: 25px; margin-top: 15px; text-align: center; box-shadow: 0 10px 30px rgba(244, 63, 94, 0.3); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>Dompetku 💸</h1>
+        <h1>DOMPETKU 🚀</h1>
         <div id="status" class="status-cloud">MENYAMBUNG CLOUD...</div>
     </header>
 
     <div class="card">
-        <span class="label">💰 Saldo Terbagi</span>
+        <span class="label">💳 Dashboard Keuangan</span>
         <div class="balance-grid">
-            <div class="b-item" style="color: var(--success);">
-                <span>WAJIB (45%)</span><p id="v-wajib">0</p>
-                <div class="progress-container"><div id="p-wajib" class="progress-fill" style="background:var(--success)"></div></div>
+            <div class="b-item card-wajib">
+                <span>🟢 WAJIB (45%)</span><p id="v-wajib">0</p>
+                <div class="progress-container"><div id="p-wajib" class="progress-fill" style="background:var(--success); color:var(--success);"></div></div>
             </div>
-            <div class="b-item" style="color: var(--warning);">
-                <span>MAIN (20%)</span><p id="v-main">0</p>
-                <div class="progress-container"><div id="p-main" class="progress-fill" style="background:var(--warning)"></div></div>
+            <div class="b-item card-main">
+                <span>🎮 MAIN (20%)</span><p id="v-main">0</p>
+                <div class="progress-container"><div id="p-main" class="progress-fill" style="background:#f472b6; color:#f472b6;"></div></div>
             </div>
-            <div class="b-item" style="color: var(--primary);">
-                <span>TABUNG (20%)</span><p id="v-tabung">0</p>
-                <div class="progress-container"><div id="p-tabung" class="progress-fill" style="background:var(--primary)"></div></div>
+            <div class="b-item card-tabung">
+                <span>💎 TABUNG (20%)</span><p id="v-tabung">0</p>
+                <div class="progress-container"><div id="p-tabung" class="progress-fill" style="background:var(--primary); color:var(--primary);"></div></div>
             </div>
-            <div class="b-item" style="color: var(--parent);">
-                <span>ORTU (10%)</span><p id="v-ortu">0</p>
-                <div class="progress-container"><div id="p-ortu" class="progress-fill" style="background:var(--parent)"></div></div>
+            <div class="b-item card-ortu">
+                <span>👨‍👩‍👧 ORTU (10%)</span><p id="v-ortu">0</p>
+                <div class="progress-container"><div id="p-ortu" class="progress-fill" style="background:var(--warning); color:var(--warning);"></div></div>
             </div>
-            <div class="b-item" style="color: var(--danger); grid-column: span 2;">
-                <span>DARURAT (5%)</span><p id="v-darurat">0</p>
-                <div class="progress-container"><div id="p-darurat" class="progress-fill" style="background:var(--danger)"></div></div>
+            <div class="b-item card-darurat">
+                <span>🔥 DARURAT (5%)</span><p id="v-darurat">0</p>
+                <div class="progress-container"><div id="p-darurat" class="progress-fill" style="background:var(--danger); color:var(--danger);"></div></div>
             </div>
         </div>
     </div>
 
     <div class="card">
-        <span class="label">🚀 Masukkan Gaji</span>
+        <span class="label">📥 Masukkan Pendapatan</span>
         <div style="display: flex; gap: 10px;">
-            <input type="number" id="inGaji" placeholder="Nominal Gaji">
-            <select id="blnGaji" style="width: 150px;"></select>
+            <input type="number" id="inGaji" placeholder="Nominal Gaji...">
+            <select id="blnGaji" style="width: 140px;"></select>
         </div>
-        <button class="btn btn-primary" onclick="tambahGaji()">Alokasikan & Sinkron</button>
+        <button class="btn btn-primary" onclick="tambahGaji()">ALOKASIKAN & SINKRON</button>
     </div>
 
     <div class="card">
-        <span class="label">💳 Catat Pengeluaran</span>
+        <span class="label">💸 Catat Pengeluaran</span>
         <select id="katKeluar">
-            <option value="wajib">Wajib (45%)</option>
-            <option value="main">Main (20%)</option>
-            <option value="tabung">Tabungan (20%)</option>
-            <option value="ortu">Orang Tua (10%)</option>
-            <option value="darurat">Darurat (5%)</option>
+            <option value="wajib">🟢 Wajib (Makan, Kos, dll)</option>
+            <option value="main">🎮 Main (Game, Hobi, Nongkrong)</option>
+            <option value="tabung">💎 Tabungan (Masa Depan)</option>
+            <option value="ortu">👨‍👩‍👧 Orang Tua</option>
+            <option value="darurat">🔥 Darurat (Mendesak)</option>
         </select>
-        <input type="text" id="ketKeluar" list="hintList" placeholder="Keterangan (misal: Lauk)">
+        <input type="text" id="ketKeluar" list="hintList" placeholder="Keterangan (misal: Beli Kopi)">
         <datalist id="hintList"></datalist>
-        <input type="number" id="nomKeluar" placeholder="Nominal Rp">
-        <button class="btn btn-success" onclick="catat()">Simpan Transaksi</button>
+        <input type="number" id="nomKeluar" placeholder="Nominal Rp...">
+        <button class="btn btn-success" onclick="catat()">SIMPAN TRANSAKSI</button>
     </div>
 
     <div class="card">
-        <span class="label">📊 History & Analisis</span>
+        <span class="label">📊 Riwayat & Analisis</span>
         <div style="display: flex; gap: 10px; margin-bottom: 15px;">
             <select id="fBulan" onchange="update()"></select>
-            <input type="text" id="fKeyword" onkeyup="update()" placeholder="Cari..." style="margin-bottom:0;">
+            <input type="text" id="fKeyword" onkeyup="update()" placeholder="Cari data..." style="margin-bottom:0;">
         </div>
         
         <div id="statsBox" class="stats-highlight" style="display:none;">
-            <small style="font-weight:700; opacity:0.8;">Total Terfilter</small>
-            <h2 id="totalFiltered" style="font-size: 28px;">Rp 0</h2>
+            <small style="font-weight:800; opacity:0.9; letter-spacing:1px; text-transform:uppercase;">Total Terfilter</small>
+            <h2 id="totalFiltered" style="font-size: 32px; font-weight: 900; margin-top:5px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Rp 0</h2>
         </div>
 
-        <button class="btn btn-outline" style="margin-top:20px; font-size: 13px;" onclick="unduhLaporan()">📥 DOWNLOAD LAPORAN CSV</button>
+        <button class="btn btn-outline" style="margin-top:20px; font-size: 13px;" onclick="unduhLaporan()">📥 DOWNLOAD LAPORAN (CSV)</button>
         <div id="logList" style="margin-top:20px;"></div>
     </div>
 
-    <button onclick="hapusSemua()" style="background:none; border:none; color:white; font-size: 11px; width: 100%; font-weight: 800; margin: 30px 0; opacity: 0.5; text-decoration: underline;">RESET SEMUA DATA</button>
+    <button onclick="hapusSemua()" style="background:none; border:none; color:#94a3b8; font-size: 11px; width: 100%; font-weight: 800; margin: 30px 0; opacity: 0.6; text-decoration: underline; letter-spacing: 1px;">RESET SEMUA DATA SERVER & HP</button>
 </div>
 
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_final_v5')) || {
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v6')) || {
         saldo: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         initial: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         logs: [], hints: []
@@ -146,7 +172,7 @@
         s.classList.remove('online');
         try {
             await fetch(URL_CLOUD, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            s.innerText = "✅ CLOUD AKTIF";
+            s.innerText = "✅ CLOUD TERHUBUNG";
             s.classList.add('online');
         } catch (e) { s.innerText = "❌ ERROR CLOUD"; }
     }
@@ -170,7 +196,7 @@
                 logList.innerHTML += `
                     <div class="history-item">
                         <div class="info"><b>${l.ket}</b><small>${l.date} | ${l.kat}</small></div>
-                        <div class="amt" style="color:${l.type==='IN'?'var(--success)':'var(--danger)'}">
+                        <div class="amt" style="color:${l.type==='IN'?'#34d399':'#fb7185'}">
                             ${l.type==='IN'?'+':'-'}${fmt(l.amt)}
                         </div>
                     </div>`;
@@ -184,7 +210,7 @@
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_final_v5', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v6', JSON.stringify(db));
     }
 
     function tambahGaji() {
@@ -195,7 +221,6 @@
         const now = new Date();
         const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
         
-        // Alokasi Baru: 45, 20, 20, 10, 5
         const w = amt * 0.45, m = amt * 0.2, t = amt * 0.2, o = amt * 0.1, d = amt * 0.05;
         db.saldo.wajib += w; db.saldo.main += m; db.saldo.tabung += t; db.saldo.ortu += o; db.saldo.darurat += d;
         db.initial.wajib += w; db.initial.main += m; db.initial.tabung += t; db.initial.ortu += o; db.initial.darurat += d;
@@ -214,7 +239,7 @@
         const bln = document.getElementById('blnGaji').value; 
 
         if(!ket || !nom) return;
-        if(nom > db.saldo[kat]) return alert("Saldo " + kat + " tidak cukup!");
+        if(nom > db.saldo[kat]) return alert("Waduh, saldo " + kat.toUpperCase() + " kamu nggak cukup nih!");
 
         const now = new Date();
         const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
@@ -235,16 +260,16 @@
         const blob = new Blob([csv], { type: 'text/csv' });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = `Laporan_Keuangan.csv`;
+        link.download = `Laporan_Keuangan_Neon.csv`;
         link.click();
     }
 
     async function hapusSemua() {
-        if(confirm("RESET SEMUA DATA? (HP & CLOUD)")) {
+        if(confirm("Yakin mau hapus semua data dari HP dan Server Google? Data nggak bisa balik lagi loh!")) {
             try {
                 await fetch(URL_CLOUD, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "RESET" }) });
                 localStorage.clear(); location.reload();
-            } catch (e) { alert("Gagal Reset Cloud!"); }
+            } catch (e) { alert("Gagal konek ke Cloud!"); }
         }
     }
 
