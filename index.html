@@ -38,17 +38,7 @@
         .b-item > * { position: relative; z-index: 1; }
         
         .b-item span { font-size: 10px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
-        
-        /* FIX: Angka tidak akan kepotong (ellipsis dihapus) */
-        .b-item p { 
-            font-size: clamp(12px, 4.2vw, 18px); /* Minimum font size diturunkan jadi 12px agar lebih muat banyak */
-            font-weight: 900; 
-            margin: 4px 0; 
-            word-break: break-all; /* Jika sudah mentok, angka diizinkan turun ke bawah agar terlihat semua */
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5); 
-            width: 100%;
-            line-height: 1.2;
-        }
+        .b-item p { font-size: clamp(12px, 4.2vw, 18px); font-weight: 900; margin: 4px 0; word-break: break-all; text-shadow: 0 2px 10px rgba(0,0,0,0.5); width: 100%; line-height: 1.2; }
         
         .card-total { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.4)); border: 1px solid rgba(14, 165, 233, 0.5); grid-column: span 2; text-align: center; align-items: center; padding: 20px 15px; }
         .card-total p { color: #38bdf8; font-size: clamp(20px, 6vw, 26px); word-break: normal; } 
@@ -78,6 +68,7 @@
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
         .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); margin-top: 5px; }
         .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; margin-top: 15px; }
+        .btn-cyan { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); margin-top: 5px; }
         .btn:active { transform: scale(0.95); }
 
         /* History Styling */
@@ -118,8 +109,7 @@
         <input type="hidden" id="editIndex">
         
         <label class="label">Kategori</label>
-        <select id="editKat">
-            </select>
+        <select id="editKat"></select>
         
         <label class="label">Nama / Keterangan</label>
         <input type="text" id="editKet" placeholder="Masukkan keterangan baru...">
@@ -199,6 +189,29 @@
     </div>
 
     <div class="card">
+        <span class="label" style="margin-bottom: 12px; color: var(--cyan);">🔄 Suntik Dana (Pindah Saldo)</span>
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
+            <select id="suntikDari" style="flex: 1; margin-bottom: 0;">
+                <option value="wajib">Dari: Wajib</option>
+                <option value="main">Dari: Main</option>
+                <option value="tabung">Dari: Tabung</option>
+                <option value="ortu">Dari: Ortu</option>
+                <option value="darurat">Dari: Darurat</option>
+            </select>
+            <span style="font-size: 20px;">➡️</span>
+            <select id="suntikKe" style="flex: 1; margin-bottom: 0;">
+                <option value="tabung">Ke: Tabung</option>
+                <option value="wajib">Ke: Wajib</option>
+                <option value="main">Ke: Main</option>
+                <option value="ortu">Ke: Ortu</option>
+                <option value="darurat">Ke: Darurat</option>
+            </select>
+        </div>
+        <input type="number" id="suntikNom" placeholder="Nominal Rp yang ingin dipindah...">
+        <button class="btn btn-cyan" onclick="suntikDana()">SUNTIK DANA SEKARANG</button>
+    </div>
+
+    <div class="card">
         <span class="label" style="margin-bottom: 12px;">📊 Riwayat & Analisis</span>
         <div style="display: flex; gap: 8px; margin-bottom: 15px;">
             <select id="fBulan" onchange="update()"></select>
@@ -220,7 +233,7 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v12')) || {
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v13')) || {
         saldo: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         initial: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         totalGaji: 0, logs: [], hints: []
@@ -260,6 +273,11 @@
                         dSaldo.wajib += l.amt * 0.45; dSaldo.main += l.amt * 0.2; dSaldo.tabung += l.amt * 0.2; dSaldo.ortu += l.amt * 0.1; dSaldo.darurat += l.amt * 0.05;
                     } else if (l.type === 'OUT') {
                         dSaldo[l.kat] -= l.amt;
+                    } else if (l.type === 'TRANSFER') {
+                        dSaldo[l.kat] -= l.amt;   // Kurangi dari asal
+                        dSaldo[l.kat2] += l.amt;  // Tambah ke tujuan
+                        dInit[l.kat] -= l.amt;    // Sesuaikan Progress Bar asal
+                        dInit[l.kat2] += l.amt;   // Sesuaikan Progress Bar tujuan
                     }
                 }
             });
@@ -282,16 +300,31 @@
         logList.innerHTML = "";
         db.logs.forEach((l, index) => {
             if((fMonth === 'all' || l.month === fMonth) && l.ket.toLowerCase().includes(fKey)) {
-                if(l.type === 'OUT') totalF += l.amt;
+                
+                let color, sign, katLabel, editBtnHtml;
+                
+                if (l.type === 'IN') {
+                    color = '#34d399'; sign = '+'; katLabel = l.kat;
+                    editBtnHtml = `<button class="btn-mini" onclick="openModal(${index})" title="Edit Transaksi">✏️</button>`;
+                } else if (l.type === 'OUT') {
+                    color = '#fb7185'; sign = '-'; katLabel = l.kat.toUpperCase();
+                    totalF += l.amt;
+                    editBtnHtml = `<button class="btn-mini" onclick="openModal(${index})" title="Edit Transaksi">✏️</button>`;
+                } else if (l.type === 'TRANSFER') {
+                    color = '#38bdf8'; sign = '🔄'; katLabel = 'PINDAH SALDO';
+                    // Transfer tidak bisa diedit via popup untuk menghindari error, hanya bisa dihapus
+                    editBtnHtml = ``; 
+                }
+
                 logList.innerHTML += `
                     <div class="history-item">
-                        <div class="info"><b>${l.ket}</b><small>${l.date} | ${l.kat}</small></div>
+                        <div class="info"><b>${l.ket}</b><small>${l.date} | ${katLabel}</small></div>
                         <div class="history-right">
-                            <div class="amt" style="color:${l.type==='IN'?'#34d399':'#fb7185'}">
-                                ${l.type==='IN'?'+':'-'}${fmt(l.amt)}
+                            <div class="amt" style="color:${color}">
+                                ${sign} ${fmt(l.amt)}
                             </div>
                             <div class="action-btns">
-                                <button class="btn-mini" onclick="openModal(${index})" title="Edit Transaksi">✏️</button>
+                                ${editBtnHtml}
                                 <button class="btn-mini" onclick="deleteLog(${index})" title="Hapus Transaksi">🗑️</button>
                             </div>
                         </div>
@@ -306,10 +339,44 @@
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v12', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v13', JSON.stringify(db));
     }
 
-    // --- POP-UP EDIT FITUR (KATEGORI SEKARANG BISA DIGANTI) ---
+    // --- FITUR BARU: SUNTIK DANA ---
+    function suntikDana() {
+        const dari = document.getElementById('suntikDari').value;
+        const ke = document.getElementById('suntikKe').value;
+        const nom = parseFloat(document.getElementById('suntikNom').value);
+        const bln = document.getElementById('blnGaji').value;
+
+        if(!nom || nom <= 0) return alert("Masukkan nominal suntikan yang valid!");
+        if(dari === ke) return alert("Kategori asal dan tujuan tidak boleh sama ya!");
+        if(nom > db.saldo[dari]) return alert("Saldo di kantong " + dari.toUpperCase() + " tidak mencukupi untuk disuntikkan!");
+
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+
+        // Pindahkan Saldo & Budget Initial (Agar Progress Bar Tidak Rusak)
+        db.saldo[dari] -= nom;
+        db.saldo[ke] += nom;
+        db.initial[dari] -= nom;
+        db.initial[ke] += nom;
+
+        const ketSuntik = `Suntik: ${dari.toUpperCase()} ➡️ ${ke.toUpperCase()}`;
+        
+        // Simpan ke HP
+        const payload = { date: dateStr, kat: dari, kat2: ke, ket: ketSuntik, type: 'TRANSFER', amt: nom, month: bln };
+        db.logs.unshift(payload);
+        
+        // Kirim ke Cloud (Google Sheets)
+        // Format kat disesuaikan agar rapi di excel
+        kirimCloud({ date: dateStr, kat: `${dari.toUpperCase()} -> ${ke.toUpperCase()}`, ket: ketSuntik, type: 'TRANSFER', amt: nom, month: bln });
+
+        document.getElementById('suntikNom').value = "";
+        update();
+    }
+
+    // POP-UP EDIT 
     function openModal(index) {
         const l = db.logs[index];
         document.getElementById('editIndex').value = index;
@@ -317,15 +384,13 @@
         document.getElementById('editNom').value = l.amt;
         
         const katSelect = document.getElementById('editKat');
-        katSelect.innerHTML = ""; // Bersihkan opsi lama
+        katSelect.innerHTML = ""; 
         
         if (l.type === 'IN') {
-            // Jika yang diedit adalah Gaji Masuk, tetap kunci di Pemasukan
             katSelect.innerHTML = `<option value="PEMASUKAN">🌟 PEMASUKAN GAJI</option>`;
             katSelect.disabled = true;
             katSelect.style.opacity = "0.6";
         } else {
-            // Jika pengeluaran, buka kunci dan berikan semua opsi
             katSelect.disabled = false;
             katSelect.style.opacity = "1";
             katSelect.innerHTML = `
@@ -346,42 +411,39 @@
         const index = document.getElementById('editIndex').value;
         const newKet = document.getElementById('editKet').value;
         const newAmt = parseFloat(document.getElementById('editNom').value);
-        const newKat = document.getElementById('editKat').value; // Mengambil kategori baru
+        const newKat = document.getElementById('editKat').value; 
         
         if (!newKet || isNaN(newAmt) || newAmt < 0) return alert("Mohon isi keterangan dan nominal dengan benar!");
 
         let l = db.logs[index];
         
-        // 1. Tarik kembali uang lama dari kategori LAMA
         if(l.type === 'IN') {
             db.totalGaji -= l.amt;
             const w = l.amt*0.45, m = l.amt*0.2, t = l.amt*0.2, o = l.amt*0.1, d = l.amt*0.05;
             db.saldo.wajib -= w; db.saldo.main -= m; db.saldo.tabung -= t; db.saldo.ortu -= o; db.saldo.darurat -= d;
             db.initial.wajib -= w; db.initial.main -= m; db.initial.tabung -= t; db.initial.ortu -= o; db.initial.darurat -= d;
         } else {
-            db.saldo[l.kat] += l.amt; // Kembalikan saldo ke kategori yang lama
+            db.saldo[l.kat] += l.amt; 
         }
 
-        // 2. Terapkan angka baru ke kategori BARU
         if(l.type === 'IN') {
             db.totalGaji += newAmt;
             const w = newAmt*0.45, m = newAmt*0.2, t = newAmt*0.2, o = newAmt*0.1, d = newAmt*0.05;
             db.saldo.wajib += w; db.saldo.main += m; db.saldo.tabung += t; db.saldo.ortu += o; db.saldo.darurat += d;
             db.initial.wajib += w; db.initial.main += m; db.initial.tabung += t; db.initial.ortu += o; db.initial.darurat += d;
         } else {
-            if(newAmt > db.saldo[newKat]) { // Cek saldo di kategori yang baru
+            if(newAmt > db.saldo[newKat]) { 
                 alert("Gagal Edit: Nominal baru lebih besar dari sisa saldo di kategori " + newKat.toUpperCase() + "!");
-                db.saldo[l.kat] -= l.amt; // Rollback ke keadaan awal
+                db.saldo[l.kat] -= l.amt; 
                 closeModal();
                 return update(); 
             }
-            db.saldo[newKat] -= newAmt; // Kurangi saldo di kategori yang baru
+            db.saldo[newKat] -= newAmt; 
         }
 
-        // 3. Simpan perubahan ke history
         l.ket = newKet;
         l.amt = newAmt;
-        l.kat = newKat; // Update kategori di log
+        l.kat = newKat; 
 
         kirimCloud({ date: l.date, kat: l.kat, ket: "[DIEDIT] " + l.ket, type: 'CORRECTION', amt: l.amt, month: l.month });
         
@@ -398,8 +460,14 @@
             const w = l.amt*0.45, m = l.amt*0.2, t = l.amt*0.2, o = l.amt*0.1, d = l.amt*0.05;
             db.saldo.wajib -= w; db.saldo.main -= m; db.saldo.tabung -= t; db.saldo.ortu -= o; db.saldo.darurat -= d;
             db.initial.wajib -= w; db.initial.main -= m; db.initial.tabung -= t; db.initial.ortu -= o; db.initial.darurat -= d;
-        } else {
+        } else if(l.type === 'OUT') {
             db.saldo[l.kat] += l.amt; 
+        } else if(l.type === 'TRANSFER') {
+            // Jika transfer dihapus, uang dikembalikan ke kantong asal
+            db.saldo[l.kat] += l.amt;
+            db.saldo[l.kat2] -= l.amt;
+            db.initial[l.kat] += l.amt;
+            db.initial[l.kat2] -= l.amt;
         }
 
         kirimCloud({ date: l.date, kat: l.kat, ket: "[DIHAPUS] " + l.ket, type: 'CORRECTION', amt: 0, month: l.month });
@@ -454,7 +522,11 @@
 
     function unduhLaporan() {
         let csv = "Tanggal,Kategori,Keterangan,Tipe,Nominal\n";
-        db.logs.forEach(l => { csv += `${l.date},${l.kat},${l.ket},${l.type},${l.amt}\n`; });
+        db.logs.forEach(l => { 
+            // Penyesuaian agar excel rapi untuk transfer
+            let excelKat = l.type === 'TRANSFER' ? `${l.kat.toUpperCase()} -> ${l.kat2.toUpperCase()}` : l.kat;
+            csv += `${l.date},${excelKat},${l.ket},${l.type},${l.amt}\n`; 
+        });
         const blob = new Blob([csv], { type: 'text/csv' });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
