@@ -3,144 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dompetku Neon Pro</title>
+    <title>Dompetku Neon Pop Ultimate</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #6366f1; --accent: #a855f7; --success: #22c55e; --danger: #ff4757; --warning: #f1c40f;
-            --bg-gradient: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
-            --glass: rgba(255, 255, 255, 0.92); --text: #1e293b;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass: rgba(255, 255, 255, 0.9); --text: #1e293b;
         }
         @media (prefers-color-scheme: dark) {
             :root { --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); --glass: rgba(30, 41, 59, 0.85); --text: #f1f5f9; }
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
         body { background: var(--bg-gradient); background-attachment: fixed; color: var(--text); padding: 15px; min-height: 100vh; overflow-x: hidden; }
         .container { max-width: 480px; margin: auto; }
-        header { text-align: center; color: white; margin: 15px 0 25px 0; }
-        header h1 { font-size: 30px; font-weight: 800; letter-spacing: -1.5px; }
-        .status-cloud { font-size: 10px; font-weight: 800; padding: 5px 12px; border-radius: 50px; background: rgba(255,255,255,0.15); color: white; display: inline-block; margin-top: 8px; border: 1px solid rgba(255,255,255,0.2); }
-        .online { background: var(--success); box-shadow: 0 0 10px var(--success); }
 
-        .card { background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 25px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.1); }
-        .label { font-size: 10px; font-weight: 800; opacity: 0.5; text-transform: uppercase; margin-bottom: 12px; display: block; letter-spacing: 1px; }
+        header { margin-bottom: 25px; text-align: center; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        header h1 { font-size: 32px; font-weight: 800; letter-spacing: -1.5px; }
+        
+        /* Status Cloud Animasi (Kembali Keren) */
+        .status-cloud { font-size: 10px; font-weight: 800; padding: 6px 15px; border-radius: 50px; background: rgba(255,255,255,0.1); color: white; display: inline-block; margin-top: 10px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); }
+        .online { background: var(--success); box-shadow: 0 0 12px var(--success); }
 
-        /* Dashboard */
+        /* Card Style - Glassmorphism (Kembali Keren) */
+        .card { background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 28px; padding: 25px; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.2); }
+        .label { font-size: 11px; font-weight: 800; opacity: 0.6; text-transform: uppercase; margin-bottom: 15px; display: block; letter-spacing: 1px; }
+
+        /* Dashboard & Progress Bars */
         .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .b-item { padding: 15px; border-radius: 20px; background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.3); }
-        .b-item span { font-size: 11px; font-weight: 700; opacity: 0.7; }
-        .b-item p { font-size: 16px; font-weight: 800; margin: 4px 0; white-space: nowrap; }
-        .progress-mini { width: 100%; height: 4px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; margin-top: 5px; }
-        .fill-mini { height: 100%; width: 0%; transition: 1s ease-in-out; }
+        .b-item { padding: 18px; border-radius: 22px; background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.3); }
+        .b-item span { font-size: 12px; font-weight: 700; opacity: 0.7; }
+        .b-item p { font-size: 18px; font-weight: 800; margin: 6px 0; white-space: nowrap; }
+        .progress-container { width: 100%; height: 5px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+        .progress-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        input, select { width: 100%; background: rgba(255,255,255,0.7); border: 2px solid transparent; color: #1e293b; padding: 14px; border-radius: 16px; margin-bottom: 12px; font-size: 15px; font-weight: 600; outline: none; transition: 0.3s; }
+        input, select { width: 100%; background: rgba(255,255,255,0.7); border: 2px solid transparent; color: #1e293b; padding: 16px; border-radius: 18px; margin-bottom: 15px; font-size: 16px; font-weight: 600; outline: none; }
         input:focus { border-color: var(--primary); background: white; }
 
-        .btn { width: 100%; padding: 16px; border-radius: 16px; border: none; font-weight: 800; cursor: pointer; transition: 0.2s; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4); }
-        .btn-success { background: var(--success); color: white; box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4); }
+        /* Buttons with Neon Effect (Kembali Keren) */
+        .btn { width: 100%; padding: 18px; border-radius: 18px; border: none; font-weight: 800; cursor: pointer; transition: 0.2s; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3); }
+        .btn-success { background: var(--success); color: white; box-shadow: 0 6px 15px rgba(34, 197, 94, 0.3); }
         .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-        .btn:active { transform: scale(0.97); }
+        .btn:active { transform: scale(0.96); }
 
-        /* History Styling */
+        /* History Styling - FIXED LAYOUT */
         .history-item { 
             display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 15px; background: rgba(255,255,255,0.3); 
-            border-radius: 18px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.2);
+            padding: 15px; background: rgba(255,255,255,0.3); 
+            border-radius: 20px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.2);
         }
-        .history-item .info { flex: 1; padding-right: 10px; }
-        .history-item b { font-size: 13px; font-weight: 700; display: block; color: var(--text); }
-        .history-item small { opacity: 0.5; font-size: 10px; font-weight: 600; text-transform: uppercase; }
+        .history-item .info { flex: 1; min-width: 0; padding-right: 15px; } /* min-width agar text bisa ellips */
+        .history-item b { font-size: 14px; font-weight: 700; display: block; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .history-item small { opacity: 0.5; font-size: 10px; font-weight: 700; text-transform: uppercase; }
         
-        /* Fixed Amount Display */
+        /* Fixed Amount Display (Satu Baris Lurus) */
         .amt { 
             font-weight: 800; font-size: 13px; 
-            white-space: nowrap; /* Mencegah Rp dan angka terpisah */
+            white-space: nowrap; /* KUNCI: Mencegah pecah baris */
             background: rgba(255,255,255,0.5); 
-            padding: 4px 10px; border-radius: 10px;
-            display: inline-block;
-            flex-shrink: 0; /* Mencegah nominal menyusut */
+            padding: 6px 12px; border-radius: 12px;
+            display: flex; align-items: center;
+            flex-shrink: 0; /* KUNCI: Mencegah menyusut */
         }
 
-        .stats-highlight { background: linear-gradient(45deg, var(--primary), var(--accent)); color: white; padding: 20px; border-radius: 20px; margin-top: 10px; text-align: center; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
+        .stats-highlight { background: linear-gradient(45deg, var(--primary), var(--accent)); color: white; padding: 25px; border-radius: 25px; margin-top: 15px; text-align: center; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>Dompetku 💎</h1>
-        <div id="status" class="status-cloud">MENYAMBUNG...</div>
+        <h1>Dompetku 💸</h1>
+        <div id="status" class="status-cloud">HUBUNGKAN CLOUD...</div>
     </header>
 
     <div class="card">
-        <span class="label">📊 Saldo Saat Ini</span>
+        <span class="label">💰 Saldo Tersedia</span>
         <div class="balance-grid">
             <div class="b-item" style="color: var(--success);">
                 <span>WAJIB</span><p id="v-kebutuhan">0</p>
-                <div class="progress-mini"><div id="p-kebutuhan" class="fill-mini" style="background:var(--success)"></div></div>
+                <div class="progress-container"><div id="p-kebutuhan" class="progress-fill" style="background:var(--success)"></div></div>
             </div>
             <div class="b-item" style="color: var(--primary);">
                 <span>TABUNG</span><p id="v-tabungan">0</p>
-                <div class="progress-mini"><div id="p-tabungan" class="fill-mini" style="background:var(--primary)"></div></div>
+                <div class="progress-container"><div id="p-tabungan" class="progress-fill" style="background:var(--primary)"></div></div>
             </div>
             <div class="b-item" style="color: var(--warning);">
                 <span>MAIN</span><p id="v-keinginan">0</p>
-                <div class="progress-mini"><div id="p-keinginan" class="fill-mini" style="background:var(--warning)"></div></div>
+                <div class="progress-container"><div id="p-keinginan" class="progress-fill" style="background:var(--warning)"></div></div>
             </div>
             <div class="b-item" style="color: var(--danger);">
                 <span>DARURAT</span><p id="v-darurat">0</p>
-                <div class="progress-mini"><div id="p-darurat" class="fill-mini" style="background:var(--danger)"></div></div>
+                <div class="progress-container"><div id="p-darurat" class="progress-fill" style="background:var(--danger)"></div></div>
             </div>
         </div>
     </div>
 
     <div class="card">
-        <span class="label">💸 Input Gaji Bulanan</span>
-        <div style="display: flex; gap: 8px;">
+        <span class="label">🚀 Masukkan Gaji</span>
+        <div style="display: flex; gap: 10px;">
             <input type="number" id="inGaji" placeholder="Nominal Gaji">
-            <select id="blnGaji" style="width: 130px;"></select>
+            <select id="blnGaji" style="width: 150px;"></select>
         </div>
-        <button class="btn btn-primary" onclick="tambahGaji()">Alokasikan Otomatis</button>
+        <button class="btn btn-primary" onclick="tambahGaji()">Alokasikan & Sinkron Cloud</button>
     </div>
 
     <div class="card">
-        <span class="label">✍️ Catat Pengeluaran</span>
+        <span class="label">💳 Catat Transaksi</span>
         <select id="katKeluar">
             <option value="kebutuhan">Kebutuhan (50%)</option>
             <option value="tabungan">Tabungan (20%)</option>
             <option value="keinginan">Keinginan (20%)</option>
             <option value="darurat">Darurat (10%)</option>
         </select>
-        <input type="text" id="ketKeluar" list="hintList" placeholder="Keterangan (misal: Beli Lauk)">
+        <input type="text" id="ketKeluar" list="hintList" placeholder="Keterangan (misal: Lauk)">
         <datalist id="hintList"></datalist>
         <input type="number" id="nomKeluar" placeholder="Nominal Rp">
-        <button class="btn btn-success" onclick="catat()">Simpan Transaksi</button>
+        <button class="btn btn-success" onclick="catat()">Simpan & Kirim Cloud</button>
     </div>
 
     <div class="card">
-        <span class="label">🔍 Filter Riwayat</span>
-        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+        <span class="label">📊 History & Filter</span>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
             <select id="fBulan" onchange="update()"></select>
             <input type="text" id="fKeyword" onkeyup="update()" placeholder="Cari..." style="margin-bottom:0;">
         </div>
         
         <div id="statsBox" class="stats-highlight" style="display:none;">
             <small style="font-weight:700; opacity:0.8;">Total Terfilter</small>
-            <h2 id="totalFiltered" style="font-size: 24px;">Rp 0</h2>
+            <h2 id="totalFiltered" style="font-size: 28px;">Rp 0</h2>
         </div>
 
-        <button class="btn btn-outline" style="margin-top:15px; font-size: 12px;" onclick="unduhLaporan()">📥 DOWNLOAD LAPORAN (.CSV)</button>
-        <div id="logList" style="margin-top:15px;"></div>
+        <button class="btn btn-outline" style="margin-top:20px; font-size: 13px;" onclick="unduhLaporan()">📥 DOWNLOAD LAPORAN CSV</button>
+        <div id="logList" style="margin-top:20px;"></div>
     </div>
 
-    <button onclick="hapusSemua()" style="background:none; border:none; color:white; font-size: 10px; width: 100%; font-weight: 800; margin: 20px 0; opacity: 0.5; text-decoration: underline;">HAPUS SEMUA DATA</button>
+    <button onclick="hapusSemua()" style="background:none; border:none; color:white; font-size: 11px; width: 100%; font-weight: 800; margin: 30px 0; opacity: 0.5; text-decoration: underline;">RESET SEMUA DATA (HP & CLOUD)</button>
 </div>
 
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v2')) || {
+    let db = JSON.parse(localStorage.getItem('dompet_pop_v3')) || {
         saldo: { kebutuhan: 0, tabungan: 0, keinginan: 0, darurat: 0 },
         initial: { kebutuhan: 0, tabungan: 0, keinginan: 0, darurat: 0 },
         logs: [], hints: []
@@ -150,17 +156,17 @@
 
     async function kirimCloud(payload) {
         const s = document.getElementById('status');
-        s.innerText = "☁️ SYNCING...";
+        s.innerText = "☁️ SINKRONISASI...";
         s.classList.remove('online');
         try {
             await fetch(URL_CLOUD, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            s.innerText = "✅ ONLINE";
+            s.innerText = "✅ CLOUD AKTIF";
             s.classList.add('online');
-        } catch (e) { s.innerText = "❌ OFFLINE"; }
+        } catch (e) { s.innerText = "❌ ERROR CLOUD"; }
     }
 
     function update() {
-        // Tampilan Saldo & Progress Bar
+        // Dashboard & Progress Bar
         ['kebutuhan','tabungan','keinginan','darurat'].forEach(id => {
             document.getElementById('v-'+id).innerText = fmt(db.saldo[id]);
             const perc = db.initial[id] > 0 ? (db.saldo[id] / db.initial[id]) * 100 : 0;
@@ -194,9 +200,9 @@
 
         const hintList = document.getElementById('hintList');
         hintList.innerHTML = "";
-        [...new Set(db.hints)].slice(0, 10).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
+        [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v2', JSON.stringify(db));
+        localStorage.setItem('dompet_pop_v3', JSON.stringify(db));
     }
 
     function tambahGaji() {
@@ -252,7 +258,7 @@
     }
 
     async function hapusSemua() {
-        if(confirm("RESET SEMUA DATA? (HP & CLOUD)")) {
+        if(confirm("Hapus semua data permanen? (HP & CLOUD)")) {
             try {
                 await fetch(URL_CLOUD, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "RESET" }) });
                 localStorage.clear(); location.reload();
