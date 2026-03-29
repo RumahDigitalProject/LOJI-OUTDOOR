@@ -1,464 +1,161 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Spin THR</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dompet Pintar - Auto Save</title>
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--light); padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: var(--primary); margin-bottom: 5px; }
+        p.subtitle { text-align: center; font-size: 12px; color: #888; margin-bottom: 20px; }
+        
+        .input-group { margin-bottom: 15px; display: flex; gap: 8px; }
+        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; flex: 1; font-size: 14px; }
+        
+        button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-set { background: var(--primary); color: white; width: 100%; margin-bottom: 10px; }
+        .btn-out { background: var(--danger); color: white; }
+        .btn-reset { background: #95a5a6; color: white; width: 100%; font-size: 11px; margin-top: 20px; }
 
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+        .card { background: #f9f9f9; padding: 15px; border-radius: 10px; border-left: 5px solid; }
+        .card h4 { margin: 0; font-size: 12px; color: #777; text-transform: uppercase; }
+        .card .balance { font-size: 16px; font-weight: bold; margin-top: 5px; }
 
-<style>
-body{
-margin:0;
-background:#020617;
-font-family:Arial;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-color:white;
-overflow:hidden;
-}
-
-.app{
-max-width:420px;
-width:100%;
-text-align:center;
-}
-
-input{
-padding:8px;
-width:60%;
-font-size:14px;
-border:none;
-border-radius:8px;
-text-align:center;
-margin-bottom:40px;
-}
-
-.pointer{
-width:0;
-height:0;
-border-left:19px solid transparent;
-border-right:19px solid transparent;
-border-top:45px solid gold;
-margin:auto;
-}
-
-canvas{
-border-radius:50%;
-border:10px solid white;
-}
-
-/* === GLOW PRO === */
-@keyframes glowPulse{
-  0%{
-    box-shadow:
-      0 0 15px gold,
-      0 0 30px orange;
-  }
-  50%{
-    box-shadow:
-      0 0 35px yellow,
-      0 0 70px gold;
-  }
-  100%{
-    box-shadow:
-      0 0 15px gold,
-      0 0 30px orange;
-  }
-}
-
-canvas.spinning{
-  animation: glowPulse 1s infinite;
-}
-
-button{
-margin-top:20px;
-padding:14px 40px;
-font-size:22px;
-background:gold;
-border:none;
-border-radius:12px;
-cursor:pointer;
-}
-
-/* OPENING */
-#openingScreen{
-position:fixed;
-inset:0;
-background:#020617;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-color:white;
-z-index:9999;
-text-align:center;
-}
-
-/* POPUP */
-.popup{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.85);
-display:flex;
-justify-content:center;
-align-items:center;
-opacity:0;
-visibility:hidden;
-transition:.4s;
-}
-
-.popup.show{
-opacity:1;
-visibility:visible;
-}
-
-.card{
-background:linear-gradient(135deg,#fde047,#f59e0b);
-color:black;
-padding:35px;
-border-radius:20px;
-text-align:center;
-}
-
-#winner,#message,#amount{
-margin:10px 0;
-font-weight:bold;
-}
-
-#winner{font-size:22px;}
-#message{font-size:20px;}
-#amount{font-size:36px;}
-
-/* ADMIN */
-#adminPanel .card{
-width:90%;
-max-width:700px;
-background:#0f172a;
-color:white;
-max-height:90vh;
-overflow-y:auto;
-}
-
-.admin-row{
-display:grid;
-grid-template-columns:1.2fr 1fr 1fr 40px;
-gap:10px;
-margin-bottom:10px;
-align-items:center;
-}
-
-.admin-row input,
-.admin-row select{
-padding:10px;
-border-radius:8px;
-border:none;
-background:#1e293b;
-color:white;
-}
-
-.deleteBtn{
-background:#ef4444;
-border:none;
-color:white;
-border-radius:8px;
-cursor:pointer;
-height:38px;
-}
-
-.admin-actions{
-display:flex;
-gap:10px;
-justify-content:center;
-margin-top:15px;
-}
-</style>
+        .history { border-top: 2px dashed #eee; padding-top: 15px; margin-top: 20px; }
+        .history-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f1f1; font-size: 13px; }
+    </style>
 </head>
-
 <body>
 
-<div id="openingScreen">
-<h1>🌙 Selamat Hari Raya Idul Fitri 1447 H</h1>
-<p>Mohon maaf lahir dan batin 😊</p>
-<button onclick="startApp()">Mulai</button>
-</div>
+<div class="container">
+    <h2>💰 Dompet Pintar</h2>
+    <p class="subtitle">Data tersimpan otomatis di browser ini</p>
+    
+    <label style="font-size: 13px; font-weight: bold;">Update Gaji Bulanan:</label>
+    <div class="input-group">
+        <input type="number" id="inputGaji" placeholder="Masukkan Gaji (Contoh: 4000000)">
+    </div>
+    <button class="btn-set" onclick="aturGaji()">Set & Alokasikan Gaji</button>
 
-<div class="app">
-<h2>THR 2026</h2>
-<input id="playerName" placeholder="Masukkan Nama">
-<div class="pointer"></div>
-<canvas id="wheel" width="320" height="320"></canvas>
-<button onclick="spin()">SPIN</button>
-</div>
+    <div class="dashboard">
+        <div class="card" style="border-color: #2ecc71;">
+            <h4>Kebutuhan (50%)</h4>
+            <div class="balance" id="bal-kebutuhan">Rp 0</div>
+        </div>
+        <div class="card" style="border-color: #3498db;">
+            <h4>Tabungan (20%)</h4>
+            <div class="balance" id="bal-tabungan">Rp 0</div>
+        </div>
+        <div class="card" style="border-color: #f1c40f;">
+            <h4>Keinginan (20%)</h4>
+            <div class="balance" id="bal-keinginan">Rp 0</div>
+        </div>
+        <div class="card" style="border-color: #e67e22;">
+            <h4>Dana Darurat (10%)</h4>
+            <div class="balance" id="bal-darurat">Rp 0</div>
+        </div>
+    </div>
 
-<div id="popup" class="popup">
-<div class="card">
-<h2 id="winner"></h2>
-<p id="message"></p>
-<h1 id="amount"></h1>
-<button id="actionBtn">CLAIM</button>
-</div>
-</div>
+    <div class="history">
+        <h4 style="margin-bottom: 10px;">Catat Pengeluaran</h4>
+        <div class="input-group">
+            <select id="pilihKategori">
+                <option value="kebutuhan">Kebutuhan</option>
+                <option value="tabungan">Tabungan</option>
+                <option value="keinginan">Keinginan</option>
+                <option value="darurat">Darurat</option>
+            </select>
+            <input type="number" id="nominalKeluar" placeholder="Rp">
+            <button class="btn-out" onclick="catatPengeluaran()">Catat</button>
+        </div>
+        <div id="logAktivitas"></div>
+    </div>
 
-<div id="adminPanel" class="popup">
-<div class="card">
-<h2>⚙️ ADMIN PANEL</h2>
-<div id="adminList"></div>
-<div class="admin-actions">
-<button onclick="addRow()">+ Tambah</button>
-<button onclick="saveAdmin()">💾 Simpan</button>
+    <button class="btn-reset" onclick="resetData()">Hapus Semua Data & Mulai Baru</button>
 </div>
-</div>
-</div>
-
-<audio id="bgMusic" src="musik.mp3" loop></audio>
 
 <script>
+    // Load data dari LocalStorage saat halaman dibuka
+    let saldo = JSON.parse(localStorage.getItem('dompetPintar_saldo')) || { kebutuhan: 0, tabungan: 0, keinginan: 0, darurat: 0 };
+    let riwayat = JSON.parse(localStorage.getItem('dompetPintar_riwayat')) || [];
 
-/* DATA */
-let playerRewards =
-JSON.parse(localStorage.getItem("thrData")) || {};
+    function formatRupiah(angka) {
+        return "Rp " + Math.round(angka).toLocaleString('id-ID');
+    }
 
-let playerTurn={};
+    function simpanKeStorage() {
+        localStorage.setItem('dompetPintar_saldo', JSON.stringify(saldo));
+        localStorage.setItem('dompetPintar_riwayat', JSON.stringify(riwayat));
+    }
 
-function autoSave(){
-playerRewards={};
-document.querySelectorAll("#adminList .admin-row")
-.forEach(row=>{
-let name=row.querySelector(".name").value.trim().toLowerCase();
-let mode=row.querySelector(".mode").value;
-let hadiah=parseInt(row.querySelector(".hadiah").value);
-if(name){
-playerRewards[name]={mode,hadiah};
-}
-});
-localStorage.setItem("thrData",JSON.stringify(playerRewards));
-}
+    function updateTampilan() {
+        document.getElementById('bal-kebutuhan').innerText = formatRupiah(saldo.kebutuhan);
+        document.getElementById('bal-tabungan').innerText = formatRupiah(saldo.tabungan);
+        document.getElementById('bal-keinginan').innerText = formatRupiah(saldo.keinginan);
+        document.getElementById('bal-darurat').innerText = formatRupiah(saldo.darurat);
+        
+        const log = document.getElementById('logAktivitas');
+        log.innerHTML = "";
+        riwayat.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            div.innerHTML = `<span>${item.ket}</span> <span>-${formatRupiah(item.nom)}</span>`;
+            log.appendChild(div);
+        });
+    }
 
-function openAdmin(){
-document.getElementById("adminPanel").classList.add("show");
-renderAdmin();
-}
+    function aturGaji() {
+        const total = parseFloat(document.getElementById('inputGaji').value);
+        if (!total || total <= 0) return alert("Masukkan nominal gaji!");
 
-function renderAdmin(){
-let wrap=document.getElementById("adminList");
-wrap.innerHTML="";
-Object.keys(playerRewards).forEach(name=>{
-wrap.innerHTML+=rowHTML(
-name,
-playerRewards[name].mode,
-playerRewards[name].hadiah
-);
-});
-}
+        saldo.kebutuhan = total * 0.5;
+        saldo.tabungan = total * 0.2;
+        saldo.keinginan = total * 0.2;
+        saldo.darurat = total * 0.1;
 
-function rowHTML(name="",mode="direct",hadiah=""){
-return `
-<div class="admin-row">
-<input class="name" value="${name}" oninput="autoSave()" placeholder="Nama">
-<select class="mode" onchange="autoSave()">
-<option value="direct" ${mode=="direct"?"selected":""}>Langsung</option>
-<option value="zonkFirst" ${mode=="zonkFirst"?"selected":""}>Zonk dulu</option>
-</select>
-<input type="number" class="hadiah" value="${hadiah}" oninput="autoSave()" placeholder="Nominal">
-<button class="deleteBtn" onclick="this.parentElement.remove();autoSave()">✕</button>
-</div>`;
-}
+        riwayat = []; // Reset riwayat saat set gaji baru
+        simpanKeStorage();
+        updateTampilan();
+        alert("Gaji berhasil dialokasikan!");
+    }
 
-function addRow(){
-autoSave();
-document.getElementById("adminList")
-.insertAdjacentHTML("beforeend",rowHTML());
-}
+    function catatPengeluaran() {
+        const kat = document.getElementById('pilihKategori').value;
+        const nominal = parseFloat(document.getElementById('nominalKeluar').value);
 
-function saveAdmin(){
-autoSave();
-document.getElementById("adminPanel").classList.remove("show");
-}
+        if (!nominal || nominal <= 0) return alert("Masukkan nominal!");
+        if (nominal > saldo[kat]) return alert("Saldo tidak cukup!");
 
-/* WHEEL */
-const rewards=[10000,15000,0,20000,50000,0,100000,200000,500000,0];
-const canvas=document.getElementById("wheel");
-const ctx=canvas.getContext("2d");
+        saldo[kat] -= nominal;
+        riwayat.unshift({ ket: kat.toUpperCase(), nom: nominal });
+        
+        if (riwayat.length > 5) riwayat.pop(); // Simpan 5 riwayat terakhir saja
 
-let spinning=false;
-let visualRotation=0;
+        simpanKeStorage();
+        updateTampilan();
+        document.getElementById('nominalKeluar').value = "";
+    }
 
-const center=160;
-const radius=160;
+    function resetData() {
+        if(confirm("Apakah kamu yakin ingin menghapus semua catatan keuangan?")) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
 
-function draw(){
-const arc=(Math.PI*2)/rewards.length;
-const colors=["#ef4444","#22c55e","#3b82f6","#f59e0b","#a855f7","#22c55e","#ef4444","#14b8a6","#111827","#f59e0b"];
-for(let i=0;i<rewards.length;i++){
-ctx.beginPath();
-ctx.fillStyle=colors[i];
-ctx.moveTo(center,center);
-ctx.arc(center,center,radius,i*arc,(i+1)*arc);
-ctx.fill();
-ctx.save();
-ctx.translate(center,center);
-ctx.rotate(i*arc+arc/2);
-ctx.fillStyle="white";
-ctx.font="bold 16px Arial";
-ctx.fillText(rewards[i]==0?"ZONK":"Rp"+rewards[i].toLocaleString(),70,5);
-ctx.restore();
-}
-}
-draw();
-
-/* SOUND SYSTEM */
-let audioCtx;
-const bgMusic = document.getElementById("bgMusic");
-let normalVolume = 0.7;
-let spinVolume = 0.15;
-
-function startApp(){
-bgMusic.volume = normalVolume;
-bgMusic.play();
-document.getElementById("openingScreen").style.display="none";
-}
-
-function fadeVolume(target, duration){
-let start = bgMusic.volume;
-let diff = target - start;
-let steps = 20;
-let stepTime = duration / steps;
-let currentStep = 0;
-let fade = setInterval(()=>{
-currentStep++;
-bgMusic.volume = start + (diff * (currentStep/steps));
-if(currentStep >= steps){
-clearInterval(fade);
-bgMusic.volume = target;
-}
-}, stepTime);
-}
-
-function playClick(){
-if(!audioCtx){
-audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-}
-let osc = audioCtx.createOscillator();
-let gain = audioCtx.createGain();
-osc.type="triangle";
-osc.frequency.value=1200;
-gain.gain.setValueAtTime(0.4,audioCtx.currentTime);
-gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.05);
-osc.connect(gain);
-gain.connect(audioCtx.destination);
-osc.start();
-osc.stop(audioCtx.currentTime+0.05);
-}
-
-function startClickSound(duration){
-let start=Date.now();
-let delay=40;
-function loop(){
-let elapsed=Date.now()-start;
-let progress=elapsed/duration;
-playClick();
-delay=40+(progress*200);
-if(progress<1){
-setTimeout(loop,delay);
-}
-}
-loop();
-}
-
-/* SPIN */
-function spin(){
-if(spinning) return;
-
-let name=document.getElementById("playerName").value.trim().toLowerCase();
-if(!name) return alert("Masukkan nama");
-
-if(name==="admin"){
-openAdmin();
-return;
-}
-
-if(!playerTurn[name]) playerTurn[name]=1;
-
-spinning=true;
-canvas.classList.add("spinning");
-
-fadeVolume(spinVolume,300);
-startClickSound(6000);
-
-setTimeout(()=>{
-canvas.style.animationDuration="0.3s";
-},4500);
-
-let hadiah;
-
-if(playerRewards[name]){
-let data=playerRewards[name];
-if(data.mode==="zonkFirst" && playerTurn[name]===1){
-hadiah=0;
-}else{
-hadiah=data.hadiah;
-}
-}else{
-hadiah=rewards[Math.floor(Math.random()*rewards.length)];
-}
-
-let index=rewards.indexOf(hadiah);
-const slice=360/rewards.length;
-const targetAngle=270-(index*slice)-(slice/2);
-
-canvas.style.transition="none";
-canvas.style.transform=`rotate(${visualRotation%360}deg)`;
-canvas.offsetHeight;
-
-visualRotation+=(8*360)+((targetAngle-(visualRotation%360)+360)%360);
-
-canvas.style.transition="transform 6s cubic-bezier(.12,.95,.18,1)";
-canvas.style.transform=`rotate(${visualRotation}deg)`;
-
-setTimeout(()=>{
-playerTurn[name]++;
-showPopup(name,hadiah);
-if(hadiah!==0){confetti({particleCount:300});}
-fadeVolume(normalVolume,600);
-canvas.classList.remove("spinning");
-canvas.style.animationDuration="1s";
-spinning=false;
-},6000);
-}
-
-/* POPUP */
-function showPopup(name,amount){
-let winner=document.getElementById("winner");
-let message=document.getElementById("message");
-let amountText=document.getElementById("amount");
-let btn=document.getElementById("actionBtn");
-
-winner.innerText=name.toUpperCase();
-
-if(amount==0){
-message.innerText="Maaf anda mendapat";
-amountText.innerText="ZONK";
-btn.innerText="ULANG";
-btn.onclick=function(){
-document.getElementById("popup").classList.remove("show");
-setTimeout(()=>{ spin(); },300);
-};
-}else{
-message.innerText="Selamat anda mendapatkan";
-amountText.innerText="Rp "+amount.toLocaleString();
-btn.innerText="CLAIM";
-btn.onclick=function(){
-document.getElementById("popup").classList.remove("show");
-document.getElementById("playerName").value="";
-};
-}
-
-document.getElementById("popup").classList.add("show");
-}
-
+    // Inisialisasi tampilan awal
+    updateTampilan();
 </script>
+
 </body>
 </html>
+
