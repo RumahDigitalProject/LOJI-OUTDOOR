@@ -3,137 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dompetku Pro Ultimate</title>
+    <title>Dompetku Intelligence</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1; --success: #22c55e; --danger: #ef4444; --warning: #f59e0b;
+            --primary: #6366f1; --success: #10b981; --danger: #f43f5e; --warning: #f59e0b;
             --bg: #f8fafc; --card: #ffffff; --text: #1e293b;
         }
         @media (prefers-color-scheme: dark) {
             :root { --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; }
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding: 20px; padding-bottom: 50px; }
+        body { background: var(--bg); color: var(--text); padding: 15px; padding-bottom: 80px; }
         .container { max-width: 480px; margin: auto; }
-        header { margin-bottom: 20px; }
-        header h1 { font-size: 26px; font-weight: 800; color: var(--primary); }
         
-        .card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .label { font-size: 11px; font-weight: 700; opacity: 0.6; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        header { margin: 10px 0 25px 0; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { font-size: 24px; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
         
-        /* Dashboard Saldo */
-        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .b-item { padding: 15px; border-radius: 18px; background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.1); }
+        .card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
+        .label { font-size: 10px; font-weight: 800; opacity: 0.5; text-transform: uppercase; margin-bottom: 10px; display: block; letter-spacing: 1px; }
+        
+        /* Dashboard */
+        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .b-item { padding: 14px; border-radius: 18px; background: rgba(99, 102, 241, 0.03); border: 1px solid rgba(0,0,0,0.03); }
+        .b-item span { font-size: 11px; font-weight: 600; opacity: 0.7; }
         .b-item p { font-size: 15px; font-weight: 800; margin: 4px 0; }
-        .progress-bar { width: 100%; height: 4px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; transition: 0.5s; }
-
-        input, select { width: 100%; background: var(--bg); border: 2px solid transparent; color: var(--text); padding: 12px; border-radius: 14px; margin-bottom: 10px; font-size: 15px; outline: none; }
-        input:focus { border-color: var(--primary); }
         
-        .btn { width: 100%; padding: 14px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: white; }
+        input, select { width: 100%; background: var(--bg); border: 2px solid transparent; color: var(--text); padding: 14px; border-radius: 16px; margin-bottom: 10px; font-size: 15px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); background: var(--card); }
+        
+        .btn { width: 100%; padding: 16px; border-radius: 16px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
         .btn-success { background: var(--success); color: white; }
-
-        /* Filter & Stats */
-        .stats-box { background: var(--primary); color: white; border-radius: 18px; padding: 15px; margin-bottom: 15px; display: none; }
+        .btn-outline { background: transparent; border: 1.5px solid var(--primary); color: var(--primary); margin-top: 10px; }
         
-        .history-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .history-item small { display: block; opacity: 0.5; font-size: 10px; }
+        .history-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .history-item b { font-size: 14px; display: block; }
+        .history-item small { opacity: 0.5; font-size: 11px; font-weight: 600; }
+        .amt { text-align: right; font-weight: 800; font-size: 14px; }
+
+        .stats-highlight { background: var(--primary); color: white; padding: 15px; border-radius: 18px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>Dompetku Pro 🚀</h1>
-        <p id="today" style="font-size: 12px; opacity: 0.6;"></p>
+        <div>
+            <h1>Dompetku.</h1>
+            <p id="today" style="font-size: 12px; opacity: 0.6; font-weight: 600;"></p>
+        </div>
+        <div style="font-size: 20px;">📊</div>
     </header>
 
     <div class="card">
-        <span class="label">Saldo Saat Ini (Total Semua Bulan)</span>
+        <span class="label">Total Saldo Terkumpul</span>
         <div class="balance-grid">
-            <div class="b-item"><span>Wajib</span><p id="v-kebutuhan">0</p><div class="progress-bar"><div id="p-kebutuhan" class="progress-fill" style="background:var(--success)"></div></div></div>
-            <div class="b-item"><span>Tabung</span><p id="v-tabungan">0</p><div class="progress-bar"><div id="p-tabungan" class="progress-fill" style="background:var(--primary)"></div></div></div>
-            <div class="b-item"><span>Main</span><p id="v-keinginan">0</p><div class="progress-bar"><div id="p-keinginan" class="progress-fill" style="background:var(--warning)"></div></div></div>
-            <div class="b-item"><span>Darurat</span><p id="v-darurat">0</p><div class="progress-bar"><div id="p-darurat" class="progress-fill" style="background:var(--danger)"></div></div></div>
+            <div class="b-item"><span>Wajib</span><p id="v-kebutuhan">0</p></div>
+            <div class="b-item"><span>Tabung</span><p id="v-tabungan">0</p></div>
+            <div class="b-item"><span>Keinginan</span><p id="v-keinginan">0</p></div>
+            <div class="b-item"><span>Darurat</span><p id="v-darurat">0</p></div>
         </div>
     </div>
 
     <div class="card">
-        <span class="label">Alokasi Gaji Baru</span>
-        <div style="display: flex; gap: 8px;">
-            <input type="number" id="inGaji" placeholder="Nominal Gaji">
-            <select id="blnGaji" style="width: 130px;">
-                <option value="1">Januari</option><option value="2">Februari</option><option value="3">Maret</option>
-                <option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option>
-            </select>
-        </div>
-        <button class="btn btn-primary" onclick="tambahGaji()">Set & Alokasikan</button>
+        <span class="label">Input Gaji & Alokasi</span>
+        <input type="number" id="inGaji" placeholder="Masukkan Gaji UMR">
+        <button class="btn btn-primary" onclick="tambahGaji()">Alokasikan Otomatis</button>
     </div>
 
     <div class="card">
-        <span class="label">Catat Pengeluaran</span>
+        <span class="label">Transaksi Baru</span>
         <select id="katKeluar">
-            <option value="kebutuhan">Kebutuhan (50%)</option><option value="tabungan">Tabungan (20%)</option>
-            <option value="keinginan">Keinginan (20%)</option><option value="darurat">Darurat (10%)</option>
+            <option value="kebutuhan">Kebutuhan (50%)</option>
+            <option value="tabungan">Tabungan (20%)</option>
+            <option value="keinginan">Keinginan (20%)</option>
+            <option value="darurat">Darurat (10%)</option>
         </select>
-        <input type="text" id="ketKeluar" list="hintList" placeholder="Keterangan (Contoh: Lauk)">
+        <input type="text" id="ketKeluar" list="hintList" placeholder="Keterangan (misal: Lauk)">
         <datalist id="hintList"></datalist>
         <input type="number" id="nomKeluar" placeholder="Nominal Rp">
         <button class="btn btn-success" onclick="catat()">Simpan Pengeluaran</button>
     </div>
 
     <div class="card">
-        <span class="label">Filter & Analisis Detail</span>
-        <select id="fBulan" onchange="update()">
-            <option value="all">Semua Bulan</option>
-            <option value="1">Januari</option><option value="2">Februari</option><option value="3">Maret</option>
-            <option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option>
-        </select>
-        <input type="text" id="fKeyword" onkeyup="update()" placeholder="Cari kata (Contoh: Lauk)">
+        <span class="label">Laporan & Filter</span>
+        <div style="display: flex; gap: 8px;">
+            <select id="fBulan" onchange="update()">
+                <option value="all">Semua Bulan</option>
+                <option value="1">Januari</option><option value="2">Februari</option><option value="3">Maret</option>
+                <option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option>
+                <option value="7">Juli</option><option value="8">Agustus</option><option value="9">September</option>
+                <option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
+            </select>
+            <input type="text" id="fKeyword" onkeyup="update()" placeholder="Cari data..." style="margin-bottom:0;">
+        </div>
         
-        <div id="statsBox" class="stats-box">
-            <small>Total Pengeluaran Filtered:</small>
-            <h2 id="totalFiltered">Rp 0</h2>
+        <div id="statsBox" class="stats-highlight" style="display:none; margin-top:15px;">
+            <small style="font-weight:700; opacity:0.8;">Total Terfilter:</small>
+            <h2 id="totalFiltered" style="font-size: 24px;">Rp 0</h2>
         </div>
 
-        <div id="logList"></div>
+        <button class="btn btn-outline" onclick="unduhLaporan()">📥 Unduh Laporan (.csv)</button>
+
+        <div id="logList" style="margin-top:20px;"></div>
     </div>
+
+    <button onclick="hapusSemua()" style="background:none; border:none; color:var(--danger); font-size: 11px; width: 100%; font-weight: 700; margin-top: 20px; opacity: 0.5;">RESET SEMUA DATA APLIKASI</button>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('dompet_pro')) || {
+    let db = JSON.parse(localStorage.getItem('dompet_pro_v3')) || {
         saldo: { kebutuhan: 0, tabungan: 0, keinginan: 0, darurat: 0 },
-        initial: { kebutuhan: 0, tabungan: 0, keinginan: 0, darurat: 0 },
         logs: [], hints: []
     };
 
     const fmt = (n) => "Rp " + Math.round(n).toLocaleString('id-ID');
 
     function update() {
-        // Tampilan Saldo Utama (Akumulasi)
+        // Dashboard
         document.getElementById('v-kebutuhan').innerText = fmt(db.saldo.kebutuhan);
         document.getElementById('v-tabungan').innerText = fmt(db.saldo.tabungan);
         document.getElementById('v-keinginan').innerText = fmt(db.saldo.keinginan);
         document.getElementById('v-darurat').innerText = fmt(db.saldo.darurat);
 
-        // Update Progress Bar (berdasarkan sisa dari total alokasi terakhir)
-        const updateBar = (id, val, init) => {
-            const p = init > 0 ? (val / init) * 100 : 0;
-            document.getElementById('p-'+id).style.width = Math.min(p, 100) + "%";
-        };
-        updateBar('kebutuhan', db.saldo.kebutuhan, db.initial.kebutuhan);
-        updateBar('tabungan', db.saldo.tabungan, db.initial.tabungan);
-        updateBar('keinginan', db.saldo.keinginan, db.initial.keinginan);
-        updateBar('darurat', db.saldo.darurat, db.initial.darurat);
-
-        // Filter Logic
+        // Filter
         const fMonth = document.getElementById('fBulan').value;
         const fKey = document.getElementById('fKeyword').value.toLowerCase();
         const logList = document.getElementById('logList');
-        const statsBox = document.getElementById('statsBox');
         let totalF = 0;
 
         logList.innerHTML = "";
@@ -143,62 +140,103 @@
 
             if (matchMonth && matchKey) {
                 if(l.type === 'out') totalF += l.amt;
-                const item = document.createElement('div');
-                item.className = 'history-item';
-                item.innerHTML = `<div><b>${l.ket}</b><small>${l.kat.toUpperCase()} | Bln: ${l.month}</small></div>
-                                  <div style="font-weight:800; color:${l.type==='in'?'var(--success)':'var(--danger)'}">${l.type==='in'?'+':'-'}${fmt(l.amt)}</div>`;
-                logList.appendChild(item);
+                logList.innerHTML += `
+                    <div class="history-item">
+                        <div>
+                            <b>${l.ket}</b>
+                            <small>${l.date} | ${l.kat.toUpperCase()}</small>
+                        </div>
+                        <div class="amt" style="color:${l.type==='in'?'var(--success)':'var(--danger)'}">
+                            ${l.type==='in'?'+':'-'}${fmt(l.amt)}
+                        </div>
+                    </div>`;
             }
         });
 
+        const statsBox = document.getElementById('statsBox');
         if(fKey !== "" || fMonth !== 'all') {
             statsBox.style.display = "block";
             document.getElementById('totalFiltered').innerText = fmt(totalF);
         } else { statsBox.style.display = "none"; }
 
-        // Update Autocomplete Hints
+        // Hints
         const hintList = document.getElementById('hintList');
         hintList.innerHTML = "";
         [...new Set(db.hints)].forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_pro', JSON.stringify(db));
+        localStorage.setItem('dompet_pro_v3', JSON.stringify(db));
     }
 
     function tambahGaji() {
         const amt = parseFloat(document.getElementById('inGaji').value);
-        const bln = document.getElementById('blnGaji').value;
         if(!amt) return;
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('id-ID') + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+        
+        db.saldo.kebutuhan += amt * 0.5; db.saldo.tabungan += amt * 0.2;
+        db.saldo.keinginan += amt * 0.2; db.saldo.darurat += amt * 0.1;
 
-        const k = amt * 0.5, t = amt * 0.2, m = amt * 0.2, d = amt * 0.1;
-        db.saldo.kebutuhan += k; db.saldo.tabungan += t; db.saldo.keinginan += m; db.saldo.darurat += d;
-        // Simpan sbg referensi progress bar
-        db.initial.kebutuhan += k; db.initial.tabungan += t; db.initial.keinginan += m; db.initial.darurat += d;
-
-        db.logs.unshift({ type: 'in', month: bln, ket: 'Gaji Masuk', kat: 'pemasukan', amt: amt });
+        db.logs.unshift({ 
+            type: 'in', month: (now.getMonth()+1).toString(), 
+            date: dateStr, ket: 'Gaji Masuk', kat: 'pemasukan', amt: amt 
+        });
+        
         document.getElementById('inGaji').value = "";
-        update(); alert("Gaji Berhasil Dialokasikan!");
+        update(); alert("Gaji berhasil masuk!");
     }
 
     function catat() {
         const kat = document.getElementById('katKeluar').value;
         const ket = document.getElementById('ketKeluar').value;
         const nom = parseFloat(document.getElementById('nomKeluar').value);
-        const bln = document.getElementById('blnGaji').value; // Mengikuti bulan yang sedang dipilih
-
-        if(!ket || !nom) return alert("Isi keterangan & nominal!");
+        if(!ket || !nom) return alert("Lengkapi data!");
         if(nom > db.saldo[kat]) return alert("Saldo tidak cukup!");
 
-        db.saldo[kat] -= nom;
-        db.logs.unshift({ type: 'out', month: bln, ket: ket, kat: kat, amt: nom });
-        if(!db.hints.includes(ket)) db.hints.push(ket);
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('id-ID') + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
 
+        db.saldo[kat] -= nom;
+        db.logs.unshift({ 
+            type: 'out', month: (now.getMonth()+1).toString(), 
+            date: dateStr, ket: ket, kat: kat, amt: nom 
+        });
+        
+        if(!db.hints.includes(ket)) db.hints.push(ket);
         document.getElementById('ketKeluar').value = "";
         document.getElementById('nomKeluar').value = "";
         update();
     }
 
+    function unduhLaporan() {
+        const fMonth = document.getElementById('fBulan').value;
+        const fKey = document.getElementById('fKeyword').value.toLowerCase();
+        
+        let csvContent = "Tanggal,Kategori,Keterangan,Tipe,Nominal\n";
+        
+        db.logs.forEach(l => {
+            if((fMonth === 'all' || l.month === fMonth) && l.ket.toLowerCase().includes(fKey)) {
+                csvContent += `${l.date},${l.kat},${l.ket},${l.type === 'in' ? 'Masuk' : 'Keluar'},${l.amt}\n`;
+            }
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `Laporan_Keuangan_${fMonth}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function hapusSemua() {
+        if(confirm("PERINGATAN: Semua data keuangan kamu akan dihapus permanen. Lanjutkan?")) {
+            localStorage.clear(); location.reload();
+        }
+    }
+
     document.getElementById('today').innerText = new Intl.DateTimeFormat('id-ID', { dateStyle: 'full' }).format(new Date());
-    document.getElementById('blnGaji').value = new Date().getMonth() + 1;
     update();
 </script>
 
