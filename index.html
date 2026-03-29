@@ -2,157 +2,241 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dompet Pintar - Auto Save</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dompetku Pro</title>
     <style>
         :root {
-            --primary: #2ecc71;
-            --secondary: #3498db;
-            --danger: #e74c3c;
-            --dark: #2c3e50;
-            --light: #ecf0f1;
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --primary: #4e73df;
+            --success: #1cc88a;
+            --danger: #e74a3b;
+            --text-main: #3a3b45;
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--light); padding: 20px; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: var(--primary); margin-bottom: 5px; }
-        p.subtitle { text-align: center; font-size: 12px; color: #888; margin-bottom: 20px; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: 'Inter', -apple-system, sans-serif; 
+            background: var(--bg); color: var(--text-main); 
+            margin: 0; padding: 15px; overflow-x: hidden;
+        }
+        .app-container { max-width: 480px; margin: auto; }
         
-        .input-group { margin-bottom: 15px; display: flex; gap: 8px; }
-        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; flex: 1; font-size: 14px; }
+        h2 { font-weight: 800; color: var(--primary); margin-bottom: 5px; }
+        .card { 
+            background: var(--card-bg); border-radius: 20px; 
+            padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; 
+        }
         
-        button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-set { background: var(--primary); color: white; width: 100%; margin-bottom: 10px; }
-        .btn-out { background: var(--danger); color: white; }
-        .btn-reset { background: #95a5a6; color: white; width: 100%; font-size: 11px; margin-top: 20px; }
+        label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #888; text-transform: uppercase; }
+        input, select { 
+            width: 100%; padding: 12px; border: 1.5px solid #eee; 
+            border-radius: 12px; margin-bottom: 10px; font-size: 16px; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--primary); }
+        
+        .btn { 
+            width: 100%; padding: 14px; border: none; border-radius: 12px; 
+            font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.2s; 
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        
+        .grid-balance { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .balance-item { background: #f8f9fc; padding: 15px; border-radius: 15px; border-left: 4px solid var(--primary); }
+        .balance-item h4 { margin: 0; font-size: 11px; color: #858796; }
+        .balance-item p { margin: 5px 0 0; font-size: 15px; font-weight: 700; }
 
-        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
-        .card { background: #f9f9f9; padding: 15px; border-radius: 10px; border-left: 5px solid; }
-        .card h4 { margin: 0; font-size: 12px; color: #777; text-transform: uppercase; }
-        .card .balance { font-size: 16px; font-weight: bold; margin-top: 5px; }
+        .filter-section { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .history-list { max-height: 300px; overflow-y: auto; }
+        .history-card { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px; border-bottom: 1px solid #f1f1f1; font-size: 14px;
+        }
+        .history-card .info b { display: block; font-size: 14px; }
+        .history-card .info small { color: #aaa; font-size: 11px; }
+        .history-card .amt { color: var(--danger); font-weight: 700; }
 
-        .history { border-top: 2px dashed #eee; padding-top: 15px; margin-top: 20px; }
-        .history-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f1f1; font-size: 13px; }
+        /* Mencegah zoom saat input di iPhone */
+        @media screen and (max-width: 768px) { input, select { font-size: 16px; } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>💰 Dompet Pintar</h2>
-    <p class="subtitle">Data tersimpan otomatis di browser ini</p>
-    
-    <label style="font-size: 13px; font-weight: bold;">Update Gaji Bulanan:</label>
-    <div class="input-group">
-        <input type="number" id="inputGaji" placeholder="Masukkan Gaji (Contoh: 4000000)">
-    </div>
-    <button class="btn-set" onclick="aturGaji()">Set & Alokasikan Gaji</button>
+<div class="app-container">
+    <h2>Dompetku 🚀</h2>
+    <p style="margin-top:0; font-size: 13px; color:#888;">Manajemen Keuangan Akumulatif</p>
 
-    <div class="dashboard">
-        <div class="card" style="border-color: #2ecc71;">
-            <h4>Kebutuhan (50%)</h4>
-            <div class="balance" id="bal-kebutuhan">Rp 0</div>
-        </div>
-        <div class="card" style="border-color: #3498db;">
-            <h4>Tabungan (20%)</h4>
-            <div class="balance" id="bal-tabungan">Rp 0</div>
-        </div>
-        <div class="card" style="border-color: #f1c40f;">
-            <h4>Keinginan (20%)</h4>
-            <div class="balance" id="bal-keinginan">Rp 0</div>
-        </div>
-        <div class="card" style="border-color: #e67e22;">
-            <h4>Dana Darurat (10%)</h4>
-            <div class="balance" id="bal-darurat">Rp 0</div>
-        </div>
-    </div>
-
-    <div class="history">
-        <h4 style="margin-bottom: 10px;">Catat Pengeluaran</h4>
-        <div class="input-group">
-            <select id="pilihKategori">
-                <option value="kebutuhan">Kebutuhan</option>
-                <option value="tabungan">Tabungan</option>
-                <option value="keinginan">Keinginan</option>
-                <option value="darurat">Darurat</option>
+    <div class="card">
+        <label>Input Gaji & Periode</label>
+        <div style="display: flex; gap: 5px;">
+            <input type="number" id="inputGaji" placeholder="Nominal Gaji">
+            <select id="bulanGaji" style="width: 120px;">
+                <option value="1">Januari</option><option value="2">Februari</option>
+                <option value="3">Maret</option><option value="4">April</option>
+                <option value="5">Mei</option><option value="6">Juni</option>
+                <option value="7">Juli</option><option value="8">Agustus</option>
+                <option value="9">September</option><option value="10">Oktober</option>
+                <option value="11">November</option><option value="12">Desember</option>
             </select>
-            <input type="number" id="nominalKeluar" placeholder="Rp">
-            <button class="btn-out" onclick="catatPengeluaran()">Catat</button>
         </div>
-        <div id="logAktivitas"></div>
+        <button class="btn btn-primary" onclick="tambahGaji()">Set & Tambah Saldo</button>
     </div>
 
-    <button class="btn-reset" onclick="resetData()">Hapus Semua Data & Mulai Baru</button>
+    <div class="card">
+        <div class="filter-section">
+            <label style="margin:0;">Filter Tampilan:</label>
+            <select id="filterBulan" onchange="updateTampilan()" style="margin:0; padding: 5px;">
+                <option value="all">Semua (Akumulasi)</option>
+                <option value="1">Januari</option><option value="2">Februari</option>
+                <option value="3">Maret</option><option value="4">April</option>
+                <option value="5">Mei</option><option value="6">Juni</option>
+                <option value="7">Juli</option><option value="8">Agustus</option>
+                <option value="9">September</option><option value="10">Oktober</option>
+                <option value="11">November</option><option value="12">Desember</option>
+            </select>
+        </div>
+        <div class="grid-balance">
+            <div class="balance-item" style="border-color: #1cc88a;">
+                <h4>Kebutuhan</h4><p id="view-kebutuhan">Rp 0</p>
+            </div>
+            <div class="balance-item" style="border-color: #4e73df;">
+                <h4>Tabungan</h4><p id="view-tabungan">Rp 0</p>
+            </div>
+            <div class="balance-item" style="border-color: #f6c23e;">
+                <h4>Keinginan</h4><p id="view-keinginan">Rp 0</p>
+            </div>
+            <div class="balance-item" style="border-color: #e74a3b;">
+                <h4>Darurat</h4><p id="view-darurat">Rp 0</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <label>Catat Pengeluaran Baru</label>
+        <select id="katKeluar">
+            <option value="kebutuhan">Kebutuhan (50%)</option>
+            <option value="tabungan">Tabungan (20%)</option>
+            <option value="keinginan">Keinginan (20%)</option>
+            <option value="darurat">Darurat (10%)</option>
+        </select>
+        <input type="text" id="ketKeluar" placeholder="Keterangan (Contoh: Beli Makan)">
+        <input type="number" id="nomKeluar" placeholder="Nominal Rp">
+        <button class="btn btn-success" onclick="catatTransaksi()">Simpan Transaksi</button>
+    </div>
+
+    <div class="card">
+        <label>Riwayat Transaksi</label>
+        <div id="listRiwayat" class="history-list"></div>
+    </div>
+
+    <button onclick="hapusSemua()" style="background:none; border:none; color:#ccc; font-size: 10px; width: 100%; margin-bottom: 50px;">Reset Semua Data</button>
 </div>
 
 <script>
-    // Load data dari LocalStorage saat halaman dibuka
-    let saldo = JSON.parse(localStorage.getItem('dompetPintar_saldo')) || { kebutuhan: 0, tabungan: 0, keinginan: 0, darurat: 0 };
-    let riwayat = JSON.parse(localStorage.getItem('dompetPintar_riwayat')) || [];
+    // Database di LocalStorage
+    let db = JSON.parse(localStorage.getItem('db_keuangan')) || {
+        saldo: { kebutuhan: 0, tabungan: 0, keinginan: 0, darurat: 0 },
+        transaksi: [] // { tipe: 'gaji'/'keluar', bulan: 3, kat: 'kebutuhan', ket: '..', amt: 1000 }
+    };
 
-    function formatRupiah(angka) {
-        return "Rp " + Math.round(angka).toLocaleString('id-ID');
+    function formatRupiah(n) { return "Rp " + Math.round(n).toLocaleString('id-ID'); }
+
+    function simpan() { localStorage.setItem('db_keuangan', JSON.stringify(db)); }
+
+    function tambahGaji() {
+        const amt = parseFloat(document.getElementById('inputGaji').value);
+        const bln = document.getElementById('bulanGaji').value;
+        if(!amt) return alert("Isi nominal gaji!");
+
+        // Alokasi
+        db.saldo.kebutuhan += amt * 0.5;
+        db.saldo.tabungan += amt * 0.2;
+        db.saldo.keinginan += amt * 0.2;
+        db.saldo.darurat += amt * 0.1;
+
+        // Catat di transaksi
+        db.transaksi.unshift({ tipe: 'gaji', bulan: bln, amt: amt, ket: 'Masuk Gaji' });
+
+        // Reset Input
+        document.getElementById('inputGaji').value = "";
+        simpan(); updateTampilan();
+        alert("Gaji bulan ini berhasil ditambahkan!");
     }
 
-    function simpanKeStorage() {
-        localStorage.setItem('dompetPintar_saldo', JSON.stringify(saldo));
-        localStorage.setItem('dompetPintar_riwayat', JSON.stringify(riwayat));
+    function catatTransaksi() {
+        const kat = document.getElementById('katKeluar').value;
+        const ket = document.getElementById('ketKeluar').value;
+        const nom = parseFloat(document.getElementById('nomKeluar').value);
+        const bln = new Date().getMonth() + 1; // Otomatis bulan sekarang
+
+        if(!ket || !nom) return alert("Keterangan dan nominal harus diisi!");
+        if(nom > db.saldo[kat]) return alert("Saldo " + kat + " tidak cukup!");
+
+        db.saldo[kat] -= nom;
+        db.transaksi.unshift({ tipe: 'keluar', bulan: bln.toString(), kat: kat, ket: ket, amt: nom });
+
+        document.getElementById('ketKeluar').value = "";
+        document.getElementById('nomKeluar').value = "";
+        simpan(); updateTampilan();
     }
 
     function updateTampilan() {
-        document.getElementById('bal-kebutuhan').innerText = formatRupiah(saldo.kebutuhan);
-        document.getElementById('bal-tabungan').innerText = formatRupiah(saldo.tabungan);
-        document.getElementById('bal-keinginan').innerText = formatRupiah(saldo.keinginan);
-        document.getElementById('bal-darurat').innerText = formatRupiah(saldo.darurat);
-        
-        const log = document.getElementById('logAktivitas');
-        log.innerHTML = "";
-        riwayat.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'history-item';
-            div.innerHTML = `<span>${item.ket}</span> <span>-${formatRupiah(item.nom)}</span>`;
-            log.appendChild(div);
+        const filter = document.getElementById('filterBulan').value;
+        let sKebutuhan = 0, sTabungan = 0, sKeinginan = 0, sDarurat = 0;
+
+        if (filter === 'all') {
+            sKebutuhan = db.saldo.kebutuhan;
+            sTabungan = db.saldo.tabungan;
+            sKeinginan = db.saldo.keinginan;
+            sDarurat = db.saldo.darurat;
+        } else {
+            // Logika filter: Hitung saldo khusus bulan tersebut (Gaji bulan itu - pengeluaran bulan itu)
+            db.transaksi.forEach(t => {
+                if(t.bulan === filter) {
+                    if(t.tipe === 'gaji') {
+                        sKebutuhan += t.amt * 0.5; sTabungan += t.amt * 0.2;
+                        sKeinginan += t.amt * 0.2; sDarurat += t.amt * 0.1;
+                    } else {
+                        if(t.kat === 'kebutuhan') sKebutuhan -= t.amt;
+                        if(t.kat === 'tabungan') sTabungan -= t.amt;
+                        if(t.kat === 'keinginan') sKeinginan -= t.amt;
+                        if(t.kat === 'darurat') sDarurat -= t.amt;
+                    }
+                }
+            });
+        }
+
+        document.getElementById('view-kebutuhan').innerText = formatRupiah(sKebutuhan);
+        document.getElementById('view-tabungan').innerText = formatRupiah(sTabungan);
+        document.getElementById('view-keinginan').innerText = formatRupiah(sKeinginan);
+        document.getElementById('view-darurat').innerText = formatRupiah(sDarurat);
+
+        // Render Riwayat
+        const list = document.getElementById('listRiwayat');
+        list.innerHTML = "";
+        db.transaksi.forEach(t => {
+            if(filter === 'all' || t.bulan === filter) {
+                const item = document.createElement('div');
+                item.className = 'history-card';
+                const warna = t.tipe === 'gaji' ? 'style="color:green"' : '';
+                item.innerHTML = `
+                    <div class="info">
+                        <b>${t.ket}</b>
+                        <small>${t.tipe === 'gaji' ? 'Pemasukan' : t.kat.toUpperCase()}</small>
+                    </div>
+                    <div class="amt" ${warna}>${t.tipe === 'gaji' ? '+' : '-'}${formatRupiah(t.amt)}</div>
+                `;
+                list.appendChild(item);
+            }
         });
     }
 
-    function aturGaji() {
-        const total = parseFloat(document.getElementById('inputGaji').value);
-        if (!total || total <= 0) return alert("Masukkan nominal gaji!");
-
-        saldo.kebutuhan = total * 0.5;
-        saldo.tabungan = total * 0.2;
-        saldo.keinginan = total * 0.2;
-        saldo.darurat = total * 0.1;
-
-        riwayat = []; // Reset riwayat saat set gaji baru
-        simpanKeStorage();
-        updateTampilan();
-        alert("Gaji berhasil dialokasikan!");
+    function hapusSemua() {
+        if(confirm("Hapus semua data?")) { localStorage.clear(); location.reload(); }
     }
 
-    function catatPengeluaran() {
-        const kat = document.getElementById('pilihKategori').value;
-        const nominal = parseFloat(document.getElementById('nominalKeluar').value);
-
-        if (!nominal || nominal <= 0) return alert("Masukkan nominal!");
-        if (nominal > saldo[kat]) return alert("Saldo tidak cukup!");
-
-        saldo[kat] -= nominal;
-        riwayat.unshift({ ket: kat.toUpperCase(), nom: nominal });
-        
-        if (riwayat.length > 5) riwayat.pop(); // Simpan 5 riwayat terakhir saja
-
-        simpanKeStorage();
-        updateTampilan();
-        document.getElementById('nominalKeluar').value = "";
-    }
-
-    function resetData() {
-        if(confirm("Apakah kamu yakin ingin menghapus semua catatan keuangan?")) {
-            localStorage.clear();
-            location.reload();
-        }
-    }
-
-    // Inisialisasi tampilan awal
+    // Set bulan default ke bulan sekarang
+    document.getElementById('bulanGaji').value = new Date().getMonth() + 1;
     updateTampilan();
 </script>
 
