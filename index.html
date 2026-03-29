@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Dompetku Intelligence</title>
+    <title>Dompetku Cloud Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,41 +14,38 @@
             :root { --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; }
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); padding: 15px; padding-bottom: 40px; overflow-x: hidden; }
+        body { background: var(--bg); color: var(--text); padding: 15px; padding-bottom: 50px; }
         .container { max-width: 480px; margin: auto; }
         
         header { margin: 10px 0 25px 0; display: flex; justify-content: space-between; align-items: center; }
         header h1 { font-size: 26px; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
         
-        .card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); transition: 0.3s; }
-        .label { font-size: 11px; font-weight: 800; opacity: 0.5; text-transform: uppercase; margin-bottom: 12px; display: block; letter-spacing: 1px; }
+        .card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+        .label { font-size: 11px; font-weight: 800; opacity: 0.5; text-transform: uppercase; margin-bottom: 12px; display: block; }
         
-        /* Dashboard & Progress Bars */
+        /* Status Cloud */
+        .status-cloud { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; background: #e2e8f0; color: #64748b; margin-top: 5px; display: inline-block; }
+        .online { background: #dcfce7; color: #15803d; }
+
+        /* Dashboard */
         .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .b-item { padding: 16px; border-radius: 20px; background: rgba(99, 102, 241, 0.04); border: 1px solid rgba(0,0,0,0.02); }
         .b-item span { font-size: 11px; font-weight: 700; opacity: 0.6; }
-        .b-item p { font-size: 16px; font-weight: 800; margin: 6px 0; }
-        .progress-container { width: 100%; height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-top: 8px; }
-        .progress-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); }
+        .b-item p { font-size: 16px; font-weight: 800; margin: 4px 0; }
+        .progress-bar { width: 100%; height: 5px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-top: 5px; }
+        .progress-fill { height: 100%; width: 0%; transition: 1s; }
 
-        /* Inputs & Buttons */
         input, select { width: 100%; background: var(--bg); border: 2px solid transparent; color: var(--text); padding: 14px; border-radius: 16px; margin-bottom: 12px; font-size: 16px; outline: none; }
-        input:focus { border-color: var(--primary); background: var(--card); }
+        input:focus { border-color: var(--primary); }
         
         .btn { width: 100%; padding: 16px; border-radius: 16px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 15px; }
-        .btn:active { transform: scale(0.96); }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); }
-        .btn-success { background: var(--success); color: white; margin-top: 5px; }
-        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); margin-top: 15px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); margin-top: 10px; }
 
-        /* History & Filter */
-        .stats-highlight { background: var(--primary); color: white; padding: 18px; border-radius: 20px; margin-top: 15px; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .history-item { display: flex; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .history-item b { font-size: 15px; display: block; }
-        .history-item small { opacity: 0.5; font-size: 11px; font-weight: 600; text-transform: uppercase; }
-        .amt { text-align: right; font-weight: 800; font-size: 15px; }
+        .history-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .history-item b { font-size: 14px; display: block; }
+        .history-item small { opacity: 0.5; font-size: 11px; }
     </style>
 </head>
 <body>
@@ -57,89 +53,60 @@
 <div class="container">
     <header>
         <div>
-            <h1 id="logo">Dompetku.</h1>
-            <p id="today" style="font-size: 12px; opacity: 0.6; font-weight: 600;"></p>
+            <h1>Dompetku.</h1>
+            <div id="status" class="status-cloud">Cloud Server Aktif ☁️</div>
         </div>
-        <div style="font-size: 24px;">🚀</div>
+        <div style="font-size: 24px;">💰</div>
     </header>
 
     <div class="card">
-        <span class="label">Saldo Akumulasi Saat Ini</span>
+        <span class="label">Total Saldo Terkumpul</span>
         <div class="balance-grid">
-            <div class="b-item">
-                <span>Wajib (50%)</span><p id="v-kebutuhan">0</p>
-                <div class="progress-container"><div id="p-kebutuhan" class="progress-fill" style="background:var(--success)"></div></div>
-            </div>
-            <div class="b-item">
-                <span>Tabung (20%)</span><p id="v-tabungan">0</p>
-                <div class="progress-container"><div id="p-tabungan" class="progress-fill" style="background:var(--primary)"></div></div>
-            </div>
-            <div class="b-item">
-                <span>Main (20%)</span><p id="v-keinginan">0</p>
-                <div class="progress-container"><div id="p-keinginan" class="progress-fill" style="background:var(--warning)"></div></div>
-            </div>
-            <div class="b-item">
-                <span>Darurat (10%)</span><p id="v-darurat">0</p>
-                <div class="progress-container"><div id="p-darurat" class="progress-fill" style="background:var(--danger)"></div></div>
-            </div>
+            <div class="b-item"><span>Wajib</span><p id="v-kebutuhan">0</p><div class="progress-bar"><div id="p-kebutuhan" class="progress-fill" style="background:var(--success)"></div></div></div>
+            <div class="b-item"><span>Tabung</span><p id="v-tabungan">0</p><div class="progress-bar"><div id="p-tabungan" class="progress-fill" style="background:var(--primary)"></div></div></div>
+            <div class="b-item"><span>Main</span><p id="v-keinginan">0</p><div class="progress-bar"><div id="p-keinginan" class="progress-fill" style="background:var(--warning)"></div></div></div>
+            <div class="b-item"><span>Darurat</span><p id="v-darurat">0</p><div class="progress-bar"><div id="p-darurat" class="progress-fill" style="background:var(--danger)"></div></div></div>
         </div>
     </div>
 
     <div class="card">
-        <span class="label">Input Gaji & Periode</span>
-        <div style="display: flex; gap: 8px;">
-            <input type="number" id="inGaji" placeholder="Nominal Gaji">
-            <select id="blnGaji" style="width: 140px;">
-                <option value="1">Januari</option><option value="2">Februari</option><option value="3">Maret</option>
-                <option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option>
-                <option value="7">Juli</option><option value="8">Agustus</option><option value="9">September</option>
-                <option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
-            </select>
-        </div>
-        <button class="btn btn-primary" onclick="tambahGaji()">Set & Alokasikan Gaji</button>
+        <span class="label">Input Gaji Baru</span>
+        <input type="number" id="inGaji" placeholder="Nominal Gaji">
+        <button class="btn btn-primary" onclick="tambahGaji()">Alokasikan ke Sheets</button>
     </div>
 
     <div class="card">
         <span class="label">Transaksi Baru</span>
         <select id="katKeluar">
-            <option value="kebutuhan">Kebutuhan wajib 50%</option><option value="tabungan">Tabungan 20%</option>
-            <option value="keinginan">Keinginan 20%</option><option value="darurat">Dana Darurat 10%</option>
+            <option value="kebutuhan">Kebutuhan</option><option value="tabungan">Tabungan</option>
+            <option value="keinginan">Keinginan</option><option value="darurat">Darurat</option>
         </select>
-        <input type="text" id="ketKeluar" list="hintList" placeholder="Keterangan (misal: Lauk Pauk)">
+        <input type="text" id="ketKeluar" list="hintList" placeholder="Keterangan (misal: Lauk)">
         <datalist id="hintList"></datalist>
         <input type="number" id="nomKeluar" placeholder="Nominal Rp">
-        <button class="btn btn-success" onclick="catat()">Simpan Pengeluaran</button>
+        <button class="btn btn-success" onclick="catat()">Simpan & Sinkronkan</button>
     </div>
 
     <div class="card">
-        <span class="label">Riwayat & Laporan Terperinci</span>
-        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+        <span class="label">Laporan & Filter</span>
+        <div style="display: flex; gap: 8px;">
             <select id="fBulan" onchange="update()">
                 <option value="all">Semua Bulan</option>
                 <option value="1">Januari</option><option value="2">Februari</option><option value="3">Maret</option>
                 <option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option>
-                <option value="7">Juli</option><option value="8">Agustus</option><option value="9">September</option>
-                <option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
             </select>
-            <input type="text" id="fKeyword" onkeyup="update()" placeholder="Cari keterangan..." style="margin-bottom:0;">
+            <input type="text" id="fKeyword" onkeyup="update()" placeholder="Cari data...">
         </div>
-        
-        <div id="statsBox" class="stats-highlight" style="display:none;">
-            <small style="font-weight:700; opacity:0.8;">Total Terfilter:</small>
-            <h2 id="totalFiltered" style="font-size: 26px; margin-top: 4px;">Rp 0</h2>
-        </div>
-
-        <button class="btn btn-outline" onclick="unduhLaporan()">📥 Unduh Laporan Terfilter (.csv)</button>
-
+        <button class="btn btn-outline" onclick="unduhLaporan()">📥 Unduh Laporan (.csv)</button>
         <div id="logList" style="margin-top:20px;"></div>
     </div>
-
-    <button onclick="hapusSemua()" style="background:none; border:none; color:var(--danger); font-size: 11px; width: 100%; font-weight: 800; margin-top: 30px; opacity: 0.4;">RESET PERMANEN SEMUA DATA</button>
 </div>
 
 <script>
-    // Database v4 - Full Features
-    let db = JSON.parse(localStorage.getItem('dompet_ultra_v4')) || {
+    // URL SCRIPT GOOGLE KAMU
+    const URL_DATABASE = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
+
+    let db = JSON.parse(localStorage.getItem('dompet_cloud_v1')) || {
         saldo: { kebutuhan: 0, tabungan: 0, keinginan: 0, darurat: 0 },
         initial: { kebutuhan: 0, tabungan: 0, keinginan: 0, darurat: 0 },
         logs: [], hints: []
@@ -147,73 +114,71 @@
 
     const fmt = (n) => "Rp " + Math.round(n).toLocaleString('id-ID');
 
+    // FUNGSI KIRIM KE GOOGLE SHEETS
+    async function kirimCloud(payload) {
+        document.getElementById('status').innerText = "☁️ Menyimpan...";
+        try {
+            await fetch(URL_DATABASE, {
+                method: 'POST',
+                mode: 'no-cors', // Untuk menghindari masalah CORS di browser
+                body: JSON.stringify(payload)
+            });
+            document.getElementById('status').innerText = "✅ Cloud Tersinkron";
+            document.getElementById('status').classList.add('online');
+        } catch (e) {
+            document.getElementById('status').innerText = "❌ Gagal Sinkron";
+        }
+    }
+
     function update() {
-        // Dashboard
         document.getElementById('v-kebutuhan').innerText = fmt(db.saldo.kebutuhan);
         document.getElementById('v-tabungan').innerText = fmt(db.saldo.tabungan);
         document.getElementById('v-keinginan').innerText = fmt(db.saldo.keinginan);
         document.getElementById('v-darurat').innerText = fmt(db.saldo.darurat);
 
-        // Progress Bar Logic (Visual)
         const updateBar = (id) => {
-            const perc = db.initial[id] > 0 ? (db.saldo[id] / db.initial[id]) * 100 : 0;
-            document.getElementById('p-'+id).style.width = Math.min(Math.max(perc, 0), 100) + "%";
+            const p = db.initial[id] > 0 ? (db.saldo[id] / db.initial[id]) * 100 : 0;
+            document.getElementById('p-'+id).style.width = Math.min(p, 100) + "%";
         };
         ['kebutuhan','tabungan','keinginan','darurat'].forEach(updateBar);
 
-        // Filter & List Logic
         const fMonth = document.getElementById('fBulan').value;
         const fKey = document.getElementById('fKeyword').value.toLowerCase();
         const logList = document.getElementById('logList');
-        let totalF = 0;
-
         logList.innerHTML = "";
-        db.logs.forEach(l => {
-            const matchMonth = fMonth === 'all' || l.month === fMonth;
-            const matchKey = l.ket.toLowerCase().includes(fKey);
 
-            if (matchMonth && matchKey) {
-                if(l.type === 'out') totalF += l.amt;
+        db.logs.forEach(l => {
+            if((fMonth === 'all' || l.month === fMonth) && l.ket.toLowerCase().includes(fKey)) {
                 logList.innerHTML += `
                     <div class="history-item">
-                        <div>
-                            <b>${l.ket}</b>
-                            <small>${l.fullDate} | ${l.kat}</small>
-                        </div>
-                        <div class="amt" style="color:${l.type==='in'?'var(--success)':'var(--danger)'}">
-                            ${l.type==='in'?'+':'-'}${fmt(l.amt)}
-                        </div>
+                        <div><b>${l.ket}</b><small>${l.fullDate} | ${l.kat}</small></div>
+                        <div style="font-weight:800; color:${l.type==='in'?'var(--success)':'var(--danger)'}">${l.type==='in'?'+':'-'}${fmt(l.amt)}</div>
                     </div>`;
             }
         });
 
-        const statsBox = document.getElementById('statsBox');
-        if(fKey !== "" || fMonth !== 'all') {
-            statsBox.style.display = "block";
-            document.getElementById('totalFiltered').innerText = fmt(totalF);
-        } else { statsBox.style.display = "none"; }
-
-        // Autocomplete Hints
         const hintList = document.getElementById('hintList');
         hintList.innerHTML = "";
         [...new Set(db.hints)].forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_ultra_v4', JSON.stringify(db));
+        localStorage.setItem('dompet_cloud_v1', JSON.stringify(db));
     }
 
     function tambahGaji() {
         const amt = parseFloat(document.getElementById('inGaji').value);
-        const bln = document.getElementById('blnGaji').value;
         if(!amt) return;
-        
         const now = new Date();
-        const fullDate = now.toLocaleDateString('id-ID') + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+        const dateStr = now.toLocaleDateString('id-ID') + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
         
-        const k = amt * 0.5, t = amt * 0.2, m = amt * 0.2, d = amt * 0.1;
-        db.saldo.kebutuhan += k; db.saldo.tabungan += t; db.saldo.keinginan += m; db.saldo.darurat += d;
-        db.initial.kebutuhan += k; db.initial.tabungan += t; db.initial.keinginan += m; db.initial.darurat += d;
+        db.saldo.kebutuhan += amt * 0.5; db.saldo.tabungan += amt * 0.2;
+        db.saldo.keinginan += amt * 0.2; db.saldo.darurat += amt * 0.1;
+        db.initial.kebutuhan += amt * 0.5; db.initial.tabungan += amt * 0.2;
+        db.initial.keinginan += amt * 0.2; db.initial.darurat += amt * 0.1;
 
-        db.logs.unshift({ type: 'in', month: bln, fullDate: fullDate, ket: 'Gaji Masuk', kat: 'pemasukan', amt: amt });
+        const payload = { date: dateStr, kat: 'PEMASUKAN', ket: 'Gaji Masuk', type: 'IN', amt: amt };
+        db.logs.unshift({ ...payload, fullDate: dateStr, month: (now.getMonth()+1).toString() });
+        
+        kirimCloud(payload);
         document.getElementById('inGaji').value = "";
         update();
     }
@@ -222,49 +187,32 @@
         const kat = document.getElementById('katKeluar').value;
         const ket = document.getElementById('ketKeluar').value;
         const nom = parseFloat(document.getElementById('nomKeluar').value);
-        const bln = document.getElementById('blnGaji').value; 
-
-        if(!ket || !nom) return alert("Harap isi keterangan dan nominal!");
-        if(nom > db.saldo[kat]) return alert("Saldo di kategori " + kat + " tidak cukup!");
+        if(!ket || !nom) return;
 
         const now = new Date();
-        const fullDate = now.toLocaleDateString('id-ID') + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+        const dateStr = now.toLocaleDateString('id-ID') + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
 
         db.saldo[kat] -= nom;
-        db.logs.unshift({ type: 'out', month: bln, fullDate: fullDate, ket: ket, kat: kat, amt: nom });
+        const payload = { date: dateStr, kat: kat, ket: ket, type: 'OUT', amt: nom };
+        db.logs.unshift({ ...payload, fullDate: dateStr, month: (now.getMonth()+1).toString() });
         
         if(!db.hints.includes(ket)) db.hints.push(ket);
+        kirimCloud(payload);
         document.getElementById('ketKeluar').value = "";
         document.getElementById('nomKeluar').value = "";
         update();
     }
 
     function unduhLaporan() {
-        const fMonth = document.getElementById('fBulan').value;
-        const fKey = document.getElementById('fKeyword').value.toLowerCase();
         let csv = "Tanggal,Kategori,Keterangan,Tipe,Nominal\n";
-        
-        db.logs.forEach(l => {
-            if((fMonth === 'all' || l.month === fMonth) && l.ket.toLowerCase().includes(fKey)) {
-                csv += `${l.fullDate},${l.kat},${l.ket},${l.type==='in'?'Masuk':'Keluar'},${l.amt}\n`;
-            }
-        });
-
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        db.logs.forEach(l => { csv += `${l.fullDate},${l.kat},${l.ket},${l.type},${l.amt}\n`; });
+        const blob = new Blob([csv], { type: 'text/csv' });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = `Laporan_Keuangan_Filtered.csv`;
+        link.download = `Laporan_Dompetku.csv`;
         link.click();
     }
 
-    function hapusSemua() {
-        if(confirm("Hapus semua data secara permanen? Tindakan ini tidak bisa dibatalkan.")) {
-            localStorage.clear(); location.reload();
-        }
-    }
-
-    document.getElementById('today').innerText = new Intl.DateTimeFormat('id-ID', { dateStyle: 'full' }).format(new Date());
-    document.getElementById('blnGaji').value = new Date().getMonth() + 1;
     update();
 </script>
 </body>
