@@ -40,9 +40,12 @@
         .b-item span { font-size: 10px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
         .b-item p { font-size: clamp(12px, 4.2vw, 18px); font-weight: 900; margin: 4px 0; word-break: break-all; text-shadow: 0 2px 10px rgba(0,0,0,0.5); width: 100%; line-height: 1.2; }
         
-        .card-total { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.4)); border: 1px solid rgba(14, 165, 233, 0.5); grid-column: span 2; text-align: center; align-items: center; padding: 20px 15px; }
-        .card-total p { color: #38bdf8; font-size: clamp(20px, 6vw, 26px); word-break: normal; } 
-        .card-total span { justify-content: center; font-size: 12px; }
+        /* CARD TOTAL TERBAGI DUA (GAJI & KELUAR) */
+        .card-total { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.4)); border: 1px solid rgba(14, 165, 233, 0.5); grid-column: span 2; display: flex; flex-direction: row; padding: 0; }
+        .card-total .half { flex: 1; padding: 20px 10px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .card-total .half:first-child { border-right: 1px solid rgba(255,255,255,0.1); }
+        .card-total p { font-size: clamp(16px, 5vw, 24px); word-break: normal; margin-top: 8px; } 
+        .card-total span { justify-content: center; font-size: 11px; }
 
         .card-wajib { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4)); border: 1px solid rgba(16, 185, 129, 0.5); }
         .card-wajib p { color: #34d399; }
@@ -59,10 +62,13 @@
         .progress-container { width: 100%; height: 6px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; margin-top: 8px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
         .progress-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px; box-shadow: 0 0 10px currentColor; }
 
-        input, select { width: 100%; background: rgba(0,0,0,0.2); border: 2px solid rgba(255,255,255,0.1); color: white; padding: 16px; border-radius: 18px; margin-bottom: 12px; font-size: 15px; font-weight: 700; outline: none; transition: 0.3s; }
+        input, select { width: 100%; background: rgba(0,0,0,0.2); border: 2px solid rgba(255,255,255,0.1); color: white; padding: 16px; border-radius: 18px; margin-bottom: 12px; font-size: 15px; font-weight: 700; outline: none; transition: 0.3s; color-scheme: dark; }
         input:focus { border-color: var(--accent); background: rgba(0,0,0,0.4); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
         input::placeholder { color: rgba(255,255,255,0.4); }
         select option { background: #1e1b4b; color: white; font-weight: 700; }
+        
+        /* Ikon kalender putih di input date */
+        ::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
 
         .btn { width: 100%; padding: 18px; border-radius: 18px; border: none; font-weight: 900; cursor: pointer; transition: 0.2s; font-size: 15px; text-transform: uppercase; letter-spacing: 1.5px; }
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
@@ -138,9 +144,16 @@
         
         <div class="balance-grid">
             <div class="b-item card-total">
-                <span id="title-gaji">🌟 TOTAL GAJI TERKUMPUL</span>
-                <p id="v-totalgaji">0</p>
+                <div class="half">
+                    <span id="title-gaji" style="color:#7dd3fc;">🌟 TOTAL GAJI</span>
+                    <p id="v-totalgaji" style="color:#38bdf8;">0</p>
+                </div>
+                <div class="half">
+                    <span id="title-keluar" style="color:#fda4af;">💸 TOTAL KELUAR</span>
+                    <p id="v-totalkeluar" style="color:#fb7185;">0</p>
+                </div>
             </div>
+
             <div class="b-item card-wajib">
                 <span>🟢 WAJIB (45%)</span><p id="v-wajib">0</p>
                 <div class="progress-container"><div id="p-wajib" class="progress-fill" style="background:var(--success); color:var(--success);"></div></div>
@@ -175,13 +188,16 @@
 
     <div class="card">
         <span class="label" style="margin-bottom: 12px;">💸 Catat Pengeluaran</span>
-        <select id="katKeluar">
-            <option value="wajib">🟢 Wajib (Makan, Kos, dll)</option>
-            <option value="main">🎮 Main (Game, Hobi, Nongkrong)</option>
-            <option value="tabung">💎 Tabungan (Masa Depan)</option>
-            <option value="ortu">👨‍👩‍👧 Orang Tua</option>
-            <option value="darurat">🔥 Darurat (Mendesak)</option>
-        </select>
+        <div style="display: flex; gap: 8px;">
+            <input type="date" id="tglKeluar" style="flex: 1;">
+            <select id="katKeluar" style="flex: 1.5;">
+                <option value="wajib">🟢 Wajib (Makan, Kos)</option>
+                <option value="main">🎮 Main (Hobi, Ngopi)</option>
+                <option value="tabung">💎 Tabungan</option>
+                <option value="ortu">👨‍👩‍👧 Orang Tua</option>
+                <option value="darurat">🔥 Darurat</option>
+            </select>
+        </div>
         <input type="text" id="ketKeluar" list="hintList" placeholder="Keterangan (misal: Beli Kopi)">
         <datalist id="hintList"></datalist>
         <input type="number" id="nomKeluar" placeholder="Nominal Rp...">
@@ -207,7 +223,7 @@
                 <option value="darurat">Ke: Darurat</option>
             </select>
         </div>
-        <input type="number" id="suntikNom" placeholder="Nominal Rp yang ingin dipindah...">
+        <input type="number" id="suntikNom" placeholder="Nominal Rp dipindah...">
         <button class="btn btn-cyan" onclick="suntikDana()">SUNTIK DANA SEKARANG</button>
     </div>
 
@@ -223,17 +239,19 @@
             <h2 id="totalFiltered" style="font-size: 32px; font-weight: 900; margin-top:5px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Rp 0</h2>
         </div>
 
-        <button class="btn btn-outline" onclick="unduhLaporan()">📥 DOWNLOAD LAPORAN (CSV)</button>
-        <div id="logList" style="margin-top:15px;"></div>
+        <button class="btn btn-outline" style="margin-bottom: 15px;" onclick="unduhLaporan()">📥 DOWNLOAD LAPORAN (CSV)</button>
+        
+        <div id="logList"></div>
+        <button id="btnShowAll" class="btn btn-outline" style="display:none; width:100%; border-radius:15px; font-size: 13px; color:white; border-color:rgba(255,255,255,0.2);" onclick="toggleHistory()">TAMPILKAN SEMUA TRANSAKSI 🔽</button>
     </div>
 
-    <button onclick="hapusSemua()" style="background:none; border:none; color:#94a3b8; font-size: 11px; width: 100%; font-weight: 800; margin: 20px 0 40px 0; opacity: 0.5; text-decoration: underline; letter-spacing: 1px;">RESET SEMUA DATA SERVER & HP</button>
+    <button onclick="hapusSemua()" style="background:none; border:none; color:#94a3b8; font-size: 11px; width: 100%; font-weight: 800; margin: 10px 0 40px 0; opacity: 0.5; text-decoration: underline; letter-spacing: 1px;">RESET SEMUA DATA SERVER & HP</button>
 </div>
 
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v13')) || {
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v14')) || {
         saldo: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         initial: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         totalGaji: 0, logs: [], hints: []
@@ -241,6 +259,12 @@
     if(db.totalGaji === undefined) db.totalGaji = 0;
 
     const fmt = (n) => "Rp " + Math.round(n).toLocaleString('id-ID');
+    
+    // VARIABEL STATE UNTUK HISTORY
+    let showAllHistory = false;
+
+    // SET TANGGAL HARI INI SECARA DEFAULT SAAT WEB DIBUKA
+    document.getElementById('tglKeluar').valueAsDate = new Date();
 
     async function kirimCloud(payload) {
         const s = document.getElementById('status');
@@ -253,17 +277,29 @@
         } catch (e) { s.innerText = "❌ ERROR CLOUD"; }
     }
 
+    function toggleHistory() {
+        showAllHistory = !showAllHistory;
+        update();
+    }
+
     function update() {
+        // --- LOGIKA DASHBOARD (GAJI & PENGELUARAN) ---
         const fDash = document.getElementById('fBulanDash').value;
-        const dashTitle = document.getElementById('title-gaji');
+        const dashTitleGaji = document.getElementById('title-gaji');
+        const dashTitleKeluar = document.getElementById('title-keluar');
         
         let dSaldo = { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let dInit = { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let dGaji = 0;
+        let dKeluar = 0; // Total Pengeluaran
 
         if (fDash === 'all') {
             dSaldo = { ...db.saldo }; dInit = { ...db.initial }; dGaji = db.totalGaji;
-            dashTitle.innerText = "🌟 TOTAL GAJI TERKUMPUL";
+            dashTitleGaji.innerText = "🌟 TOTAL GAJI";
+            dashTitleKeluar.innerText = "💸 TOTAL KELUAR";
+            
+            // Hitung semua pengeluaran
+            db.logs.forEach(l => { if(l.type === 'OUT') dKeluar += l.amt; });
         } else {
             db.logs.forEach(l => {
                 if (l.month === fDash) {
@@ -273,31 +309,40 @@
                         dSaldo.wajib += l.amt * 0.45; dSaldo.main += l.amt * 0.2; dSaldo.tabung += l.amt * 0.2; dSaldo.ortu += l.amt * 0.1; dSaldo.darurat += l.amt * 0.05;
                     } else if (l.type === 'OUT') {
                         dSaldo[l.kat] -= l.amt;
+                        dKeluar += l.amt; // Hitung pengeluaran di bulan ini
                     } else if (l.type === 'TRANSFER') {
-                        dSaldo[l.kat] -= l.amt;   // Kurangi dari asal
-                        dSaldo[l.kat2] += l.amt;  // Tambah ke tujuan
-                        dInit[l.kat] -= l.amt;    // Sesuaikan Progress Bar asal
-                        dInit[l.kat2] += l.amt;   // Sesuaikan Progress Bar tujuan
+                        dSaldo[l.kat] -= l.amt;   
+                        dSaldo[l.kat2] += l.amt;  
+                        dInit[l.kat] -= l.amt;    
+                        dInit[l.kat2] += l.amt;   
                     }
                 }
             });
             const namaBulan = document.getElementById('fBulanDash').options[document.getElementById('fBulanDash').selectedIndex].text;
-            dashTitle.innerText = "🌟 GAJI BULAN " + namaBulan;
+            dashTitleGaji.innerText = "🌟 GAJI " + namaBulan;
+            dashTitleKeluar.innerText = "💸 KELUAR " + namaBulan;
         }
 
         document.getElementById('v-totalgaji').innerText = fmt(dGaji);
+        document.getElementById('v-totalkeluar').innerText = fmt(dKeluar); // Tampilkan total keluar
+
         ['wajib','main','tabung','ortu','darurat'].forEach(id => {
             document.getElementById('v-'+id).innerText = fmt(dSaldo[id]);
             const perc = dInit[id] > 0 ? (dSaldo[id] / dInit[id]) * 100 : 0;
             document.getElementById('p-'+id).style.width = Math.min(Math.max(perc, 0), 100) + "%";
         });
 
+        // --- LOGIKA RIWAYAT (MAX 3 ITEM) ---
         const fMonth = document.getElementById('fBulan').value;
         const fKey = document.getElementById('fKeyword').value.toLowerCase();
         const logList = document.getElementById('logList');
+        const btnShowAll = document.getElementById('btnShowAll');
+        
         let totalF = 0;
+        let matchCount = 0;
+        let visibleHtml = "";
+        let hiddenHtml = "";
 
-        logList.innerHTML = "";
         db.logs.forEach((l, index) => {
             if((fMonth === 'all' || l.month === fMonth) && l.ket.toLowerCase().includes(fKey)) {
                 
@@ -312,37 +357,63 @@
                     editBtnHtml = `<button class="btn-mini" onclick="openModal(${index})" title="Edit Transaksi">✏️</button>`;
                 } else if (l.type === 'TRANSFER') {
                     color = '#38bdf8'; sign = '🔄'; katLabel = 'PINDAH SALDO';
-                    // Transfer tidak bisa diedit via popup untuk menghindari error, hanya bisa dihapus
                     editBtnHtml = ``; 
                 }
 
-                logList.innerHTML += `
+                let itemHtml = `
                     <div class="history-item">
                         <div class="info"><b>${l.ket}</b><small>${l.date} | ${katLabel}</small></div>
                         <div class="history-right">
-                            <div class="amt" style="color:${color}">
-                                ${sign} ${fmt(l.amt)}
-                            </div>
+                            <div class="amt" style="color:${color}">${sign} ${fmt(l.amt)}</div>
                             <div class="action-btns">
                                 ${editBtnHtml}
                                 <button class="btn-mini" onclick="deleteLog(${index})" title="Hapus Transaksi">🗑️</button>
                             </div>
                         </div>
                     </div>`;
+
+                if (matchCount < 3) {
+                    visibleHtml += itemHtml;
+                } else {
+                    hiddenHtml += itemHtml;
+                }
+                matchCount++;
             }
         });
+
+        // Terapkan ke HTML berdasarkan State
+        if (showAllHistory) {
+            logList.innerHTML = visibleHtml + hiddenHtml;
+        } else {
+            logList.innerHTML = visibleHtml;
+        }
+
+        // Tampilkan atau sembunyikan tombol Show All
+        if (matchCount > 3) {
+            btnShowAll.style.display = 'block';
+            if (showAllHistory) {
+                btnShowAll.innerHTML = "TAMPILKAN LEBIH SEDIKIT 🔼";
+                btnShowAll.style.background = "rgba(255,255,255,0.1)";
+            } else {
+                btnShowAll.innerHTML = `TAMPILKAN SEMUA (${matchCount}) 🔽`;
+                btnShowAll.style.background = "rgba(0,0,0,0.3)";
+            }
+        } else {
+            btnShowAll.style.display = 'none';
+        }
 
         document.getElementById('statsBox').style.display = (fKey || fMonth !== 'all') ? "block" : "none";
         document.getElementById('totalFiltered').innerText = fmt(totalF);
 
+        // Autocomplete
         const hintList = document.getElementById('hintList');
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v13', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v14', JSON.stringify(db));
     }
 
-    // --- FITUR BARU: SUNTIK DANA ---
+    // --- FITUR SUNTIK DANA ---
     function suntikDana() {
         const dari = document.getElementById('suntikDari').value;
         const ke = document.getElementById('suntikKe').value;
@@ -356,20 +427,13 @@
         const now = new Date();
         const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
 
-        // Pindahkan Saldo & Budget Initial (Agar Progress Bar Tidak Rusak)
-        db.saldo[dari] -= nom;
-        db.saldo[ke] += nom;
-        db.initial[dari] -= nom;
-        db.initial[ke] += nom;
+        db.saldo[dari] -= nom; db.saldo[ke] += nom;
+        db.initial[dari] -= nom; db.initial[ke] += nom;
 
         const ketSuntik = `Suntik: ${dari.toUpperCase()} ➡️ ${ke.toUpperCase()}`;
-        
-        // Simpan ke HP
         const payload = { date: dateStr, kat: dari, kat2: ke, ket: ketSuntik, type: 'TRANSFER', amt: nom, month: bln };
         db.logs.unshift(payload);
         
-        // Kirim ke Cloud (Google Sheets)
-        // Format kat disesuaikan agar rapi di excel
         kirimCloud({ date: dateStr, kat: `${dari.toUpperCase()} -> ${ke.toUpperCase()}`, ket: ketSuntik, type: 'TRANSFER', amt: nom, month: bln });
 
         document.getElementById('suntikNom').value = "";
@@ -388,11 +452,9 @@
         
         if (l.type === 'IN') {
             katSelect.innerHTML = `<option value="PEMASUKAN">🌟 PEMASUKAN GAJI</option>`;
-            katSelect.disabled = true;
-            katSelect.style.opacity = "0.6";
+            katSelect.disabled = true; katSelect.style.opacity = "0.6";
         } else {
-            katSelect.disabled = false;
-            katSelect.style.opacity = "1";
+            katSelect.disabled = false; katSelect.style.opacity = "1";
             katSelect.innerHTML = `
                 <option value="wajib" ${l.kat === 'wajib' ? 'selected' : ''}>🟢 Wajib</option>
                 <option value="main" ${l.kat === 'main' ? 'selected' : ''}>🎮 Main</option>
@@ -401,7 +463,6 @@
                 <option value="darurat" ${l.kat === 'darurat' ? 'selected' : ''}>🔥 Darurat</option>
             `;
         }
-        
         document.getElementById('editModal').style.display = "flex";
     }
 
@@ -435,20 +496,15 @@
             if(newAmt > db.saldo[newKat]) { 
                 alert("Gagal Edit: Nominal baru lebih besar dari sisa saldo di kategori " + newKat.toUpperCase() + "!");
                 db.saldo[l.kat] -= l.amt; 
-                closeModal();
-                return update(); 
+                closeModal(); return update(); 
             }
             db.saldo[newKat] -= newAmt; 
         }
 
-        l.ket = newKet;
-        l.amt = newAmt;
-        l.kat = newKat; 
-
+        l.ket = newKet; l.amt = newAmt; l.kat = newKat; 
         kirimCloud({ date: l.date, kat: l.kat, ket: "[DIEDIT] " + l.ket, type: 'CORRECTION', amt: l.amt, month: l.month });
         
-        closeModal();
-        update();
+        closeModal(); update();
     }
 
     function deleteLog(index) {
@@ -463,16 +519,12 @@
         } else if(l.type === 'OUT') {
             db.saldo[l.kat] += l.amt; 
         } else if(l.type === 'TRANSFER') {
-            // Jika transfer dihapus, uang dikembalikan ke kantong asal
-            db.saldo[l.kat] += l.amt;
-            db.saldo[l.kat2] -= l.amt;
-            db.initial[l.kat] += l.amt;
-            db.initial[l.kat2] -= l.amt;
+            db.saldo[l.kat] += l.amt; db.saldo[l.kat2] -= l.amt;
+            db.initial[l.kat] += l.amt; db.initial[l.kat2] -= l.amt;
         }
 
         kirimCloud({ date: l.date, kat: l.kat, ket: "[DIHAPUS] " + l.ket, type: 'CORRECTION', amt: 0, month: l.month });
-        db.logs.splice(index, 1);
-        update();
+        db.logs.splice(index, 1); update();
     }
 
     function tambahGaji() {
@@ -494,8 +546,7 @@
         const payload = { date: dateStr, kat: 'PEMASUKAN', ket: "Gaji Bulan " + blnText, type: 'IN', amt: amt, month: blnVal };
         db.logs.unshift(payload);
         kirimCloud(payload);
-        document.getElementById('inGaji').value = "";
-        update();
+        document.getElementById('inGaji').value = ""; update();
     }
 
     function catat() {
@@ -503,27 +554,40 @@
         const ket = document.getElementById('ketKeluar').value;
         const nom = parseFloat(document.getElementById('nomKeluar').value);
         const bln = document.getElementById('blnGaji').value; 
+        
+        // MENGAMBIL TANGGAL DARI INPUT KALENDER
+        const tglInput = document.getElementById('tglKeluar').value;
 
-        if(!ket || !nom) return;
+        if(!ket || !nom) return alert("Mohon isi keterangan dan nominal pengeluaran!");
         if(nom > db.saldo[kat]) return alert("Waduh, saldo " + kat.toUpperCase() + " kamu nggak cukup nih!");
 
         const now = new Date();
-        const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+        let dateStr;
+        
+        // Jika ada input tanggal, gabungkan dengan jam saat ini. Jika tidak, pakai full waktu sekarang.
+        if(tglInput) {
+            const d = new Date(tglInput);
+            dateStr = d.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+        } else {
+            dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+        }
 
         db.saldo[kat] -= nom;
         const payload = { date: dateStr, kat: kat, ket: ket, type: 'OUT', amt: nom, month: bln };
         db.logs.unshift(payload);
         if(!db.hints.includes(ket)) db.hints.push(ket);
         kirimCloud(payload);
+        
+        // Reset form setelah simpan
         document.getElementById('ketKeluar').value = "";
         document.getElementById('nomKeluar').value = "";
+        document.getElementById('tglKeluar').valueAsDate = new Date(); // Reset kalender ke hari ini
         update();
     }
 
     function unduhLaporan() {
         let csv = "Tanggal,Kategori,Keterangan,Tipe,Nominal\n";
         db.logs.forEach(l => { 
-            // Penyesuaian agar excel rapi untuk transfer
             let excelKat = l.type === 'TRANSFER' ? `${l.kat.toUpperCase()} -> ${l.kat2.toUpperCase()}` : l.kat;
             csv += `${l.date},${excelKat},${l.ket},${l.type},${l.amt}\n`; 
         });
