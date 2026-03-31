@@ -216,8 +216,8 @@
 
     <div class="card">
         <span class="label" style="margin-bottom: 12px; color: var(--cyan);">🔄 Suntik Dana (Pindah Saldo)</span>
-        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
-            <select id="suntikDari" style="flex: 1; margin-bottom: 0;">
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+            <select id="suntikDari" style="flex: 1; margin-bottom: 0;" onchange="updateSuntikInfo()">
                 <option value="wajib">Dari: Wajib</option>
                 <option value="makan">Dari: Makan</option>
                 <option value="bbm">Dari: BBM</option>
@@ -237,6 +237,9 @@
                 <option value="darurat">Ke: Darurat</option>
             </select>
         </div>
+        
+        <div id="infoSuntik" style="font-size: 11px; font-weight: 800; color: #38bdf8; text-align: right; margin-bottom: 12px; text-transform: uppercase;">💳 Saldo Wajib Saat Ini: Rp 0</div>
+        
         <input type="number" id="suntikNom" placeholder="Nominal Rp dipindah...">
         <button class="btn btn-cyan" onclick="suntikDana()">SUNTIK SEKARANG</button>
     </div>
@@ -265,13 +268,20 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    // V18 Database - Menggunakan derived state
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v18')) || {
-        logs: [], hints: []
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v19')) || {
+        saldo: { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
+        initial: { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
+        totalGaji: 0, logs: [], hints: []
     };
+    
+    // Fallback jaga-jaga kalau migrasi dari versi sangat lama
+    if(db.saldo.makan === undefined) {
+        db.saldo.makan = 0; db.saldo.bbm = 0;
+        db.initial.makan = 0; db.initial.bbm = 0;
+    }
 
     const fmt = (n) => {
-        if (n < 0) return "-Rp " + Math.abs(Math.round(n)).toLocaleString('id-ID');
+        if (n < 0 || isNaN(n)) return "-Rp " + Math.abs(Math.round(n || 0)).toLocaleString('id-ID');
         return "Rp " + Math.round(n).toLocaleString('id-ID');
     };
     
@@ -290,7 +300,6 @@
         }
     }
 
-    // 🌟 FUNGSI OTAK BARU: MENGHITUNG DARI TOTAL GAJI 1 BULAN
     function hitungAlokasiBulanan(totalGajiBulanIni, monthStr) {
         const year = new Date().getFullYear();
         const daysInMonth = new Date(year, parseInt(monthStr), 0).getDate();
@@ -302,16 +311,12 @@
         let w = 0, mkn = 0, bbm = 0;
 
         if (wTotal >= (targetMkn + targetBbm)) {
-            // Uang cukup
-            mkn = targetMkn;
-            bbm = targetBbm;
-            w = wTotal - targetMkn - targetBbm;
+            mkn = targetMkn; bbm = targetBbm; w = wTotal - targetMkn - targetBbm;
         } else {
-            // Uang kurang, bagi adil secara proporsional, sisa wajib 0
             const totalTarget = targetMkn + targetBbm;
             if (totalTarget > 0) {
                 mkn = Math.round(wTotal * (targetMkn / totalTarget));
-                bbm = wTotal - mkn; // Sisa uang masuk bbm
+                bbm = wTotal - mkn; 
             }
             w = 0; 
         }
@@ -335,13 +340,20 @@
 
     function toggleHistory() { showAllHistory = !showAllHistory; update(); }
 
+    // Fitur Intip Saldo Untuk Suntik Dana
+    function updateSuntikInfo() {
+        const dari = document.getElementById('suntikDari').value;
+        const namaKat = document.getElementById('suntikDari').options[document.getElementById('suntikDari').selectedIndex].text.replace('Dari: ', '');
+        const saldoSaatIni = db.saldo[dari] || 0;
+        document.getElementById('infoSuntik').innerText = `💳 Saldo ${namaKat} Saat Ini: ${fmt(saldoSaatIni)}`;
+    }
+
     function update() {
-        // 1. MENGHITUNG ULANG SEMUA DATA DARI LOG TRANSAKSI (Sangat Aman & Presisi)
+        // 1. KALKULASI GLOBAL
         let gInit = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let gSaldo = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let gTotalGaji = 0; let gTotalKeluar = 0;
 
-        // A. Kumpulkan Total Gaji per Bulan
         let monthlyIn = {};
         db.logs.forEach(l => {
             if(l.type === 'IN') {
@@ -351,21 +363,18 @@
             }
         });
 
-        // B. Hitung Alokasi per Bulan berdasarkan TOTAL GAJI bulanan tersebut
         let monthlyInit = {};
         for(let m in monthlyIn) {
             let totalInM = monthlyIn[m];
             let alok = hitungAlokasiBulanan(totalInM, m);
             monthlyInit[m] = alok;
             
-            // Tambah ke Global Init
             gInit.wajib += alok.w; gInit.makan += alok.mkn; gInit.bbm += alok.bbm;
             gInit.main += alok.m; gInit.tabung += alok.t; gInit.ortu += alok.o; gInit.darurat += alok.d;
         }
 
-        gSaldo = { ...gInit }; // Saldo awal adalah Init
+        gSaldo = { ...gInit }; 
 
-        // C. Proses Pengeluaran & Transfer
         db.logs.forEach(l => {
             if(l.type === 'OUT') {
                 gSaldo[l.kat] -= l.amt;
@@ -378,7 +387,13 @@
             }
         });
 
-        // 2. RENDER DASHBOARD (All atau Filter Bulan)
+        // Simpan Live Saldo ke Storage agar Validasi Suntik Dana tidak Error
+        db.saldo = { ...gSaldo };
+        db.initial = { ...gInit };
+        db.totalGaji = gTotalGaji;
+        updateSuntikInfo(); // Update teks info saldo di form suntik
+
+        // 2. TAMPILAN DASHBOARD
         const fDash = document.getElementById('fBulanDash').value;
         const dashTitleGaji = document.getElementById('title-gaji');
         const dashTitleKeluar = document.getElementById('title-keluar');
@@ -391,11 +406,15 @@
             dSaldo = { ...gSaldo }; dInit = { ...gInit }; dGaji = gTotalGaji; dKeluar = gTotalKeluar;
             dashTitleGaji.innerText = "🌟 TOTAL GAJI"; dashTitleKeluar.innerText = "💸 TOTAL KELUAR";
         } else {
-            // JIKA FILTER BULAN SPESIFIK
             dGaji = monthlyIn[fDash] || 0;
+            // FIX BUG "Rp 6": Memasukkan keys yang benar satu per satu
             if(monthlyInit[fDash]) {
-                dInit = { ...monthlyInit[fDash] };
-                dSaldo = { ...monthlyInit[fDash] };
+                let alok = monthlyInit[fDash];
+                dInit.wajib = alok.w; dInit.makan = alok.mkn; dInit.bbm = alok.bbm;
+                dInit.main = alok.m; dInit.tabung = alok.t; dInit.ortu = alok.o; dInit.darurat = alok.d;
+
+                dSaldo.wajib = alok.w; dSaldo.makan = alok.mkn; dSaldo.bbm = alok.bbm;
+                dSaldo.main = alok.m; dSaldo.tabung = alok.t; dSaldo.ortu = alok.o; dSaldo.darurat = alok.d;
             }
             
             db.logs.forEach(l => {
@@ -415,7 +434,6 @@
             dashTitleGaji.innerText = "🌟 GAJI " + namaBulan; dashTitleKeluar.innerText = "💸 KELUAR " + namaBulan;
         }
 
-        // Terapkan ke Layar
         document.getElementById('v-totalgaji').innerText = fmt(dGaji);
         document.getElementById('v-totalkeluar').innerText = fmt(dKeluar);
 
@@ -425,7 +443,7 @@
             document.getElementById('p-'+id).style.width = Math.min(Math.max(perc, 0), 100) + "%";
         });
 
-        // 3. RENDER HISTORY LIST
+        // 3. HISTORY LIST
         const fMonth = document.getElementById('fBulan').value;
         const fKey = document.getElementById('fKeyword').value.toLowerCase();
         const logList = document.getElementById('logList');
@@ -491,11 +509,9 @@
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        // Simpan hanya log karena saldo dihitung live
-        localStorage.setItem('dompet_neon_v18', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v19', JSON.stringify(db));
     }
 
-    // --- FUNGSI SEDERHANA KARENA UPDATE SUDAH PINTAR ---
     function tambahGaji() {
         const amt = parseFloat(document.getElementById('inGaji').value);
         const blnDropdown = document.getElementById('blnGaji');
@@ -548,16 +564,16 @@
         const dari = document.getElementById('suntikDari').value;
         const ke = document.getElementById('suntikKe').value;
         const nom = parseFloat(document.getElementById('suntikNom').value);
-        
-        // PENTING: Suntik dana masuk ke bulan berjalan secara otomatis
         const bln = (new Date().getMonth() + 1).toString(); 
 
         if(!nom || nom <= 0) return alert("Masukkan nominal suntikan yang valid!");
         if(dari === ke) return alert("Kategori asal dan tujuan tidak boleh sama ya!");
         
-        // Kita harus hitung saldo asal manual sebelum mengizinkan suntik karena UI update live
-        // Update: Saya skip validasi JS strict ini karena kalau dia maksa masukin akan langsung kelihatan minus.
-        // Tapi mari beri alert ringan:
+        // Validasi Cerdas Berdasarkan Saldo Real-Time
+        if(nom > db.saldo[dari]) {
+            return alert(`Waduh, gagal! Saldo di kantong ${dari.toUpperCase()} cuma sisa ${fmt(db.saldo[dari])}. Nggak cukup buat disuntikkan!`);
+        }
+        
         const now = new Date();
         const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
 
@@ -571,7 +587,6 @@
         update();
     }
 
-    // MODAL EDIT DIBUAT SUPER SIMPEL BERKAT OTAK BARU
     function openModal(index) {
         const l = db.logs[index];
         document.getElementById('editIndex').value = index;
@@ -619,7 +634,7 @@
         kirimCloud({ date: l.date, kat: l.kat, ket: "[DIEDIT] " + l.ket, type: 'CORRECTION', amt: l.amt, month: l.month });
         
         closeModal(); 
-        update(); // Langsung update ulang total!
+        update(); 
     }
 
     function deleteLog(index) {
@@ -628,7 +643,7 @@
         kirimCloud({ date: l.date, kat: l.kat, ket: "[DIHAPUS] " + l.ket, type: 'CORRECTION', amt: 0, month: l.month });
         
         db.logs.splice(index, 1); 
-        update(); // Langsung update ulang total!
+        update(); 
     }
 
     function unduhLaporan() {
@@ -671,4 +686,3 @@
 </script>
 </body>
 </html>
-
