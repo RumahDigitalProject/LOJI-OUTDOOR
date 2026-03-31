@@ -18,16 +18,19 @@
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg-gradient); background-attachment: fixed; color: var(--text); padding: 15px; min-height: 100vh; overflow-x: hidden; }
-        .container { max-width: 480px; margin: auto; }
+        .container { max-width: 480px; margin: auto; position: relative; }
         
-        header { margin-bottom: 25px; text-align: center; color: white; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        /* YouTube-Style Loading Bar */
+        #loadingBar { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: var(--success); z-index: 9999; transition: width 0.4s ease, opacity 0.4s ease; box-shadow: 0 0 15px var(--success); opacity: 0; }
+
+        header { margin-bottom: 25px; margin-top: 10px; text-align: center; color: white; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         header h1 { font-size: 34px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .status-cloud { font-size: 10px; font-weight: 800; padding: 6px 15px; border-radius: 50px; background: rgba(0,0,0,0.3); color: white; display: inline-block; margin-top: 10px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
-        .online { border-color: var(--success); color: var(--success); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
 
         .card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 30px; padding: 20px; margin-bottom: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
         .label { font-size: 12px; font-weight: 800; opacity: 0.8; text-transform: uppercase; margin-bottom: 0; letter-spacing: 1.5px; color: #94a3b8; }
+        
+        /* Action Buttons Grid */
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .filter-mini { width: auto; padding: 8px 10px; margin-bottom: 0; font-size: 11px; border-radius: 12px; background: rgba(0,0,0,0.4); color: var(--accent); border: 1px solid var(--accent); cursor: pointer; text-transform: uppercase; font-weight: 800; }
@@ -68,11 +71,11 @@
         select option { background: #1e1b4b; color: white; font-weight: 700; }
         ::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
 
-        .btn { width: 100%; padding: 18px; border-radius: 18px; border: none; font-weight: 900; cursor: pointer; transition: 0.2s; font-size: 15px; text-transform: uppercase; letter-spacing: 1.5px; }
+        .btn { width: 100%; padding: 16px; border-radius: 18px; border: none; font-weight: 900; cursor: pointer; transition: 0.2s; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
-        .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); margin-top: 5px; }
-        .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; margin-top: 15px; }
-        .btn-cyan { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); margin-top: 15px; }
+        .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); }
+        .btn-cyan { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); }
+        .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; }
         .btn:active { transform: scale(0.95); }
 
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 18px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); }
@@ -90,11 +93,11 @@
 
         .stats-highlight { background: linear-gradient(45deg, var(--danger), var(--warning)); color: white; padding: 25px; border-radius: 25px; margin-top: 15px; text-align: center; box-shadow: 0 10px 30px rgba(244, 63, 94, 0.3); }
 
+        /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-        .modal-card { width: 100%; max-width: 400px; margin: 0; animation: popIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: var(--bg-gradient); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .modal-card { width: 100%; max-width: 400px; margin: 0; animation: popIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: var(--bg-gradient); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.5); padding: 25px; border-radius: 30px; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* SUNTIK DANA STYLING */
         .suntik-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 20px; border: 1px solid rgba(14, 165, 233, 0.3); margin-bottom: 12px; }
         .suntik-col { display: flex; flex-direction: column; gap: 8px; }
         .select-mini { padding: 12px; font-size: 13px; border-radius: 14px; margin-bottom: 0; }
@@ -103,9 +106,96 @@
 </head>
 <body>
 
+<div id="loadingBar"></div>
+
+<div id="gajiModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900;">📥 INPUT GAJI</h3>
+        <label class="label">Bulan Alokasi</label>
+        <select id="blnGaji"></select>
+        <label class="label">Nominal Pendapatan</label>
+        <input type="number" id="inGaji" placeholder="Nominal Gaji...">
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn btn-outline" style="margin-top:0; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal('gajiModal')">BATAL</button>
+            <button class="btn btn-primary" style="margin-top:0;" onclick="tambahGaji()">SIMPAN</button>
+        </div>
+    </div>
+</div>
+
+<div id="keluarModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900;">💸 CATAT PENGELUARAN</h3>
+        <div style="display: flex; gap: 8px;">
+            <div style="flex: 1;"><label class="label">Tanggal</label><input type="date" id="tglKeluar"></div>
+            <div style="flex: 1.5;"><label class="label">Kategori</label>
+                <select id="katKeluar" onchange="autoFillKet()" style="margin-bottom: 12px;">
+                    <option value="" disabled selected>Pilih...</option>
+                    <option value="makan">🍛 Makan</option>
+                    <option value="bbm">⛽ BBM</option>
+                    <option value="wajib">🟢 Wajib (Lainnya)</option>
+                    <option value="main">🎮 Main</option>
+                    <option value="tabung">💎 Tabungan</option>
+                    <option value="ortu">👨‍👩‍👧 Ortu</option>
+                    <option value="darurat">🔥 Darurat</option>
+                </select>
+            </div>
+        </div>
+        <label class="label">Keterangan Transaksi</label>
+        <input type="text" id="ketKeluar" list="hintList" placeholder="Ketik atau pilih otomatis...">
+        <datalist id="hintList"></datalist>
+        <label class="label">Nominal (Rp)</label>
+        <input type="number" id="nomKeluar" placeholder="Nominal Rp...">
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn btn-outline" style="margin-top:0; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal('keluarModal')">BATAL</button>
+            <button class="btn btn-success" style="margin-top:0;" onclick="catat()">SIMPAN</button>
+        </div>
+    </div>
+</div>
+
+<div id="suntikModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900;">🔄 SUNTIK DANA</h3>
+        <div class="suntik-grid">
+            <div class="suntik-col">
+                <span class="label" style="color: var(--cyan); margin-bottom: 0; font-size: 11px;">📤 DARI KANTONG</span>
+                <select id="suntikDariBulan" class="select-mini" onchange="updateSuntikInfo()"></select>
+                <select id="suntikDari" class="select-mini" onchange="updateSuntikInfo()">
+                    <option value="wajib">Wajib</option>
+                    <option value="makan">Makan</option>
+                    <option value="bbm">BBM</option>
+                    <option value="main">Main</option>
+                    <option value="tabung">Tabung</option>
+                    <option value="ortu">Ortu</option>
+                    <option value="darurat">Darurat</option>
+                </select>
+                <div id="infoSuntik" style="font-size: 11px; font-weight: 800; color: #38bdf8; text-transform: uppercase;">💳 Saldo: Rp 0</div>
+            </div>
+            <div class="suntik-col">
+                <span class="label" style="color: var(--success); margin-bottom: 0; font-size: 11px;">📥 KE KANTONG</span>
+                <select id="suntikKeBulan" class="select-mini"></select>
+                <select id="suntikKe" class="select-mini">
+                    <option value="tabung">Tabung</option>
+                    <option value="wajib">Wajib</option>
+                    <option value="makan">Makan</option>
+                    <option value="bbm">BBM</option>
+                    <option value="main">Main</option>
+                    <option value="ortu">Ortu</option>
+                    <option value="darurat">Darurat</option>
+                </select>
+            </div>
+        </div>
+        <label class="label">Nominal (Rp)</label>
+        <input type="number" id="suntikNom" placeholder="Nominal Rp dipindah...">
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn btn-outline" style="margin-top:0; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal('suntikModal')">BATAL</button>
+            <button class="btn btn-cyan" style="margin-top:0;" onclick="suntikDana()">SUNTIK</button>
+        </div>
+    </div>
+</div>
+
 <div id="editModal" class="modal-overlay">
-    <div class="modal-card card">
-        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900; letter-spacing: 1px;">✏️ EDIT DATA</h3>
+    <div class="modal-card">
+        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900;">✏️ EDIT DATA</h3>
         <input type="hidden" id="editIndex">
         <label class="label">Kategori</label>
         <select id="editKat"></select>
@@ -114,7 +204,7 @@
         <label class="label">Nominal (Rp)</label>
         <input type="number" id="editNom" placeholder="Nominal Rp...">
         <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button class="btn btn-outline" style="margin-top:0; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal()">BATAL</button>
+            <button class="btn btn-outline" style="margin-top:0; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal('editModal')">BATAL</button>
             <button class="btn btn-success" style="margin-top:0;" onclick="saveEdit()">SIMPAN</button>
         </div>
     </div>
@@ -123,16 +213,12 @@
 <div class="container">
     <header>
         <h1>DOMPETKU 🚀</h1>
-        <div id="status" class="status-cloud">MENYAMBUNG CLOUD...</div>
     </header>
 
-    <div class="card">
-        <span class="label" style="margin-bottom: 12px;">📥 Masukkan Pendapatan Gaji</span>
-        <div style="display: flex; gap: 8px;">
-            <input type="number" id="inGaji" placeholder="Nominal Gaji...">
-            <select id="blnGaji" style="width: 140px;"></select>
-        </div>
-        <button class="btn btn-primary" onclick="tambahGaji()">ALOKASIKAN OTOMATIS</button>
+    <div class="action-grid">
+        <button class="btn btn-primary" onclick="openModal('gajiModal')" style="grid-column: span 2;">📥 INPUT PENDAPATAN</button>
+        <button class="btn btn-success" onclick="openModal('keluarModal')">💸 CATAT KELUAR</button>
+        <button class="btn btn-cyan" onclick="openModal('suntikModal')">🔄 SUNTIK DANA</button>
     </div>
 
     <div class="card">
@@ -153,8 +239,7 @@
                 </div>
             </div>
 
-            <div id="healthIndicator" class="health-banner">
-                </div>
+            <div id="healthIndicator" class="health-banner"></div>
 
             <div class="b-item card-makan">
                 <span>🍛 MAKAN</span><p id="v-makan">0</p>
@@ -188,66 +273,7 @@
     </div>
 
     <div class="card">
-        <span class="label" style="margin-bottom: 12px;">💸 Catat Pengeluaran</span>
-        <div style="display: flex; gap: 8px;">
-            <input type="date" id="tglKeluar" style="flex: 1;">
-            <select id="katKeluar" style="flex: 1.5;" onchange="autoFillKet()">
-                <option value="" disabled selected>Pilih Kategori...</option>
-                <option value="makan">🍛 Uang Makan</option>
-                <option value="bbm">⛽ Uang BBM</option>
-                <option value="wajib">🟢 Wajib (Kos, dll)</option>
-                <option value="main">🎮 Main (Game, Ngopi)</option>
-                <option value="tabung">💎 Tabungan</option>
-                <option value="ortu">👨‍👩‍👧 Orang Tua</option>
-                <option value="darurat">🔥 Darurat</option>
-            </select>
-        </div>
-        <input type="text" id="ketKeluar" list="hintList" placeholder="Keterangan (Otomatis / Ketik Manual)">
-        <datalist id="hintList"></datalist>
-        <input type="number" id="nomKeluar" placeholder="Nominal Rp...">
-        <button class="btn btn-success" onclick="catat()">SIMPAN TRANSAKSI</button>
-    </div>
-
-    <div class="card">
-        <span class="label" style="margin-bottom: 12px; color: var(--cyan);">🔄 Suntik Dana Lintas Bulan</span>
-        
-        <div class="suntik-grid">
-            <div class="suntik-col">
-                <span class="label" style="color: var(--cyan); margin-bottom: 0; font-size: 11px;">📤 DARI KANTONG</span>
-                <select id="suntikDariBulan" class="select-mini" onchange="updateSuntikInfo()"></select>
-                <select id="suntikDari" class="select-mini" onchange="updateSuntikInfo()">
-                    <option value="wajib">Wajib</option>
-                    <option value="makan">Makan</option>
-                    <option value="bbm">BBM</option>
-                    <option value="main">Main</option>
-                    <option value="tabung">Tabung</option>
-                    <option value="ortu">Ortu</option>
-                    <option value="darurat">Darurat</option>
-                </select>
-                <div id="infoSuntik" style="font-size: 11px; font-weight: 800; color: #38bdf8; text-transform: uppercase;">💳 Saldo: Rp 0</div>
-            </div>
-            
-            <div class="suntik-col">
-                <span class="label" style="color: var(--success); margin-bottom: 0; font-size: 11px;">📥 KE KANTONG</span>
-                <select id="suntikKeBulan" class="select-mini"></select>
-                <select id="suntikKe" class="select-mini">
-                    <option value="tabung">Tabung</option>
-                    <option value="wajib">Wajib</option>
-                    <option value="makan">Makan</option>
-                    <option value="bbm">BBM</option>
-                    <option value="main">Main</option>
-                    <option value="ortu">Ortu</option>
-                    <option value="darurat">Darurat</option>
-                </select>
-            </div>
-        </div>
-
-        <input type="number" id="suntikNom" placeholder="Nominal Rp dipindah...">
-        <button class="btn btn-cyan" onclick="suntikDana()">SUNTIK SEKARANG</button>
-    </div>
-
-    <div class="card">
-        <span class="label" style="margin-bottom: 12px;">📊 Riwayat & Analisis</span>
+        <span class="label" style="margin-bottom: 12px;">📊 Riwayat Transaksi</span>
         <div style="display: flex; gap: 8px; margin-bottom: 15px;">
             <select id="fBulan" onchange="update()"></select>
             <input type="text" id="fKeyword" onkeyup="update()" placeholder="Cari data..." style="margin-bottom:0;">
@@ -258,7 +284,7 @@
             <h2 id="totalFiltered" style="font-size: 32px; font-weight: 900; margin-top:5px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Rp 0</h2>
         </div>
 
-        <button class="btn btn-outline" style="margin-bottom: 15px;" onclick="unduhLaporan()">📥 DOWNLOAD LAPORAN (CSV)</button>
+        <button class="btn btn-outline" style="margin-bottom: 15px;" onclick="unduhLaporan()">📥 DOWNLOAD CSV</button>
         
         <div id="logList"></div>
         <button id="btnShowAll" class="btn btn-outline" style="display:none; width:100%; border-radius:15px; font-size: 13px; color:white; border-color:rgba(255,255,255,0.2);" onclick="toggleHistory()">TAMPILKAN SEMUA TRANSAKSI 🔽</button>
@@ -270,7 +296,7 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v21')) || { logs: [], hints: [] };
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v22')) || { logs: [], hints: [] };
 
     const fmt = (n) => {
         if (n < 0 || isNaN(n)) return "-Rp " + Math.abs(Math.round(n || 0)).toLocaleString('id-ID');
@@ -279,6 +305,15 @@
     
     let showAllHistory = false;
     document.getElementById('tglKeluar').valueAsDate = new Date();
+
+    // MODAL HANDLERS
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = "flex";
+        if(modalId === 'suntikModal') updateSuntikInfo();
+    }
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+    }
 
     function autoFillKet() {
         const kat = document.getElementById('katKeluar').value;
@@ -291,10 +326,8 @@
     function hitungAlokasiBulanan(totalGajiBulanIni, monthStr) {
         const year = new Date().getFullYear();
         const daysInMonth = new Date(year, parseInt(monthStr), 0).getDate();
-        
         const targetMkn = daysInMonth * 20000;
         const targetBbm = Math.round(daysInMonth / 7) * 50000; 
-        
         const wTotal = totalGajiBulanIni * 0.45;
         let w = 0, mkn = 0, bbm = 0;
 
@@ -302,28 +335,26 @@
             mkn = targetMkn; bbm = targetBbm; w = wTotal - targetMkn - targetBbm;
         } else {
             const totalTarget = targetMkn + targetBbm;
-            if (totalTarget > 0) {
-                mkn = Math.round(wTotal * (targetMkn / totalTarget));
-                bbm = wTotal - mkn; 
-            }
+            if (totalTarget > 0) { mkn = Math.round(wTotal * (targetMkn / totalTarget)); bbm = wTotal - mkn; }
             w = 0; 
         }
-        
-        const m = totalGajiBulanIni * 0.2;
-        const t = totalGajiBulanIni * 0.2;
-        const o = totalGajiBulanIni * 0.1;
-        const d = totalGajiBulanIni * 0.05;
-        
-        return { w, mkn, bbm, m, t, o, d };
+        return { w, mkn, bbm, m: totalGajiBulanIni * 0.2, t: totalGajiBulanIni * 0.2, o: totalGajiBulanIni * 0.1, d: totalGajiBulanIni * 0.05 };
     }
 
+    // YOUTUBE STYLE LOADING BAR
     async function kirimCloud(payload) {
-        const s = document.getElementById('status');
-        s.innerText = "☁️ SINKRONISASI..."; s.classList.remove('online');
+        const lb = document.getElementById('loadingBar');
+        lb.style.transition = 'none'; lb.style.width = '0%'; lb.style.opacity = '1';
+        setTimeout(() => { lb.style.transition = 'width 0.5s ease'; lb.style.width = '40%'; }, 10);
+        
         try {
             await fetch(URL_CLOUD, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            s.innerText = "✅ CLOUD TERHUBUNG"; s.classList.add('online');
-        } catch (e) { s.innerText = "❌ ERROR CLOUD"; }
+            lb.style.width = '100%';
+            setTimeout(() => { lb.style.opacity = '0'; }, 400);
+        } catch (e) { 
+            lb.style.background = 'var(--danger)'; lb.style.width = '100%';
+            setTimeout(() => { lb.style.opacity = '0'; setTimeout(() => lb.style.background = 'var(--success)', 400); }, 1000);
+        }
     }
 
     function toggleHistory() { showAllHistory = !showAllHistory; update(); }
@@ -350,7 +381,6 @@
                 }
             }
         });
-
         document.getElementById('infoSuntik').innerText = `💳 Saldo: ${fmt(saldoBulanIni)}`;
         return saldoBulanIni; 
     }
@@ -394,8 +424,6 @@
             }
         });
 
-        updateSuntikInfo(); 
-
         const fDash = document.getElementById('fBulanDash').value;
         const dashTitleGaji = document.getElementById('title-gaji');
         const dashTitleKeluar = document.getElementById('title-keluar');
@@ -418,16 +446,10 @@
             
             db.logs.forEach(l => {
                 if (l.month === fDash) {
-                    if (l.type === 'OUT') {
-                        dSaldo[l.kat] -= l.amt; dKeluar += l.amt;
-                    } else if (l.type === 'TRANSFER_OUT') {
-                        dSaldo[l.kat] -= l.amt; dInit[l.kat] -= l.amt;
-                    } else if (l.type === 'TRANSFER_IN') {
-                        dSaldo[l.kat] += l.amt; dInit[l.kat] += l.amt;
-                    } else if (l.type === 'TRANSFER') {
-                        dSaldo[l.kat] -= l.amt; dSaldo[l.kat2] += l.amt;
-                        dInit[l.kat] -= l.amt; dInit[l.kat2] += l.amt;
-                    }
+                    if (l.type === 'OUT') { dSaldo[l.kat] -= l.amt; dKeluar += l.amt; } 
+                    else if (l.type === 'TRANSFER_OUT') { dSaldo[l.kat] -= l.amt; dInit[l.kat] -= l.amt; } 
+                    else if (l.type === 'TRANSFER_IN') { dSaldo[l.kat] += l.amt; dInit[l.kat] += l.amt; } 
+                    else if (l.type === 'TRANSFER') { dSaldo[l.kat] -= l.amt; dSaldo[l.kat2] += l.amt; dInit[l.kat] -= l.amt; dInit[l.kat2] += l.amt; }
                 }
             });
             const namaBulan = document.getElementById('fBulanDash').options[document.getElementById('fBulanDash').selectedIndex].text;
@@ -437,37 +459,26 @@
         document.getElementById('v-totalgaji').innerText = fmt(dGaji);
         document.getElementById('v-totalkeluar').innerText = fmt(dKeluar);
 
-        // 🌟 UPDATE LOGIKA HEALTH INDICATOR BANNER
         const healthBox = document.getElementById('healthIndicator');
         const sisaUangReil = dGaji - dKeluar;
         
         if (dGaji === 0) {
             healthBox.innerHTML = "💤 Belum ada pemasukan nih. Yuk semangat!";
-            healthBox.style.background = "rgba(255,255,255,0.05)";
-            healthBox.style.color = "#94a3b8";
-            healthBox.style.border = "1px solid rgba(255,255,255,0.1)";
+            healthBox.style.background = "rgba(255,255,255,0.05)"; healthBox.style.color = "#94a3b8"; healthBox.style.border = "1px solid rgba(255,255,255,0.1)";
         } else {
             const percSehat = (sisaUangReil / dGaji) * 100;
             if (percSehat >= 50) {
                 healthBox.innerHTML = "😎 Dompet tebel! Masih aman jaya sentosa.";
-                healthBox.style.background = "linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4))";
-                healthBox.style.color = "#34d399";
-                healthBox.style.border = "1px solid rgba(16, 185, 129, 0.5)";
+                healthBox.style.background = "linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4))"; healthBox.style.color = "#34d399"; healthBox.style.border = "1px solid rgba(16, 185, 129, 0.5)";
             } else if (percSehat >= 20) {
-                healthBox.innerHTML = "😌 Saldo lumayan. Ingat tahan godaan nongkrong!";
-                healthBox.style.background = "linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.4))";
-                healthBox.style.color = "#fcd34d";
-                healthBox.style.border = "1px solid rgba(245, 158, 11, 0.5)";
+                healthBox.innerHTML = "😌 Saldo lumayan. Tahan godaan nongkrong!";
+                healthBox.style.background = "linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.4))"; healthBox.style.color = "#fcd34d"; healthBox.style.border = "1px solid rgba(245, 158, 11, 0.5)";
             } else if (percSehat > 0) {
                 healthBox.innerHTML = "🚨 Waspada! Saldo menipis, mode hemat aktif.";
-                healthBox.style.background = "linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.4))";
-                healthBox.style.color = "#fdba74";
-                healthBox.style.border = "1px solid rgba(249, 115, 22, 0.5)";
+                healthBox.style.background = "linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.4))"; healthBox.style.color = "#fdba74"; healthBox.style.border = "1px solid rgba(249, 115, 22, 0.5)";
             } else {
-                healthBox.innerHTML = "🥵 GAWAT! Saldo minus alias boncos total, Bos!";
-                healthBox.style.background = "linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4))";
-                healthBox.style.color = "#fda4af";
-                healthBox.style.border = "1px solid rgba(244, 63, 94, 0.5)";
+                healthBox.innerHTML = "🥵 GAWAT! Saldo minus alias boncos, Bos!";
+                healthBox.style.background = "linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4))"; healthBox.style.color = "#fda4af"; healthBox.style.border = "1px solid rgba(244, 63, 94, 0.5)";
             }
         }
 
@@ -491,10 +502,10 @@
                 
                 if (l.type === 'IN') {
                     color = '#34d399'; sign = '+'; katLabel = l.kat;
-                    editBtnHtml = `<button class="btn-mini" onclick="openModal(${index})" title="Edit Transaksi">✏️</button>`;
+                    editBtnHtml = `<button class="btn-mini" onclick="openEditModal(${index})" title="Edit">✏️</button>`;
                 } else if (l.type === 'OUT') {
                     color = '#fb7185'; sign = '-'; katLabel = l.kat.toUpperCase(); totalF += l.amt;
-                    editBtnHtml = `<button class="btn-mini" onclick="openModal(${index})" title="Edit Transaksi">✏️</button>`;
+                    editBtnHtml = `<button class="btn-mini" onclick="openEditModal(${index})" title="Edit">✏️</button>`;
                 } else if (l.type === 'TRANSFER_IN') {
                     color = '#38bdf8'; sign = '+'; katLabel = `SUNTIK MASUK: ${l.kat.toUpperCase()}`; editBtnHtml = ``; 
                 } else if (l.type === 'TRANSFER_OUT') {
@@ -510,7 +521,7 @@
                             <div class="amt" style="color:${color}">${sign} ${fmt(l.amt)}</div>
                             <div class="action-btns">
                                 ${editBtnHtml}
-                                <button class="btn-mini" onclick="deleteLog(${index})" title="Hapus Transaksi">🗑️</button>
+                                <button class="btn-mini" onclick="deleteLog(${index})" title="Hapus">🗑️</button>
                             </div>
                         </div>
                     </div>`;
@@ -526,13 +537,8 @@
 
         if (matchCount > 3) {
             btnShowAll.style.display = 'block';
-            if (showAllHistory) {
-                btnShowAll.innerHTML = "TAMPILKAN LEBIH SEDIKIT 🔼";
-                btnShowAll.style.background = "rgba(255,255,255,0.1)";
-            } else {
-                btnShowAll.innerHTML = `TAMPILKAN SEMUA (${matchCount}) 🔽`;
-                btnShowAll.style.background = "rgba(0,0,0,0.3)";
-            }
+            if (showAllHistory) { btnShowAll.innerHTML = "TAMPILKAN LEBIH SEDIKIT 🔼"; btnShowAll.style.background = "rgba(255,255,255,0.1)"; } 
+            else { btnShowAll.innerHTML = `TAMPILKAN SEMUA (${matchCount}) 🔽`; btnShowAll.style.background = "rgba(0,0,0,0.3)"; }
         } else {
             btnShowAll.style.display = 'none';
         }
@@ -544,14 +550,13 @@
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v21', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v22', JSON.stringify(db));
     }
 
     function tambahGaji() {
         const amt = parseFloat(document.getElementById('inGaji').value);
-        const blnDropdown = document.getElementById('blnGaji');
-        const blnVal = blnDropdown.value;
-        const blnText = blnDropdown.options[blnDropdown.selectedIndex].text; 
+        const blnVal = document.getElementById('blnGaji').value;
+        const blnText = document.getElementById('blnGaji').options[document.getElementById('blnGaji').selectedIndex].text; 
 
         if(!amt) return alert("Masukkan nominal gaji!");
         
@@ -563,6 +568,7 @@
         kirimCloud(payload);
         
         document.getElementById('inGaji').value = ""; 
+        closeModal('gajiModal');
         update();
     }
 
@@ -592,6 +598,8 @@
         document.getElementById('ketKeluar').readOnly = false;
         document.getElementById('nomKeluar').value = "";
         document.getElementById('tglKeluar').valueAsDate = new Date(); 
+        
+        closeModal('keluarModal');
         update();
     }
 
@@ -616,7 +624,6 @@
 
         const namaBulanDari = document.getElementById('suntikDariBulan').options[document.getElementById('suntikDariBulan').selectedIndex].text;
         const namaBulanKe = document.getElementById('suntikKeBulan').options[document.getElementById('suntikKeBulan').selectedIndex].text;
-        
         const linkId = Date.now().toString();
 
         const logOut = { date: dateStr, kat: dari, ket: `📤 Pindah ke ${ke.toUpperCase()} (${namaBulanKe})`, type: 'TRANSFER_OUT', amt: nom, month: blnDari, linkId: linkId };
@@ -626,10 +633,11 @@
         kirimCloud({ date: dateStr, kat: `${dari.toUpperCase()}(${namaBulanDari}) -> ${ke.toUpperCase()}(${namaBulanKe})`, ket: `Suntik Lintas Bulan`, type: 'TRANSFER', amt: nom, month: blnDari });
 
         document.getElementById('suntikNom').value = ""; 
+        closeModal('suntikModal');
         update();
     }
 
-    function openModal(index) {
+    function openEditModal(index) {
         const l = db.logs[index];
         document.getElementById('editIndex').value = index;
         document.getElementById('editKet').value = l.ket;
@@ -640,8 +648,7 @@
         
         if (l.type === 'IN') {
             katSelect.innerHTML = `<option value="PEMASUKAN">🌟 PEMASUKAN GAJI</option>`;
-            katSelect.disabled = true; katSelect.style.opacity = "0.6";
-            document.getElementById('editKet').readOnly = true;
+            katSelect.disabled = true; katSelect.style.opacity = "0.6"; document.getElementById('editKet').readOnly = true;
         } else {
             katSelect.disabled = false; katSelect.style.opacity = "1";
             document.getElementById('editKet').readOnly = (l.kat === 'makan' || l.kat === 'bbm'); 
@@ -655,10 +662,8 @@
                 <option value="darurat" ${l.kat === 'darurat' ? 'selected' : ''}>🔥 Darurat</option>
             `;
         }
-        document.getElementById('editModal').style.display = "flex";
+        openModal('editModal');
     }
-
-    function closeModal() { document.getElementById('editModal').style.display = "none"; }
 
     function saveEdit() {
         const index = document.getElementById('editIndex').value;
@@ -673,7 +678,7 @@
 
         kirimCloud({ date: l.date, kat: l.kat, ket: "[DIEDIT] " + l.ket, type: 'CORRECTION', amt: l.amt, month: l.month });
         
-        closeModal(); update(); 
+        closeModal('editModal'); update(); 
     }
 
     function deleteLog(index) {
@@ -739,4 +744,3 @@
 </script>
 </body>
 </html>
-
