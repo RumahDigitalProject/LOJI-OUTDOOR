@@ -20,17 +20,20 @@
         body { background: var(--bg-gradient); background-attachment: fixed; color: var(--text); padding: 15px; min-height: 100vh; overflow-x: hidden; }
         .container { max-width: 480px; margin: auto; position: relative; }
         
-        /* YouTube-Style Loading Bar */
-        #loadingBar { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: var(--success); z-index: 9999; transition: width 0.4s ease, opacity 0.4s ease; box-shadow: 0 0 15px var(--success); opacity: 0; }
-
         header { margin-bottom: 25px; margin-top: 10px; text-align: center; color: white; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         header h1 { font-size: 34px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* Cloud Animation Dikembalikan */
+        .status-cloud { font-size: 10px; font-weight: 800; padding: 6px 15px; border-radius: 50px; background: rgba(0,0,0,0.3); color: white; display: inline-block; margin-top: 10px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+        .online { border-color: var(--success); color: var(--success); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
 
         .card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 30px; padding: 20px; margin-bottom: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
         .label { font-size: 12px; font-weight: 800; opacity: 0.8; text-transform: uppercase; margin-bottom: 0; letter-spacing: 1.5px; color: #94a3b8; }
         
-        /* Action Buttons Grid */
+        /* Action Buttons Grid (Warna Diubah Jadi Harmonis) */
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .btn-action-1 { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
+        .btn-action-2 { background: linear-gradient(135deg, #ec4899, #f43f5e); color: white; box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4); }
         
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .filter-mini { width: auto; padding: 8px 10px; margin-bottom: 0; font-size: 11px; border-radius: 12px; background: rgba(0,0,0,0.4); color: var(--accent); border: 1px solid var(--accent); cursor: pointer; text-transform: uppercase; font-weight: 800; }
@@ -47,11 +50,12 @@
         .b-item span { font-size: 10px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; text-transform: uppercase;}
         .b-item p { font-size: clamp(12px, 4.2vw, 18px); font-weight: 900; margin: 4px 0; word-break: break-all; text-shadow: 0 2px 10px rgba(0,0,0,0.5); width: 100%; line-height: 1.2; }
         
+        /* FIX: Total Gaji & Keluar jadi 1 baris lurus tanpa terpotong */
         .card-total { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.4)); border: 1px solid rgba(14, 165, 233, 0.5); grid-column: span 2; display: flex; flex-direction: row; padding: 0; }
-        .card-total .half { flex: 1; padding: 20px 10px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .card-total .half { flex: 1; padding: 20px 10px; display: flex; flex-direction: column; align-items: center; text-align: center; overflow: hidden; }
         .card-total .half:first-child { border-right: 1px solid rgba(255,255,255,0.1); }
-        .card-total p { font-size: clamp(16px, 5vw, 24px); word-break: normal; margin-top: 8px; } 
-        .card-total span { justify-content: center; font-size: 11px; }
+        .card-total p { font-size: clamp(14px, 4vw, 20px); white-space: nowrap; margin-top: 8px; width: 100%; } 
+        .card-total span { justify-content: center; font-size: 11px; white-space: nowrap; }
 
         .card-makan { background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.4)); border: 1px solid rgba(249, 115, 22, 0.5); } .card-makan p { color: #fdba74; }
         .card-bbm { background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(109, 40, 217, 0.4)); border: 1px solid rgba(139, 92, 246, 0.5); } .card-bbm p { color: #c4b5fd; }
@@ -105,22 +109,6 @@
     </style>
 </head>
 <body>
-
-<div id="loadingBar"></div>
-
-<div id="gajiModal" class="modal-overlay">
-    <div class="modal-card">
-        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900;">📥 INPUT GAJI</h3>
-        <label class="label">Bulan Alokasi</label>
-        <select id="blnGaji"></select>
-        <label class="label">Nominal Pendapatan</label>
-        <input type="number" id="inGaji" placeholder="Nominal Gaji...">
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button class="btn btn-outline" style="margin-top:0; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal('gajiModal')">BATAL</button>
-            <button class="btn btn-primary" style="margin-top:0;" onclick="tambahGaji()">SIMPAN</button>
-        </div>
-    </div>
-</div>
 
 <div id="keluarModal" class="modal-overlay">
     <div class="modal-card">
@@ -210,15 +198,25 @@
     </div>
 </div>
 
+
 <div class="container">
     <header>
         <h1>DOMPETKU 🚀</h1>
+        <div id="status" class="status-cloud">MENYAMBUNG CLOUD...</div>
     </header>
 
+    <div class="card" style="padding-bottom: 15px;">
+        <span class="label" style="margin-bottom: 12px;">📥 Masukkan Pendapatan Gaji</span>
+        <div style="display: flex; gap: 8px;">
+            <input type="number" id="inGaji" placeholder="Nominal Gaji..." style="margin-bottom: 10px;">
+            <select id="blnGaji" style="width: 140px; margin-bottom: 10px;"></select>
+        </div>
+        <button class="btn btn-primary" onclick="tambahGaji()" style="padding: 14px;">ALOKASIKAN OTOMATIS</button>
+    </div>
+
     <div class="action-grid">
-        <button class="btn btn-primary" onclick="openModal('gajiModal')" style="grid-column: span 2;">📥 INPUT PENDAPATAN</button>
-        <button class="btn btn-success" onclick="openModal('keluarModal')">💸 CATAT KELUAR</button>
-        <button class="btn btn-cyan" onclick="openModal('suntikModal')">🔄 SUNTIK DANA</button>
+        <button class="btn btn-action-1" onclick="openModal('keluarModal')">💸 CATAT KELUAR</button>
+        <button class="btn btn-action-2" onclick="openModal('suntikModal')">🔄 SUNTIK DANA</button>
     </div>
 
     <div class="card">
@@ -296,7 +294,7 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v22')) || { logs: [], hints: [] };
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v23')) || { logs: [], hints: [] };
 
     const fmt = (n) => {
         if (n < 0 || isNaN(n)) return "-Rp " + Math.abs(Math.round(n || 0)).toLocaleString('id-ID');
@@ -304,7 +302,15 @@
     };
     
     let showAllHistory = false;
-    document.getElementById('tglKeluar').valueAsDate = new Date();
+    
+    // FIX TANGGAL: Menggunakan Offset agar selalu membaca zona waktu lokal HP kamu
+    function setTodayDate() {
+        const now = new Date();
+        const tzOffset = now.getTimezoneOffset() * 60000;
+        const localISOTime = new Date(now.getTime() - tzOffset).toISOString().split('T')[0];
+        document.getElementById('tglKeluar').value = localISOTime;
+    }
+    setTodayDate(); // Set saat pertama kali web dibuka
 
     // MODAL HANDLERS
     function openModal(modalId) {
@@ -341,20 +347,14 @@
         return { w, mkn, bbm, m: totalGajiBulanIni * 0.2, t: totalGajiBulanIni * 0.2, o: totalGajiBulanIni * 0.1, d: totalGajiBulanIni * 0.05 };
     }
 
-    // YOUTUBE STYLE LOADING BAR
+    // CLOUD ANIMATION DIKEMBALIKAN (Tanpa Loading Bar)
     async function kirimCloud(payload) {
-        const lb = document.getElementById('loadingBar');
-        lb.style.transition = 'none'; lb.style.width = '0%'; lb.style.opacity = '1';
-        setTimeout(() => { lb.style.transition = 'width 0.5s ease'; lb.style.width = '40%'; }, 10);
-        
+        const s = document.getElementById('status');
+        s.innerText = "☁️ SINKRONISASI..."; s.classList.remove('online');
         try {
             await fetch(URL_CLOUD, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            lb.style.width = '100%';
-            setTimeout(() => { lb.style.opacity = '0'; }, 400);
-        } catch (e) { 
-            lb.style.background = 'var(--danger)'; lb.style.width = '100%';
-            setTimeout(() => { lb.style.opacity = '0'; setTimeout(() => lb.style.background = 'var(--success)', 400); }, 1000);
-        }
+            s.innerText = "✅ CLOUD TERHUBUNG"; s.classList.add('online');
+        } catch (e) { s.innerText = "❌ ERROR CLOUD"; }
     }
 
     function toggleHistory() { showAllHistory = !showAllHistory; update(); }
@@ -550,7 +550,7 @@
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v22', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v23', JSON.stringify(db));
     }
 
     function tambahGaji() {
@@ -568,7 +568,6 @@
         kirimCloud(payload);
         
         document.getElementById('inGaji').value = ""; 
-        closeModal('gajiModal');
         update();
     }
 
@@ -585,6 +584,7 @@
         if(!ket || !nom) return alert("Mohon isi keterangan dan nominal pengeluaran!");
 
         const now = new Date();
+        // Gabungkan tanggal inputan dengan jam hari ini
         const dateStr = d.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
 
         const payload = { date: dateStr, kat: kat, ket: ket, type: 'OUT', amt: nom, month: bln };
@@ -597,7 +597,8 @@
         document.getElementById('ketKeluar').value = "";
         document.getElementById('ketKeluar').readOnly = false;
         document.getElementById('nomKeluar').value = "";
-        document.getElementById('tglKeluar').valueAsDate = new Date(); 
+        
+        setTodayDate(); // Set kembali kalender ke hari ini
         
         closeModal('keluarModal');
         update();
