@@ -47,21 +47,13 @@
         .card-total p { font-size: clamp(16px, 5vw, 24px); word-break: normal; margin-top: 8px; } 
         .card-total span { justify-content: center; font-size: 11px; }
 
-        /* Kategori Colors */
-        .card-makan { background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.4)); border: 1px solid rgba(249, 115, 22, 0.5); }
-        .card-makan p { color: #fdba74; }
-        .card-bbm { background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(109, 40, 217, 0.4)); border: 1px solid rgba(139, 92, 246, 0.5); }
-        .card-bbm p { color: #c4b5fd; }
-        .card-wajib { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4)); border: 1px solid rgba(16, 185, 129, 0.5); }
-        .card-wajib p { color: #34d399; }
-        .card-main { background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(219, 39, 119, 0.4)); border: 1px solid rgba(236, 72, 153, 0.5); }
-        .card-main p { color: #f472b6; }
-        .card-tabung { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.4)); border: 1px solid rgba(59, 130, 246, 0.5); }
-        .card-tabung p { color: #93c5fd; }
-        .card-ortu { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.4)); border: 1px solid rgba(245, 158, 11, 0.5); }
-        .card-ortu p { color: #fcd34d; }
-        .card-darurat { background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4)); border: 1px solid rgba(244, 63, 94, 0.5); }
-        .card-darurat p { color: #fda4af; }
+        .card-makan { background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.4)); border: 1px solid rgba(249, 115, 22, 0.5); } .card-makan p { color: #fdba74; }
+        .card-bbm { background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(109, 40, 217, 0.4)); border: 1px solid rgba(139, 92, 246, 0.5); } .card-bbm p { color: #c4b5fd; }
+        .card-wajib { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4)); border: 1px solid rgba(16, 185, 129, 0.5); } .card-wajib p { color: #34d399; }
+        .card-main { background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(219, 39, 119, 0.4)); border: 1px solid rgba(236, 72, 153, 0.5); } .card-main p { color: #f472b6; }
+        .card-tabung { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.4)); border: 1px solid rgba(59, 130, 246, 0.5); } .card-tabung p { color: #93c5fd; }
+        .card-ortu { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.4)); border: 1px solid rgba(245, 158, 11, 0.5); } .card-ortu p { color: #fcd34d; }
+        .card-darurat { background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4)); border: 1px solid rgba(244, 63, 94, 0.5); } .card-darurat p { color: #fda4af; }
 
         .progress-container { width: 100%; height: 6px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; margin-top: 8px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
         .progress-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px; box-shadow: 0 0 10px currentColor; }
@@ -77,10 +69,9 @@
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
         .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); margin-top: 5px; }
         .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; margin-top: 15px; }
-        .btn-cyan { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); margin-top: 5px; }
+        .btn-cyan { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); margin-top: 15px; }
         .btn:active { transform: scale(0.95); }
 
-        /* History Styling */
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 18px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); }
         .history-item .info { flex: 1; min-width: 0; padding-right: 8px; }
         .history-item b { font-size: 14px; font-weight: 800; display: block; color: white; word-break: break-word; line-height: 1.4; margin-bottom: 4px; }
@@ -96,17 +87,14 @@
 
         .stats-highlight { background: linear-gradient(45deg, var(--danger), var(--warning)); color: white; padding: 25px; border-radius: 25px; margin-top: 15px; text-align: center; box-shadow: 0 10px 30px rgba(244, 63, 94, 0.3); }
 
-        /* MODAL POP-UP */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
-        }
-        .modal-card {
-            width: 100%; max-width: 400px; margin: 0; animation: popIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: var(--bg-gradient); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .modal-card { width: 100%; max-width: 400px; margin: 0; animation: popIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: var(--bg-gradient); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* SUNTIK DANA STYLING */
+        .suntik-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 20px; border: 1px solid rgba(14, 165, 233, 0.3); margin-bottom: 12px; }
+        .suntik-col { display: flex; flex-direction: column; gap: 8px; }
+        .select-mini { padding: 12px; font-size: 13px; border-radius: 14px; margin-bottom: 0; }
         
     </style>
 </head>
@@ -215,31 +203,39 @@
     </div>
 
     <div class="card">
-        <span class="label" style="margin-bottom: 12px; color: var(--cyan);">🔄 Suntik Dana (Pindah Saldo)</span>
-        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
-            <select id="suntikDari" style="flex: 1; margin-bottom: 0;" onchange="updateSuntikInfo()">
-                <option value="wajib">Dari: Wajib</option>
-                <option value="makan">Dari: Makan</option>
-                <option value="bbm">Dari: BBM</option>
-                <option value="main">Dari: Main</option>
-                <option value="tabung">Dari: Tabung</option>
-                <option value="ortu">Dari: Ortu</option>
-                <option value="darurat">Dari: Darurat</option>
-            </select>
-            <span style="font-size: 20px;">➡️</span>
-            <select id="suntikKe" style="flex: 1; margin-bottom: 0;">
-                <option value="tabung">Ke: Tabung</option>
-                <option value="wajib">Ke: Wajib</option>
-                <option value="makan">Ke: Makan</option>
-                <option value="bbm">Ke: BBM</option>
-                <option value="main">Ke: Main</option>
-                <option value="ortu">Ke: Ortu</option>
-                <option value="darurat">Ke: Darurat</option>
-            </select>
+        <span class="label" style="margin-bottom: 12px; color: var(--cyan);">🔄 Suntik Dana Lintas Bulan</span>
+        
+        <div class="suntik-grid">
+            <div class="suntik-col">
+                <span class="label" style="color: var(--cyan); margin-bottom: 0; font-size: 11px;">📤 DARI KANTONG</span>
+                <select id="suntikDariBulan" class="select-mini" onchange="updateSuntikInfo()"></select>
+                <select id="suntikDari" class="select-mini" onchange="updateSuntikInfo()">
+                    <option value="wajib">Wajib</option>
+                    <option value="makan">Makan</option>
+                    <option value="bbm">BBM</option>
+                    <option value="main">Main</option>
+                    <option value="tabung">Tabung</option>
+                    <option value="ortu">Ortu</option>
+                    <option value="darurat">Darurat</option>
+                </select>
+                <div id="infoSuntik" style="font-size: 11px; font-weight: 800; color: #38bdf8; text-transform: uppercase;">💳 Saldo: Rp 0</div>
+            </div>
+            
+            <div class="suntik-col">
+                <span class="label" style="color: var(--success); margin-bottom: 0; font-size: 11px;">📥 KE KANTONG</span>
+                <select id="suntikKeBulan" class="select-mini"></select>
+                <select id="suntikKe" class="select-mini">
+                    <option value="tabung">Tabung</option>
+                    <option value="wajib">Wajib</option>
+                    <option value="makan">Makan</option>
+                    <option value="bbm">BBM</option>
+                    <option value="main">Main</option>
+                    <option value="ortu">Ortu</option>
+                    <option value="darurat">Darurat</option>
+                </select>
+            </div>
         </div>
-        
-        <div id="infoSuntik" style="font-size: 11px; font-weight: 800; color: #38bdf8; text-align: right; margin-bottom: 12px; text-transform: uppercase;">💳 Saldo Wajib Saat Ini: Rp 0</div>
-        
+
         <input type="number" id="suntikNom" placeholder="Nominal Rp dipindah...">
         <button class="btn btn-cyan" onclick="suntikDana()">SUNTIK SEKARANG</button>
     </div>
@@ -268,17 +264,7 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v19')) || {
-        saldo: { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
-        initial: { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
-        totalGaji: 0, logs: [], hints: []
-    };
-    
-    // Fallback jaga-jaga kalau migrasi dari versi sangat lama
-    if(db.saldo.makan === undefined) {
-        db.saldo.makan = 0; db.saldo.bbm = 0;
-        db.initial.makan = 0; db.initial.bbm = 0;
-    }
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v20')) || { logs: [], hints: [] };
 
     const fmt = (n) => {
         if (n < 0 || isNaN(n)) return "-Rp " + Math.abs(Math.round(n || 0)).toLocaleString('id-ID');
@@ -291,13 +277,9 @@
     function autoFillKet() {
         const kat = document.getElementById('katKeluar').value;
         const ketInput = document.getElementById('ketKeluar');
-        if(kat === 'makan') {
-            ketInput.value = 'Beli Makan'; ketInput.readOnly = true;
-        } else if(kat === 'bbm') {
-            ketInput.value = 'Beli BBM'; ketInput.readOnly = true;
-        } else {
-            ketInput.value = ''; ketInput.readOnly = false;
-        }
+        if(kat === 'makan') { ketInput.value = 'Beli Makan'; ketInput.readOnly = true; } 
+        else if(kat === 'bbm') { ketInput.value = 'Beli BBM'; ketInput.readOnly = true; } 
+        else { ketInput.value = ''; ketInput.readOnly = false; }
     }
 
     function hitungAlokasiBulanan(totalGajiBulanIni, monthStr) {
@@ -340,16 +322,36 @@
 
     function toggleHistory() { showAllHistory = !showAllHistory; update(); }
 
-    // Fitur Intip Saldo Untuk Suntik Dana
+    // FITUR CERDAS: INTIP SALDO REALTIME SAAT MAU SUNTIK
     function updateSuntikInfo() {
         const dari = document.getElementById('suntikDari').value;
-        const namaKat = document.getElementById('suntikDari').options[document.getElementById('suntikDari').selectedIndex].text.replace('Dari: ', '');
-        const saldoSaatIni = db.saldo[dari] || 0;
-        document.getElementById('infoSuntik').innerText = `💳 Saldo ${namaKat} Saat Ini: ${fmt(saldoSaatIni)}`;
+        const blnDari = document.getElementById('suntikDariBulan').value;
+        
+        // Kalkulasi saldo KHUSUS untuk bulan tersebut
+        let totalGajiBln = 0;
+        db.logs.forEach(l => { if(l.type === 'IN' && l.month === blnDari) totalGajiBln += l.amt; });
+        
+        let alok = hitungAlokasiBulanan(totalGajiBln, blnDari);
+        let mapKat = {wajib:'w', makan:'mkn', bbm:'bbm', main:'m', tabung:'t', ortu:'o', darurat:'d'};
+        let saldoBulanIni = alok[mapKat[dari]];
+        
+        db.logs.forEach(l => {
+            if(l.month === blnDari) {
+                if(l.type === 'OUT' && l.kat === dari) saldoBulanIni -= l.amt;
+                if(l.type === 'TRANSFER_OUT' && l.kat === dari) saldoBulanIni -= l.amt;
+                if(l.type === 'TRANSFER_IN' && l.kat === dari) saldoBulanIni += l.amt;
+                if(l.type === 'TRANSFER') { // Jaga-jaga data lama
+                    if(l.kat === dari) saldoBulanIni -= l.amt;
+                    if(l.kat2 === dari) saldoBulanIni += l.amt;
+                }
+            }
+        });
+
+        document.getElementById('infoSuntik').innerText = `💳 Saldo: ${fmt(saldoBulanIni)}`;
+        return saldoBulanIni; // Mengembalikan nilai untuk dipakai saat validasi
     }
 
     function update() {
-        // 1. KALKULASI GLOBAL
         let gInit = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let gSaldo = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let gTotalGaji = 0; let gTotalKeluar = 0;
@@ -377,23 +379,19 @@
 
         db.logs.forEach(l => {
             if(l.type === 'OUT') {
-                gSaldo[l.kat] -= l.amt;
-                gTotalKeluar += l.amt;
+                gSaldo[l.kat] -= l.amt; gTotalKeluar += l.amt;
+            } else if(l.type === 'TRANSFER_OUT') {
+                gSaldo[l.kat] -= l.amt; gInit[l.kat] -= l.amt;
+            } else if(l.type === 'TRANSFER_IN') {
+                gSaldo[l.kat] += l.amt; gInit[l.kat] += l.amt;
             } else if(l.type === 'TRANSFER') {
-                gSaldo[l.kat] -= l.amt;
-                gSaldo[l.kat2] += l.amt;
-                gInit[l.kat] -= l.amt;
-                gInit[l.kat2] += l.amt;
+                gSaldo[l.kat] -= l.amt; gSaldo[l.kat2] += l.amt;
+                gInit[l.kat] -= l.amt; gInit[l.kat2] += l.amt;
             }
         });
 
-        // Simpan Live Saldo ke Storage agar Validasi Suntik Dana tidak Error
-        db.saldo = { ...gSaldo };
-        db.initial = { ...gInit };
-        db.totalGaji = gTotalGaji;
-        updateSuntikInfo(); // Update teks info saldo di form suntik
+        updateSuntikInfo(); 
 
-        // 2. TAMPILAN DASHBOARD
         const fDash = document.getElementById('fBulanDash').value;
         const dashTitleGaji = document.getElementById('title-gaji');
         const dashTitleKeluar = document.getElementById('title-keluar');
@@ -407,26 +405,25 @@
             dashTitleGaji.innerText = "🌟 TOTAL GAJI"; dashTitleKeluar.innerText = "💸 TOTAL KELUAR";
         } else {
             dGaji = monthlyIn[fDash] || 0;
-            // FIX BUG "Rp 6": Memasukkan keys yang benar satu per satu
+            // FIX BUG "Rp 6" -> Mappingnya dibenarkan
             if(monthlyInit[fDash]) {
                 let alok = monthlyInit[fDash];
                 dInit.wajib = alok.w; dInit.makan = alok.mkn; dInit.bbm = alok.bbm;
                 dInit.main = alok.m; dInit.tabung = alok.t; dInit.ortu = alok.o; dInit.darurat = alok.d;
-
-                dSaldo.wajib = alok.w; dSaldo.makan = alok.mkn; dSaldo.bbm = alok.bbm;
-                dSaldo.main = alok.m; dSaldo.tabung = alok.t; dSaldo.ortu = alok.o; dSaldo.darurat = alok.d;
+                dSaldo = { ...dInit };
             }
             
             db.logs.forEach(l => {
                 if (l.month === fDash) {
                     if (l.type === 'OUT') {
-                        dSaldo[l.kat] -= l.amt;
-                        dKeluar += l.amt;
+                        dSaldo[l.kat] -= l.amt; dKeluar += l.amt;
+                    } else if (l.type === 'TRANSFER_OUT') {
+                        dSaldo[l.kat] -= l.amt; dInit[l.kat] -= l.amt;
+                    } else if (l.type === 'TRANSFER_IN') {
+                        dSaldo[l.kat] += l.amt; dInit[l.kat] += l.amt;
                     } else if (l.type === 'TRANSFER') {
-                        dSaldo[l.kat] -= l.amt;
-                        dSaldo[l.kat2] += l.amt;
-                        dInit[l.kat] -= l.amt;
-                        dInit[l.kat2] += l.amt;
+                        dSaldo[l.kat] -= l.amt; dSaldo[l.kat2] += l.amt;
+                        dInit[l.kat] -= l.amt; dInit[l.kat2] += l.amt;
                     }
                 }
             });
@@ -443,7 +440,7 @@
             document.getElementById('p-'+id).style.width = Math.min(Math.max(perc, 0), 100) + "%";
         });
 
-        // 3. HISTORY LIST
+        // HISTORY LIST
         const fMonth = document.getElementById('fBulan').value;
         const fKey = document.getElementById('fKeyword').value.toLowerCase();
         const logList = document.getElementById('logList');
@@ -460,12 +457,14 @@
                     color = '#34d399'; sign = '+'; katLabel = l.kat;
                     editBtnHtml = `<button class="btn-mini" onclick="openModal(${index})" title="Edit Transaksi">✏️</button>`;
                 } else if (l.type === 'OUT') {
-                    color = '#fb7185'; sign = '-'; katLabel = l.kat.toUpperCase();
-                    totalF += l.amt;
+                    color = '#fb7185'; sign = '-'; katLabel = l.kat.toUpperCase(); totalF += l.amt;
                     editBtnHtml = `<button class="btn-mini" onclick="openModal(${index})" title="Edit Transaksi">✏️</button>`;
+                } else if (l.type === 'TRANSFER_IN') {
+                    color = '#38bdf8'; sign = '+'; katLabel = `SUNTIK MASUK: ${l.kat.toUpperCase()}`; editBtnHtml = ``; 
+                } else if (l.type === 'TRANSFER_OUT') {
+                    color = '#fb7185'; sign = '-'; katLabel = `SUNTIK KELUAR: ${l.kat.toUpperCase()}`; editBtnHtml = ``; 
                 } else if (l.type === 'TRANSFER') {
-                    color = '#38bdf8'; sign = '🔄'; katLabel = 'PINDAH SALDO';
-                    editBtnHtml = ``; 
+                    color = '#38bdf8'; sign = '🔄'; katLabel = 'PINDAH SALDO'; editBtnHtml = ``; 
                 }
 
                 let itemHtml = `
@@ -509,7 +508,7 @@
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v19', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v20', JSON.stringify(db));
     }
 
     function tambahGaji() {
@@ -560,28 +559,40 @@
         update();
     }
 
+    // FITUR CERDAS: SUNTIK DANA LINTAS BULAN
     function suntikDana() {
         const dari = document.getElementById('suntikDari').value;
         const ke = document.getElementById('suntikKe').value;
+        const blnDari = document.getElementById('suntikDariBulan').value;
+        const blnKe = document.getElementById('suntikKeBulan').value;
         const nom = parseFloat(document.getElementById('suntikNom').value);
-        const bln = (new Date().getMonth() + 1).toString(); 
-
-        if(!nom || nom <= 0) return alert("Masukkan nominal suntikan yang valid!");
-        if(dari === ke) return alert("Kategori asal dan tujuan tidak boleh sama ya!");
         
-        // Validasi Cerdas Berdasarkan Saldo Real-Time
-        if(nom > db.saldo[dari]) {
-            return alert(`Waduh, gagal! Saldo di kantong ${dari.toUpperCase()} cuma sisa ${fmt(db.saldo[dari])}. Nggak cukup buat disuntikkan!`);
+        if(!nom || nom <= 0) return alert("Masukkan nominal suntikan yang valid!");
+        if(dari === ke && blnDari === blnKe) return alert("Kantong dan bulan asal/tujuan tidak boleh persis sama!");
+
+        // Validasi Cek Saldo Bulan Asal
+        const saldoBulanIni = updateSuntikInfo();
+        if(nom > saldoBulanIni) {
+            const namaKat = document.getElementById('suntikDari').options[document.getElementById('suntikDari').selectedIndex].text;
+            return alert(`Gagal! Saldo di ${namaKat} cuma sisa ${fmt(saldoBulanIni)}. Uangnya nggak cukup!`);
         }
         
         const now = new Date();
         const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
 
-        const ketSuntik = `Suntik: ${dari.toUpperCase()} ➡️ ${ke.toUpperCase()}`;
-        const payload = { date: dateStr, kat: dari, kat2: ke, ket: ketSuntik, type: 'TRANSFER', amt: nom, month: bln };
-        db.logs.unshift(payload);
+        const namaBulanDari = document.getElementById('suntikDariBulan').options[document.getElementById('suntikDariBulan').selectedIndex].text;
+        const namaBulanKe = document.getElementById('suntikKeBulan').options[document.getElementById('suntikKeBulan').selectedIndex].text;
         
-        kirimCloud({ date: dateStr, kat: `${dari.toUpperCase()} -> ${ke.toUpperCase()}`, ket: ketSuntik, type: 'TRANSFER', amt: nom, month: bln });
+        // Buat ID unik untuk mengaitkan transfer keluar dan masuk agar jika dihapus bisa hilang bareng
+        const linkId = Date.now().toString();
+
+        const logOut = { date: dateStr, kat: dari, ket: `📤 Pindah ke ${ke.toUpperCase()} (${namaBulanKe})`, type: 'TRANSFER_OUT', amt: nom, month: blnDari, linkId: linkId };
+        const logIn = { date: dateStr, kat: ke, ket: `📥 Terima dari ${dari.toUpperCase()} (${namaBulanDari})`, type: 'TRANSFER_IN', amt: nom, month: blnKe, linkId: linkId };
+        
+        // Simpan log (Masuk dulu baru Keluar agar urutannya bagus di layar)
+        db.logs.unshift(logIn, logOut);
+        
+        kirimCloud({ date: dateStr, kat: `${dari.toUpperCase()}(${namaBulanDari}) -> ${ke.toUpperCase()}(${namaBulanKe})`, ket: `Suntik Lintas Bulan`, type: 'TRANSFER', amt: nom, month: blnDari });
 
         document.getElementById('suntikNom').value = ""; 
         update();
@@ -627,22 +638,26 @@
         if (!newKet || isNaN(newAmt) || newAmt < 0) return alert("Mohon isi keterangan dan nominal dengan benar!");
 
         let l = db.logs[index];
-        l.ket = newKet; 
-        l.amt = newAmt; 
-        l.kat = newKat; 
+        l.ket = newKet; l.amt = newAmt; l.kat = newKat; 
 
         kirimCloud({ date: l.date, kat: l.kat, ket: "[DIEDIT] " + l.ket, type: 'CORRECTION', amt: l.amt, month: l.month });
         
-        closeModal(); 
-        update(); 
+        closeModal(); update(); 
     }
 
     function deleteLog(index) {
         if(!confirm("Hapus transaksi ini? Saldo akan dikembalikan secara otomatis.")) return;
         let l = db.logs[index];
-        kirimCloud({ date: l.date, kat: l.kat, ket: "[DIHAPUS] " + l.ket, type: 'CORRECTION', amt: 0, month: l.month });
         
-        db.logs.splice(index, 1); 
+        // Jika yang dihapus adalah suntik dana lintas bulan (ada linkId)
+        if (l.type.startsWith('TRANSFER_')) {
+            // Hapus kedua log yang berkaitan (Out dan In)
+            db.logs = db.logs.filter(x => x.linkId !== l.linkId);
+            kirimCloud({ date: l.date, kat: l.kat, ket: "[DIHAPUS SUNTIK DANA] " + l.ket, type: 'CORRECTION', amt: 0, month: l.month });
+        } else {
+            kirimCloud({ date: l.date, kat: l.kat, ket: "[DIHAPUS] " + l.ket, type: 'CORRECTION', amt: 0, month: l.month });
+            db.logs.splice(index, 1); 
+        }
         update(); 
     }
 
@@ -669,20 +684,36 @@
     }
 
     const months = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
-    const blnGaji = document.getElementById('blnGaji');
-    const fBulan = document.getElementById('fBulan');
-    const fBulanDash = document.getElementById('fBulanDash');
     
-    fBulan.innerHTML = `<option value="all">SEMUA BULAN</option>`;
-    fBulanDash.innerHTML = `<option value="all">SEMUA BULAN</option>`;
+    // Inisialisasi semua dropdown yang berkaitan dengan bulan
+    const selectBlnGaji = document.getElementById('blnGaji');
+    const selectFBulan = document.getElementById('fBulan');
+    const selectFBulanDash = document.getElementById('fBulanDash');
+    const selectSuntikDariBulan = document.getElementById('suntikDariBulan');
+    const selectSuntikKeBulan = document.getElementById('suntikKeBulan');
+    
+    selectFBulan.innerHTML = `<option value="all">SEMUA BULAN</option>`;
+    selectFBulanDash.innerHTML = `<option value="all">SEMUA BULAN</option>`;
     
     months.forEach((m, i) => {
-        const opt = `<option value="${i+1}">${m.toUpperCase()}</option>`;
-        blnGaji.innerHTML += opt; fBulan.innerHTML += opt; fBulanDash.innerHTML += opt;
+        const val = (i+1).toString();
+        const text = m.toUpperCase();
+        const opt = `<option value="${val}">${text}</option>`;
+        
+        selectBlnGaji.innerHTML += opt;
+        selectFBulan.innerHTML += opt;
+        selectFBulanDash.innerHTML += opt;
+        selectSuntikDariBulan.innerHTML += opt;
+        selectSuntikKeBulan.innerHTML += opt;
     });
 
-    document.getElementById('blnGaji').value = new Date().getMonth() + 1;
+    const currentMonth = (new Date().getMonth() + 1).toString();
+    selectBlnGaji.value = currentMonth;
+    selectSuntikDariBulan.value = currentMonth;
+    selectSuntikKeBulan.value = currentMonth;
+    
     update();
 </script>
 </body>
 </html>
+
