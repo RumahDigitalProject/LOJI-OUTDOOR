@@ -10,6 +10,7 @@
             --primary: #6366f1; --accent: #a855f7; 
             --success: #10b981; --danger: #f43f5e; 
             --warning: #f59e0b; --parent: #ec4899; --cyan: #0ea5e9;
+            --food: #f97316; --fuel: #8b5cf6;
             --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
             --glass: rgba(20, 20, 40, 0.6); 
             --text: #f8fafc;
@@ -37,27 +38,30 @@
         .b-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; z-index: 0; }
         .b-item > * { position: relative; z-index: 1; }
         
-        .b-item span { font-size: 10px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+        .b-item span { font-size: 10px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; text-transform: uppercase;}
         .b-item p { font-size: clamp(12px, 4.2vw, 18px); font-weight: 900; margin: 4px 0; word-break: break-all; text-shadow: 0 2px 10px rgba(0,0,0,0.5); width: 100%; line-height: 1.2; }
         
-        /* CARD TOTAL TERBAGI DUA (GAJI & KELUAR) */
         .card-total { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.4)); border: 1px solid rgba(14, 165, 233, 0.5); grid-column: span 2; display: flex; flex-direction: row; padding: 0; }
         .card-total .half { flex: 1; padding: 20px 10px; display: flex; flex-direction: column; align-items: center; text-align: center; }
         .card-total .half:first-child { border-right: 1px solid rgba(255,255,255,0.1); }
         .card-total p { font-size: clamp(16px, 5vw, 24px); word-break: normal; margin-top: 8px; } 
         .card-total span { justify-content: center; font-size: 11px; }
 
+        /* Kategori Colors */
+        .card-makan { background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.4)); border: 1px solid rgba(249, 115, 22, 0.5); }
+        .card-makan p { color: #fdba74; }
+        .card-bbm { background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(109, 40, 217, 0.4)); border: 1px solid rgba(139, 92, 246, 0.5); }
+        .card-bbm p { color: #c4b5fd; }
         .card-wajib { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4)); border: 1px solid rgba(16, 185, 129, 0.5); }
         .card-wajib p { color: #34d399; }
-        .card-main { background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.4)); border: 1px solid rgba(236, 72, 153, 0.5); }
+        .card-main { background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(219, 39, 119, 0.4)); border: 1px solid rgba(236, 72, 153, 0.5); }
         .card-main p { color: #f472b6; }
-        .card-tabung { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(59, 130, 246, 0.4)); border: 1px solid rgba(99, 102, 241, 0.5); }
-        .card-tabung p { color: #818cf8; }
+        .card-tabung { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.4)); border: 1px solid rgba(59, 130, 246, 0.5); }
+        .card-tabung p { color: #93c5fd; }
         .card-ortu { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.4)); border: 1px solid rgba(245, 158, 11, 0.5); }
-        .card-ortu p { color: #fbbf24; }
-        .card-darurat { background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4)); border: 1px solid rgba(244, 63, 94, 0.5); grid-column: span 2; align-items: center; }
-        .card-darurat p { color: #fda4af; font-size: clamp(18px, 5vw, 22px); text-align: center; word-break: normal; }
-        .card-darurat span { justify-content: center; }
+        .card-ortu p { color: #fcd34d; }
+        .card-darurat { background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4)); border: 1px solid rgba(244, 63, 94, 0.5); }
+        .card-darurat p { color: #fda4af; }
 
         .progress-container { width: 100%; height: 6px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; margin-top: 8px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
         .progress-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px; box-shadow: 0 0 10px currentColor; }
@@ -66,8 +70,6 @@
         input:focus { border-color: var(--accent); background: rgba(0,0,0,0.4); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
         input::placeholder { color: rgba(255,255,255,0.4); }
         select option { background: #1e1b4b; color: white; font-weight: 700; }
-        
-        /* Ikon kalender putih di input date */
         ::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
 
         .btn { width: 100%; padding: 18px; border-radius: 18px; border: none; font-weight: 900; cursor: pointer; transition: 0.2s; font-size: 15px; text-transform: uppercase; letter-spacing: 1.5px; }
@@ -93,7 +95,7 @@
 
         .stats-highlight { background: linear-gradient(45deg, var(--danger), var(--warning)); color: white; padding: 25px; border-radius: 25px; margin-top: 15px; text-align: center; box-shadow: 0 10px 30px rgba(244, 63, 94, 0.3); }
 
-        /* MODAL POP-UP UNTUK EDIT */
+        /* MODAL POP-UP */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -113,19 +115,15 @@
     <div class="modal-card card">
         <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900; letter-spacing: 1px;">✏️ EDIT DATA</h3>
         <input type="hidden" id="editIndex">
-        
         <label class="label">Kategori</label>
         <select id="editKat"></select>
-        
         <label class="label">Nama / Keterangan</label>
         <input type="text" id="editKet" placeholder="Masukkan keterangan baru...">
-        
         <label class="label">Nominal (Rp)</label>
         <input type="number" id="editNom" placeholder="Nominal Rp...">
-        
         <div style="display: flex; gap: 10px; margin-top: 15px;">
             <button class="btn btn-outline" style="margin-top:0; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal()">BATAL</button>
-            <button class="btn btn-success" style="margin-top:0;" onclick="saveEdit()">SIMPAN PERUBAHAN</button>
+            <button class="btn btn-success" style="margin-top:0;" onclick="saveEdit()">SIMPAN</button>
         </div>
     </div>
 </div>
@@ -154,8 +152,17 @@
                 </div>
             </div>
 
+            <div class="b-item card-makan">
+                <span>🍛 MAKAN</span><p id="v-makan">0</p>
+                <div class="progress-container"><div id="p-makan" class="progress-fill" style="background:var(--food); color:var(--food);"></div></div>
+            </div>
+            <div class="b-item card-bbm">
+                <span>⛽ BBM</span><p id="v-bbm">0</p>
+                <div class="progress-container"><div id="p-bbm" class="progress-fill" style="background:var(--fuel); color:var(--fuel);"></div></div>
+            </div>
+
             <div class="b-item card-wajib">
-                <span>🟢 WAJIB (45%)</span><p id="v-wajib">0</p>
+                <span>🟢 SISA WAJIB</span><p id="v-wajib">0</p>
                 <div class="progress-container"><div id="p-wajib" class="progress-fill" style="background:var(--success); color:var(--success);"></div></div>
             </div>
             <div class="b-item card-main">
@@ -183,22 +190,25 @@
             <input type="number" id="inGaji" placeholder="Nominal Gaji...">
             <select id="blnGaji" style="width: 140px;"></select>
         </div>
-        <button class="btn btn-primary" onclick="tambahGaji()">ALOKASIKAN & SINKRON</button>
+        <button class="btn btn-primary" onclick="tambahGaji()">ALOKASIKAN OTOMATIS</button>
     </div>
 
     <div class="card">
         <span class="label" style="margin-bottom: 12px;">💸 Catat Pengeluaran</span>
         <div style="display: flex; gap: 8px;">
             <input type="date" id="tglKeluar" style="flex: 1;">
-            <select id="katKeluar" style="flex: 1.5;">
-                <option value="wajib">🟢 Wajib (Makan, Kos)</option>
-                <option value="main">🎮 Main (Hobi, Ngopi)</option>
+            <select id="katKeluar" style="flex: 1.5;" onchange="autoFillKet()">
+                <option value="" disabled selected>Pilih Kategori...</option>
+                <option value="makan">🍛 Uang Makan</option>
+                <option value="bbm">⛽ Uang BBM</option>
+                <option value="wajib">🟢 Wajib (Kos, dll)</option>
+                <option value="main">🎮 Main (Game, Ngopi)</option>
                 <option value="tabung">💎 Tabungan</option>
                 <option value="ortu">👨‍👩‍👧 Orang Tua</option>
                 <option value="darurat">🔥 Darurat</option>
             </select>
         </div>
-        <input type="text" id="ketKeluar" list="hintList" placeholder="Keterangan (misal: Beli Kopi)">
+        <input type="text" id="ketKeluar" list="hintList" placeholder="Keterangan (Otomatis / Ketik Manual)">
         <datalist id="hintList"></datalist>
         <input type="number" id="nomKeluar" placeholder="Nominal Rp...">
         <button class="btn btn-success" onclick="catat()">SIMPAN TRANSAKSI</button>
@@ -209,6 +219,8 @@
         <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
             <select id="suntikDari" style="flex: 1; margin-bottom: 0;">
                 <option value="wajib">Dari: Wajib</option>
+                <option value="makan">Dari: Makan</option>
+                <option value="bbm">Dari: BBM</option>
                 <option value="main">Dari: Main</option>
                 <option value="tabung">Dari: Tabung</option>
                 <option value="ortu">Dari: Ortu</option>
@@ -218,13 +230,15 @@
             <select id="suntikKe" style="flex: 1; margin-bottom: 0;">
                 <option value="tabung">Ke: Tabung</option>
                 <option value="wajib">Ke: Wajib</option>
+                <option value="makan">Ke: Makan</option>
+                <option value="bbm">Ke: BBM</option>
                 <option value="main">Ke: Main</option>
                 <option value="ortu">Ke: Ortu</option>
                 <option value="darurat">Ke: Darurat</option>
             </select>
         </div>
         <input type="number" id="suntikNom" placeholder="Nominal Rp dipindah...">
-        <button class="btn btn-cyan" onclick="suntikDana()">SUNTIK DANA SEKARANG</button>
+        <button class="btn btn-cyan" onclick="suntikDana()">SUNTIK SEKARANG</button>
     </div>
 
     <div class="card">
@@ -251,101 +265,116 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v14')) || {
-        saldo: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
-        initial: { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
+    // Inisialisasi Database (Migrasi Aman untuk Kantong Baru)
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v15')) || {
+        saldo: { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
+        initial: { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         totalGaji: 0, logs: [], hints: []
     };
-    if(db.totalGaji === undefined) db.totalGaji = 0;
+    if(db.saldo.makan === undefined) {
+        db.saldo.makan = 0; db.saldo.bbm = 0;
+        db.initial.makan = 0; db.initial.bbm = 0;
+    }
 
     const fmt = (n) => "Rp " + Math.round(n).toLocaleString('id-ID');
-    
-    // VARIABEL STATE UNTUK HISTORY
     let showAllHistory = false;
-
-    // SET TANGGAL HARI INI SECARA DEFAULT SAAT WEB DIBUKA
     document.getElementById('tglKeluar').valueAsDate = new Date();
+
+    // AUTO FILL KETERANGAN
+    function autoFillKet() {
+        const kat = document.getElementById('katKeluar').value;
+        const ketInput = document.getElementById('ketKeluar');
+        if(kat === 'makan') ketInput.value = 'Beli Makan';
+        else if(kat === 'bbm') ketInput.value = 'Beli BBM';
+        else ketInput.value = ''; // Kosongkan untuk yang lain
+    }
+
+    // RUMUS KALKULASI DINAMIS (Wajib = 45% - Makan - BBM)
+    function hitungAlokasi(amt, monthStr) {
+        const year = new Date().getFullYear();
+        const daysInMonth = new Date(year, parseInt(monthStr), 0).getDate();
+        
+        const mkn = daysInMonth * 20000;
+        const bbm = Math.round(daysInMonth / 7) * 50000; // Est. 4 minggu = 200k
+        
+        let w = (amt * 0.45) - mkn - bbm;
+        if (w < 0) w = 0; // Jaga-jaga kalau gajinya sangat kecil
+        
+        const m = amt * 0.2;
+        const t = amt * 0.2;
+        const o = amt * 0.1;
+        const d = amt * 0.05;
+        
+        return { w, mkn, bbm, m, t, o, d };
+    }
 
     async function kirimCloud(payload) {
         const s = document.getElementById('status');
-        s.innerText = "☁️ SINKRONISASI...";
-        s.classList.remove('online');
+        s.innerText = "☁️ SINKRONISASI..."; s.classList.remove('online');
         try {
             await fetch(URL_CLOUD, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            s.innerText = "✅ CLOUD TERHUBUNG";
-            s.classList.add('online');
+            s.innerText = "✅ CLOUD TERHUBUNG"; s.classList.add('online');
         } catch (e) { s.innerText = "❌ ERROR CLOUD"; }
     }
 
-    function toggleHistory() {
-        showAllHistory = !showAllHistory;
-        update();
-    }
+    function toggleHistory() { showAllHistory = !showAllHistory; update(); }
 
     function update() {
-        // --- LOGIKA DASHBOARD (GAJI & PENGELUARAN) ---
         const fDash = document.getElementById('fBulanDash').value;
         const dashTitleGaji = document.getElementById('title-gaji');
         const dashTitleKeluar = document.getElementById('title-keluar');
         
-        let dSaldo = { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
-        let dInit = { wajib: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
-        let dGaji = 0;
-        let dKeluar = 0; // Total Pengeluaran
+        let dSaldo = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
+        let dInit = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
+        let dGaji = 0; let dKeluar = 0;
 
         if (fDash === 'all') {
             dSaldo = { ...db.saldo }; dInit = { ...db.initial }; dGaji = db.totalGaji;
-            dashTitleGaji.innerText = "🌟 TOTAL GAJI";
-            dashTitleKeluar.innerText = "💸 TOTAL KELUAR";
-            
-            // Hitung semua pengeluaran
+            dashTitleGaji.innerText = "🌟 TOTAL GAJI"; dashTitleKeluar.innerText = "💸 TOTAL KELUAR";
             db.logs.forEach(l => { if(l.type === 'OUT') dKeluar += l.amt; });
         } else {
             db.logs.forEach(l => {
                 if (l.month === fDash) {
                     if (l.type === 'IN') {
                         dGaji += l.amt;
-                        dInit.wajib += l.amt * 0.45; dInit.main += l.amt * 0.2; dInit.tabung += l.amt * 0.2; dInit.ortu += l.amt * 0.1; dInit.darurat += l.amt * 0.05;
-                        dSaldo.wajib += l.amt * 0.45; dSaldo.main += l.amt * 0.2; dSaldo.tabung += l.amt * 0.2; dSaldo.ortu += l.amt * 0.1; dSaldo.darurat += l.amt * 0.05;
+                        const alok = hitungAlokasi(l.amt, l.month);
+                        dInit.wajib += alok.w; dInit.makan += alok.mkn; dInit.bbm += alok.bbm;
+                        dInit.main += alok.m; dInit.tabung += alok.t; dInit.ortu += alok.o; dInit.darurat += alok.d;
+                        
+                        dSaldo.wajib += alok.w; dSaldo.makan += alok.mkn; dSaldo.bbm += alok.bbm;
+                        dSaldo.main += alok.m; dSaldo.tabung += alok.t; dSaldo.ortu += alok.o; dSaldo.darurat += alok.d;
                     } else if (l.type === 'OUT') {
-                        dSaldo[l.kat] -= l.amt;
-                        dKeluar += l.amt; // Hitung pengeluaran di bulan ini
+                        dSaldo[l.kat] -= l.amt; dKeluar += l.amt;
                     } else if (l.type === 'TRANSFER') {
-                        dSaldo[l.kat] -= l.amt;   
-                        dSaldo[l.kat2] += l.amt;  
-                        dInit[l.kat] -= l.amt;    
-                        dInit[l.kat2] += l.amt;   
+                        dSaldo[l.kat] -= l.amt; dSaldo[l.kat2] += l.amt;  
+                        dInit[l.kat] -= l.amt; dInit[l.kat2] += l.amt;   
                     }
                 }
             });
             const namaBulan = document.getElementById('fBulanDash').options[document.getElementById('fBulanDash').selectedIndex].text;
-            dashTitleGaji.innerText = "🌟 GAJI " + namaBulan;
-            dashTitleKeluar.innerText = "💸 KELUAR " + namaBulan;
+            dashTitleGaji.innerText = "🌟 GAJI " + namaBulan; dashTitleKeluar.innerText = "💸 KELUAR " + namaBulan;
         }
 
         document.getElementById('v-totalgaji').innerText = fmt(dGaji);
-        document.getElementById('v-totalkeluar').innerText = fmt(dKeluar); // Tampilkan total keluar
+        document.getElementById('v-totalkeluar').innerText = fmt(dKeluar);
 
-        ['wajib','main','tabung','ortu','darurat'].forEach(id => {
+        ['wajib','makan','bbm','main','tabung','ortu','darurat'].forEach(id => {
             document.getElementById('v-'+id).innerText = fmt(dSaldo[id]);
             const perc = dInit[id] > 0 ? (dSaldo[id] / dInit[id]) * 100 : 0;
             document.getElementById('p-'+id).style.width = Math.min(Math.max(perc, 0), 100) + "%";
         });
 
-        // --- LOGIKA RIWAYAT (MAX 3 ITEM) ---
+        // HISTORY
         const fMonth = document.getElementById('fBulan').value;
         const fKey = document.getElementById('fKeyword').value.toLowerCase();
         const logList = document.getElementById('logList');
         const btnShowAll = document.getElementById('btnShowAll');
         
-        let totalF = 0;
-        let matchCount = 0;
-        let visibleHtml = "";
-        let hiddenHtml = "";
+        let totalF = 0; let matchCount = 0;
+        let visibleHtml = ""; let hiddenHtml = "";
 
         db.logs.forEach((l, index) => {
             if((fMonth === 'all' || l.month === fMonth) && l.ket.toLowerCase().includes(fKey)) {
-                
                 let color, sign, katLabel, editBtnHtml;
                 
                 if (l.type === 'IN') {
@@ -372,23 +401,15 @@
                         </div>
                     </div>`;
 
-                if (matchCount < 3) {
-                    visibleHtml += itemHtml;
-                } else {
-                    hiddenHtml += itemHtml;
-                }
+                if (matchCount < 3) visibleHtml += itemHtml;
+                else hiddenHtml += itemHtml;
                 matchCount++;
             }
         });
 
-        // Terapkan ke HTML berdasarkan State
-        if (showAllHistory) {
-            logList.innerHTML = visibleHtml + hiddenHtml;
-        } else {
-            logList.innerHTML = visibleHtml;
-        }
+        if (showAllHistory) logList.innerHTML = visibleHtml + hiddenHtml;
+        else logList.innerHTML = visibleHtml;
 
-        // Tampilkan atau sembunyikan tombol Show All
         if (matchCount > 3) {
             btnShowAll.style.display = 'block';
             if (showAllHistory) {
@@ -405,15 +426,13 @@
         document.getElementById('statsBox').style.display = (fKey || fMonth !== 'all') ? "block" : "none";
         document.getElementById('totalFiltered').innerText = fmt(totalF);
 
-        // Autocomplete
         const hintList = document.getElementById('hintList');
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v14', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v15', JSON.stringify(db));
     }
 
-    // --- FITUR SUNTIK DANA ---
     function suntikDana() {
         const dari = document.getElementById('suntikDari').value;
         const ke = document.getElementById('suntikKe').value;
@@ -433,14 +452,11 @@
         const ketSuntik = `Suntik: ${dari.toUpperCase()} ➡️ ${ke.toUpperCase()}`;
         const payload = { date: dateStr, kat: dari, kat2: ke, ket: ketSuntik, type: 'TRANSFER', amt: nom, month: bln };
         db.logs.unshift(payload);
-        
         kirimCloud({ date: dateStr, kat: `${dari.toUpperCase()} -> ${ke.toUpperCase()}`, ket: ketSuntik, type: 'TRANSFER', amt: nom, month: bln });
 
-        document.getElementById('suntikNom').value = "";
-        update();
+        document.getElementById('suntikNom').value = ""; update();
     }
 
-    // POP-UP EDIT 
     function openModal(index) {
         const l = db.logs[index];
         document.getElementById('editIndex').value = index;
@@ -456,6 +472,8 @@
         } else {
             katSelect.disabled = false; katSelect.style.opacity = "1";
             katSelect.innerHTML = `
+                <option value="makan" ${l.kat === 'makan' ? 'selected' : ''}>🍛 Makan</option>
+                <option value="bbm" ${l.kat === 'bbm' ? 'selected' : ''}>⛽ BBM</option>
                 <option value="wajib" ${l.kat === 'wajib' ? 'selected' : ''}>🟢 Wajib</option>
                 <option value="main" ${l.kat === 'main' ? 'selected' : ''}>🎮 Main</option>
                 <option value="tabung" ${l.kat === 'tabung' ? 'selected' : ''}>💎 Tabung</option>
@@ -480,23 +498,26 @@
         
         if(l.type === 'IN') {
             db.totalGaji -= l.amt;
-            const w = l.amt*0.45, m = l.amt*0.2, t = l.amt*0.2, o = l.amt*0.1, d = l.amt*0.05;
-            db.saldo.wajib -= w; db.saldo.main -= m; db.saldo.tabung -= t; db.saldo.ortu -= o; db.saldo.darurat -= d;
-            db.initial.wajib -= w; db.initial.main -= m; db.initial.tabung -= t; db.initial.ortu -= o; db.initial.darurat -= d;
+            const alokLama = hitungAlokasi(l.amt, l.month);
+            db.saldo.wajib -= alokLama.w; db.saldo.makan -= alokLama.mkn; db.saldo.bbm -= alokLama.bbm;
+            db.saldo.main -= alokLama.m; db.saldo.tabung -= alokLama.t; db.saldo.ortu -= alokLama.o; db.saldo.darurat -= alokLama.d;
+            db.initial.wajib -= alokLama.w; db.initial.makan -= alokLama.mkn; db.initial.bbm -= alokLama.bbm;
+            db.initial.main -= alokLama.m; db.initial.tabung -= alokLama.t; db.initial.ortu -= alokLama.o; db.initial.darurat -= alokLama.d;
         } else {
             db.saldo[l.kat] += l.amt; 
         }
 
         if(l.type === 'IN') {
             db.totalGaji += newAmt;
-            const w = newAmt*0.45, m = newAmt*0.2, t = newAmt*0.2, o = newAmt*0.1, d = newAmt*0.05;
-            db.saldo.wajib += w; db.saldo.main += m; db.saldo.tabung += t; db.saldo.ortu += o; db.saldo.darurat += d;
-            db.initial.wajib += w; db.initial.main += m; db.initial.tabung += t; db.initial.ortu += o; db.initial.darurat += d;
+            const alokBaru = hitungAlokasi(newAmt, l.month);
+            db.saldo.wajib += alokBaru.w; db.saldo.makan += alokBaru.mkn; db.saldo.bbm += alokBaru.bbm;
+            db.saldo.main += alokBaru.m; db.saldo.tabung += alokBaru.t; db.saldo.ortu += alokBaru.o; db.saldo.darurat += alokBaru.d;
+            db.initial.wajib += alokBaru.w; db.initial.makan += alokBaru.mkn; db.initial.bbm += alokBaru.bbm;
+            db.initial.main += alokBaru.m; db.initial.tabung += alokBaru.t; db.initial.ortu += alokBaru.o; db.initial.darurat += alokBaru.d;
         } else {
             if(newAmt > db.saldo[newKat]) { 
                 alert("Gagal Edit: Nominal baru lebih besar dari sisa saldo di kategori " + newKat.toUpperCase() + "!");
-                db.saldo[l.kat] -= l.amt; 
-                closeModal(); return update(); 
+                db.saldo[l.kat] -= l.amt; closeModal(); return update(); 
             }
             db.saldo[newKat] -= newAmt; 
         }
@@ -513,9 +534,11 @@
         
         if(l.type === 'IN') {
             db.totalGaji -= l.amt;
-            const w = l.amt*0.45, m = l.amt*0.2, t = l.amt*0.2, o = l.amt*0.1, d = l.amt*0.05;
-            db.saldo.wajib -= w; db.saldo.main -= m; db.saldo.tabung -= t; db.saldo.ortu -= o; db.saldo.darurat -= d;
-            db.initial.wajib -= w; db.initial.main -= m; db.initial.tabung -= t; db.initial.ortu -= o; db.initial.darurat -= d;
+            const alok = hitungAlokasi(l.amt, l.month);
+            db.saldo.wajib -= alok.w; db.saldo.makan -= alok.mkn; db.saldo.bbm -= alok.bbm;
+            db.saldo.main -= alok.m; db.saldo.tabung -= alok.t; db.saldo.ortu -= alok.o; db.saldo.darurat -= alok.d;
+            db.initial.wajib -= alok.w; db.initial.makan -= alok.mkn; db.initial.bbm -= alok.bbm;
+            db.initial.main -= alok.m; db.initial.tabung -= alok.t; db.initial.ortu -= alok.o; db.initial.darurat -= alok.d;
         } else if(l.type === 'OUT') {
             db.saldo[l.kat] += l.amt; 
         } else if(l.type === 'TRANSFER') {
@@ -533,14 +556,18 @@
         const blnVal = blnDropdown.value;
         const blnText = blnDropdown.options[blnDropdown.selectedIndex].text; 
 
-        if(!amt) return;
+        if(!amt) return alert("Masukkan nominal gaji!");
         
         const now = new Date();
         const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
         
-        const w = amt * 0.45, m = amt * 0.2, t = amt * 0.2, o = amt * 0.1, d = amt * 0.05;
-        db.saldo.wajib += w; db.saldo.main += m; db.saldo.tabung += t; db.saldo.ortu += o; db.saldo.darurat += d;
-        db.initial.wajib += w; db.initial.main += m; db.initial.tabung += t; db.initial.ortu += o; db.initial.darurat += d;
+        const alok = hitungAlokasi(amt, blnVal);
+        db.saldo.wajib += alok.w; db.saldo.makan += alok.mkn; db.saldo.bbm += alok.bbm;
+        db.saldo.main += alok.m; db.saldo.tabung += alok.t; db.saldo.ortu += alok.o; db.saldo.darurat += alok.d;
+        
+        db.initial.wajib += alok.w; db.initial.makan += alok.mkn; db.initial.bbm += alok.bbm;
+        db.initial.main += alok.m; db.initial.tabung += alok.t; db.initial.ortu += alok.o; db.initial.darurat += alok.d;
+        
         db.totalGaji += amt;
         
         const payload = { date: dateStr, kat: 'PEMASUKAN', ket: "Gaji Bulan " + blnText, type: 'IN', amt: amt, month: blnVal };
@@ -554,17 +581,14 @@
         const ket = document.getElementById('ketKeluar').value;
         const nom = parseFloat(document.getElementById('nomKeluar').value);
         const bln = document.getElementById('blnGaji').value; 
-        
-        // MENGAMBIL TANGGAL DARI INPUT KALENDER
         const tglInput = document.getElementById('tglKeluar').value;
 
+        if(!kat) return alert("Pilih kategori pengeluaran dulu!");
         if(!ket || !nom) return alert("Mohon isi keterangan dan nominal pengeluaran!");
         if(nom > db.saldo[kat]) return alert("Waduh, saldo " + kat.toUpperCase() + " kamu nggak cukup nih!");
 
         const now = new Date();
         let dateStr;
-        
-        // Jika ada input tanggal, gabungkan dengan jam saat ini. Jika tidak, pakai full waktu sekarang.
         if(tglInput) {
             const d = new Date(tglInput);
             dateStr = d.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
@@ -578,10 +602,10 @@
         if(!db.hints.includes(ket)) db.hints.push(ket);
         kirimCloud(payload);
         
-        // Reset form setelah simpan
+        document.getElementById('katKeluar').selectedIndex = 0;
         document.getElementById('ketKeluar').value = "";
         document.getElementById('nomKeluar').value = "";
-        document.getElementById('tglKeluar').valueAsDate = new Date(); // Reset kalender ke hari ini
+        document.getElementById('tglKeluar').valueAsDate = new Date(); 
         update();
     }
 
@@ -617,9 +641,7 @@
     
     months.forEach((m, i) => {
         const opt = `<option value="${i+1}">${m.toUpperCase()}</option>`;
-        blnGaji.innerHTML += opt;
-        fBulan.innerHTML += opt;
-        fBulanDash.innerHTML += opt;
+        blnGaji.innerHTML += opt; fBulan.innerHTML += opt; fBulanDash.innerHTML += opt;
     });
 
     document.getElementById('blnGaji').value = new Date().getMonth() + 1;
@@ -627,4 +649,3 @@
 </script>
 </body>
 </html>
-
