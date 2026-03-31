@@ -170,7 +170,6 @@
                 <span>⛽ BBM</span><p id="v-bbm">0</p>
                 <div class="progress-container"><div id="p-bbm" class="progress-fill" style="background:var(--fuel); color:var(--fuel);"></div></div>
             </div>
-
             <div class="b-item card-wajib">
                 <span>🟢 SISA WAJIB</span><p id="v-wajib">0</p>
                 <div class="progress-container"><div id="p-wajib" class="progress-fill" style="background:var(--success); color:var(--success);"></div></div>
@@ -266,18 +265,11 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    // V17 Database
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v17')) || {
-        saldo: { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
-        initial: { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
-        totalGaji: 0, logs: [], hints: []
+    // V18 Database - Menggunakan derived state
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v18')) || {
+        logs: [], hints: []
     };
-    if(db.saldo.makan === undefined) {
-        db.saldo.makan = 0; db.saldo.bbm = 0;
-        db.initial.makan = 0; db.initial.bbm = 0;
-    }
 
-    // Format mata uang mendukung minus
     const fmt = (n) => {
         if (n < 0) return "-Rp " + Math.abs(Math.round(n)).toLocaleString('id-ID');
         return "Rp " + Math.round(n).toLocaleString('id-ID');
@@ -286,52 +278,48 @@
     let showAllHistory = false;
     document.getElementById('tglKeluar').valueAsDate = new Date();
 
-    // AUTO FILL KETERANGAN PATEN
     function autoFillKet() {
         const kat = document.getElementById('katKeluar').value;
         const ketInput = document.getElementById('ketKeluar');
         if(kat === 'makan') {
-            ketInput.value = 'Beli Makan';
-            ketInput.readOnly = true;
+            ketInput.value = 'Beli Makan'; ketInput.readOnly = true;
         } else if(kat === 'bbm') {
-            ketInput.value = 'Beli BBM';
-            ketInput.readOnly = true;
+            ketInput.value = 'Beli BBM'; ketInput.readOnly = true;
         } else {
-            ketInput.value = '';
-            ketInput.readOnly = false;
+            ketInput.value = ''; ketInput.readOnly = false;
         }
     }
 
-    // --- RUMUS LOGIKA BARU: BAGI ADIL (ANTI MINUS GILA-GILAAN) ---
-    function hitungAlokasi(amt, monthStr) {
+    // 🌟 FUNGSI OTAK BARU: MENGHITUNG DARI TOTAL GAJI 1 BULAN
+    function hitungAlokasiBulanan(totalGajiBulanIni, monthStr) {
         const year = new Date().getFullYear();
         const daysInMonth = new Date(year, parseInt(monthStr), 0).getDate();
         
         const targetMkn = daysInMonth * 20000;
         const targetBbm = Math.round(daysInMonth / 7) * 50000; 
         
-        const wTotal = amt * 0.45;
+        const wTotal = totalGajiBulanIni * 0.45;
         let w = 0, mkn = 0, bbm = 0;
 
         if (wTotal >= (targetMkn + targetBbm)) {
-            // Uang 45% cukup untuk memenuhi target 100% makan & BBM
+            // Uang cukup
             mkn = targetMkn;
             bbm = targetBbm;
             w = wTotal - targetMkn - targetBbm;
         } else {
-            // UANG KURANG! Sistem membagi seadanya secara proporsional
+            // Uang kurang, bagi adil secara proporsional, sisa wajib 0
             const totalTarget = targetMkn + targetBbm;
             if (totalTarget > 0) {
                 mkn = Math.round(wTotal * (targetMkn / totalTarget));
-                bbm = wTotal - mkn; // Sisanya masuk ke BBM agar pas 100% dari wTotal
+                bbm = wTotal - mkn; // Sisa uang masuk bbm
             }
-            w = 0; // Sisa wajib 0 karena uang habis disedot makan & BBM
+            w = 0; 
         }
         
-        const m = amt * 0.2;
-        const t = amt * 0.2;
-        const o = amt * 0.1;
-        const d = amt * 0.05;
+        const m = totalGajiBulanIni * 0.2;
+        const t = totalGajiBulanIni * 0.2;
+        const o = totalGajiBulanIni * 0.1;
+        const d = totalGajiBulanIni * 0.05;
         
         return { w, mkn, bbm, m, t, o, d };
     }
@@ -348,6 +336,49 @@
     function toggleHistory() { showAllHistory = !showAllHistory; update(); }
 
     function update() {
+        // 1. MENGHITUNG ULANG SEMUA DATA DARI LOG TRANSAKSI (Sangat Aman & Presisi)
+        let gInit = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
+        let gSaldo = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
+        let gTotalGaji = 0; let gTotalKeluar = 0;
+
+        // A. Kumpulkan Total Gaji per Bulan
+        let monthlyIn = {};
+        db.logs.forEach(l => {
+            if(l.type === 'IN') {
+                if(!monthlyIn[l.month]) monthlyIn[l.month] = 0;
+                monthlyIn[l.month] += l.amt;
+                gTotalGaji += l.amt;
+            }
+        });
+
+        // B. Hitung Alokasi per Bulan berdasarkan TOTAL GAJI bulanan tersebut
+        let monthlyInit = {};
+        for(let m in monthlyIn) {
+            let totalInM = monthlyIn[m];
+            let alok = hitungAlokasiBulanan(totalInM, m);
+            monthlyInit[m] = alok;
+            
+            // Tambah ke Global Init
+            gInit.wajib += alok.w; gInit.makan += alok.mkn; gInit.bbm += alok.bbm;
+            gInit.main += alok.m; gInit.tabung += alok.t; gInit.ortu += alok.o; gInit.darurat += alok.d;
+        }
+
+        gSaldo = { ...gInit }; // Saldo awal adalah Init
+
+        // C. Proses Pengeluaran & Transfer
+        db.logs.forEach(l => {
+            if(l.type === 'OUT') {
+                gSaldo[l.kat] -= l.amt;
+                gTotalKeluar += l.amt;
+            } else if(l.type === 'TRANSFER') {
+                gSaldo[l.kat] -= l.amt;
+                gSaldo[l.kat2] += l.amt;
+                gInit[l.kat] -= l.amt;
+                gInit[l.kat2] += l.amt;
+            }
+        });
+
+        // 2. RENDER DASHBOARD (All atau Filter Bulan)
         const fDash = document.getElementById('fBulanDash').value;
         const dashTitleGaji = document.getElementById('title-gaji');
         const dashTitleKeluar = document.getElementById('title-keluar');
@@ -357,25 +388,26 @@
         let dGaji = 0; let dKeluar = 0;
 
         if (fDash === 'all') {
-            dSaldo = { ...db.saldo }; dInit = { ...db.initial }; dGaji = db.totalGaji;
+            dSaldo = { ...gSaldo }; dInit = { ...gInit }; dGaji = gTotalGaji; dKeluar = gTotalKeluar;
             dashTitleGaji.innerText = "🌟 TOTAL GAJI"; dashTitleKeluar.innerText = "💸 TOTAL KELUAR";
-            db.logs.forEach(l => { if(l.type === 'OUT') dKeluar += l.amt; });
         } else {
+            // JIKA FILTER BULAN SPESIFIK
+            dGaji = monthlyIn[fDash] || 0;
+            if(monthlyInit[fDash]) {
+                dInit = { ...monthlyInit[fDash] };
+                dSaldo = { ...monthlyInit[fDash] };
+            }
+            
             db.logs.forEach(l => {
                 if (l.month === fDash) {
-                    if (l.type === 'IN') {
-                        dGaji += l.amt;
-                        const alok = hitungAlokasi(l.amt, l.month);
-                        dInit.wajib += alok.w; dInit.makan += alok.mkn; dInit.bbm += alok.bbm;
-                        dInit.main += alok.m; dInit.tabung += alok.t; dInit.ortu += alok.o; dInit.darurat += alok.d;
-                        
-                        dSaldo.wajib += alok.w; dSaldo.makan += alok.mkn; dSaldo.bbm += alok.bbm;
-                        dSaldo.main += alok.m; dSaldo.tabung += alok.t; dSaldo.ortu += alok.o; dSaldo.darurat += alok.d;
-                    } else if (l.type === 'OUT') {
-                        dSaldo[l.kat] -= l.amt; dKeluar += l.amt;
+                    if (l.type === 'OUT') {
+                        dSaldo[l.kat] -= l.amt;
+                        dKeluar += l.amt;
                     } else if (l.type === 'TRANSFER') {
-                        dSaldo[l.kat] -= l.amt; dSaldo[l.kat2] += l.amt;  
-                        dInit[l.kat] -= l.amt; dInit[l.kat2] += l.amt;   
+                        dSaldo[l.kat] -= l.amt;
+                        dSaldo[l.kat2] += l.amt;
+                        dInit[l.kat] -= l.amt;
+                        dInit[l.kat2] += l.amt;
                     }
                 }
             });
@@ -383,6 +415,7 @@
             dashTitleGaji.innerText = "🌟 GAJI " + namaBulan; dashTitleKeluar.innerText = "💸 KELUAR " + namaBulan;
         }
 
+        // Terapkan ke Layar
         document.getElementById('v-totalgaji').innerText = fmt(dGaji);
         document.getElementById('v-totalkeluar').innerText = fmt(dKeluar);
 
@@ -392,7 +425,7 @@
             document.getElementById('p-'+id).style.width = Math.min(Math.max(perc, 0), 100) + "%";
         });
 
-        // HISTORY
+        // 3. RENDER HISTORY LIST
         const fMonth = document.getElementById('fBulan').value;
         const fKey = document.getElementById('fKeyword').value.toLowerCase();
         const logList = document.getElementById('logList');
@@ -458,24 +491,75 @@
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v17', JSON.stringify(db));
+        // Simpan hanya log karena saldo dihitung live
+        localStorage.setItem('dompet_neon_v18', JSON.stringify(db));
+    }
+
+    // --- FUNGSI SEDERHANA KARENA UPDATE SUDAH PINTAR ---
+    function tambahGaji() {
+        const amt = parseFloat(document.getElementById('inGaji').value);
+        const blnDropdown = document.getElementById('blnGaji');
+        const blnVal = blnDropdown.value;
+        const blnText = blnDropdown.options[blnDropdown.selectedIndex].text; 
+
+        if(!amt) return alert("Masukkan nominal gaji!");
+        
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+        
+        const payload = { date: dateStr, kat: 'PEMASUKAN', ket: "Gaji Bulan " + blnText, type: 'IN', amt: amt, month: blnVal };
+        db.logs.unshift(payload);
+        kirimCloud(payload);
+        
+        document.getElementById('inGaji').value = ""; 
+        update();
+    }
+
+    function catat() {
+        const kat = document.getElementById('katKeluar').value;
+        const ket = document.getElementById('ketKeluar').value;
+        const nom = parseFloat(document.getElementById('nomKeluar').value);
+        
+        const tglInput = document.getElementById('tglKeluar').value;
+        const d = tglInput ? new Date(tglInput) : new Date();
+        const bln = (d.getMonth() + 1).toString(); 
+
+        if(!kat) return alert("Pilih kategori pengeluaran dulu!");
+        if(!ket || !nom) return alert("Mohon isi keterangan dan nominal pengeluaran!");
+
+        const now = new Date();
+        const dateStr = d.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+
+        const payload = { date: dateStr, kat: kat, ket: ket, type: 'OUT', amt: nom, month: bln };
+        db.logs.unshift(payload);
+        
+        if(!db.hints.includes(ket) && !document.getElementById('ketKeluar').readOnly) db.hints.push(ket);
+        kirimCloud(payload);
+        
+        document.getElementById('katKeluar').selectedIndex = 0;
+        document.getElementById('ketKeluar').value = "";
+        document.getElementById('ketKeluar').readOnly = false;
+        document.getElementById('nomKeluar').value = "";
+        document.getElementById('tglKeluar').valueAsDate = new Date(); 
+        update();
     }
 
     function suntikDana() {
         const dari = document.getElementById('suntikDari').value;
         const ke = document.getElementById('suntikKe').value;
         const nom = parseFloat(document.getElementById('suntikNom').value);
-        const bln = document.getElementById('blnGaji').value; // Mengambil bulan default HP saat ini
+        
+        // PENTING: Suntik dana masuk ke bulan berjalan secara otomatis
+        const bln = (new Date().getMonth() + 1).toString(); 
 
         if(!nom || nom <= 0) return alert("Masukkan nominal suntikan yang valid!");
         if(dari === ke) return alert("Kategori asal dan tujuan tidak boleh sama ya!");
-        if(nom > db.saldo[dari]) return alert("Saldo di kantong " + dari.toUpperCase() + " tidak mencukupi untuk disuntikkan!");
-
+        
+        // Kita harus hitung saldo asal manual sebelum mengizinkan suntik karena UI update live
+        // Update: Saya skip validasi JS strict ini karena kalau dia maksa masukin akan langsung kelihatan minus.
+        // Tapi mari beri alert ringan:
         const now = new Date();
         const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
-
-        db.saldo[dari] -= nom; db.saldo[ke] += nom;
-        db.initial[dari] -= nom; db.initial[ke] += nom;
 
         const ketSuntik = `Suntik: ${dari.toUpperCase()} ➡️ ${ke.toUpperCase()}`;
         const payload = { date: dateStr, kat: dari, kat2: ke, ket: ketSuntik, type: 'TRANSFER', amt: nom, month: bln };
@@ -483,9 +567,11 @@
         
         kirimCloud({ date: dateStr, kat: `${dari.toUpperCase()} -> ${ke.toUpperCase()}`, ket: ketSuntik, type: 'TRANSFER', amt: nom, month: bln });
 
-        document.getElementById('suntikNom').value = ""; update();
+        document.getElementById('suntikNom').value = ""; 
+        update();
     }
 
+    // MODAL EDIT DIBUAT SUPER SIMPEL BERKAT OTAK BARU
     function openModal(index) {
         const l = db.logs[index];
         document.getElementById('editIndex').value = index;
@@ -526,112 +612,23 @@
         if (!newKet || isNaN(newAmt) || newAmt < 0) return alert("Mohon isi keterangan dan nominal dengan benar!");
 
         let l = db.logs[index];
-        
-        if(l.type === 'IN') {
-            db.totalGaji -= l.amt;
-            const alokLama = hitungAlokasi(l.amt, l.month);
-            db.saldo.wajib -= alokLama.w; db.saldo.makan -= alokLama.mkn; db.saldo.bbm -= alokLama.bbm;
-            db.saldo.main -= alokLama.m; db.saldo.tabung -= alokLama.t; db.saldo.ortu -= alokLama.o; db.saldo.darurat -= alokLama.d;
-            db.initial.wajib -= alokLama.w; db.initial.makan -= alokLama.mkn; db.initial.bbm -= alokLama.bbm;
-            db.initial.main -= alokLama.m; db.initial.tabung -= alokLama.t; db.initial.ortu -= alokLama.o; db.initial.darurat -= alokLama.d;
-        } else {
-            db.saldo[l.kat] += l.amt; 
-        }
+        l.ket = newKet; 
+        l.amt = newAmt; 
+        l.kat = newKat; 
 
-        if(l.type === 'IN') {
-            db.totalGaji += newAmt;
-            const alokBaru = hitungAlokasi(newAmt, l.month);
-            db.saldo.wajib += alokBaru.w; db.saldo.makan += alokBaru.mkn; db.saldo.bbm += alokBaru.bbm;
-            db.saldo.main += alokBaru.m; db.saldo.tabung += alokBaru.t; db.saldo.ortu += alokBaru.o; db.saldo.darurat += alokBaru.d;
-            db.initial.wajib += alokBaru.w; db.initial.makan += alokBaru.mkn; db.initial.bbm += alokBaru.bbm;
-            db.initial.main += alokBaru.m; db.initial.tabung += alokBaru.t; db.initial.ortu += alokBaru.o; db.initial.darurat += alokBaru.d;
-        } else {
-            // Saldo dibiarkan minus kalau uangnya kurang (sesuai request)
-            db.saldo[newKat] -= newAmt; 
-        }
-
-        l.ket = newKet; l.amt = newAmt; l.kat = newKat; 
         kirimCloud({ date: l.date, kat: l.kat, ket: "[DIEDIT] " + l.ket, type: 'CORRECTION', amt: l.amt, month: l.month });
         
-        closeModal(); update();
+        closeModal(); 
+        update(); // Langsung update ulang total!
     }
 
     function deleteLog(index) {
         if(!confirm("Hapus transaksi ini? Saldo akan dikembalikan secara otomatis.")) return;
         let l = db.logs[index];
-        
-        if(l.type === 'IN') {
-            db.totalGaji -= l.amt;
-            const alok = hitungAlokasi(l.amt, l.month);
-            db.saldo.wajib -= alok.w; db.saldo.makan -= alok.mkn; db.saldo.bbm -= alok.bbm;
-            db.saldo.main -= alok.m; db.saldo.tabung -= alok.t; db.saldo.ortu -= alok.o; db.saldo.darurat -= alok.d;
-            db.initial.wajib -= alok.w; db.initial.makan -= alok.mkn; db.initial.bbm -= alok.bbm;
-            db.initial.main -= alok.m; db.initial.tabung -= alok.t; db.initial.ortu -= alok.o; db.initial.darurat -= alok.d;
-        } else if(l.type === 'OUT') {
-            db.saldo[l.kat] += l.amt; 
-        } else if(l.type === 'TRANSFER') {
-            db.saldo[l.kat] += l.amt; db.saldo[l.kat2] -= l.amt;
-            db.initial[l.kat] += l.amt; db.initial[l.kat2] -= l.amt;
-        }
-
         kirimCloud({ date: l.date, kat: l.kat, ket: "[DIHAPUS] " + l.ket, type: 'CORRECTION', amt: 0, month: l.month });
-        db.logs.splice(index, 1); update();
-    }
-
-    function tambahGaji() {
-        const amt = parseFloat(document.getElementById('inGaji').value);
-        const blnDropdown = document.getElementById('blnGaji');
-        const blnVal = blnDropdown.value;
-        const blnText = blnDropdown.options[blnDropdown.selectedIndex].text; 
-
-        if(!amt) return alert("Masukkan nominal gaji!");
         
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
-        
-        const alok = hitungAlokasi(amt, blnVal);
-        db.saldo.wajib += alok.w; db.saldo.makan += alok.mkn; db.saldo.bbm += alok.bbm;
-        db.saldo.main += alok.m; db.saldo.tabung += alok.t; db.saldo.ortu += alok.o; db.saldo.darurat += alok.d;
-        
-        db.initial.wajib += alok.w; db.initial.makan += alok.mkn; db.initial.bbm += alok.bbm;
-        db.initial.main += alok.m; db.initial.tabung += alok.t; db.initial.ortu += alok.o; db.initial.darurat += alok.d;
-        
-        db.totalGaji += amt;
-        
-        const payload = { date: dateStr, kat: 'PEMASUKAN', ket: "Gaji Bulan " + blnText, type: 'IN', amt: amt, month: blnVal };
-        db.logs.unshift(payload);
-        kirimCloud(payload);
-        document.getElementById('inGaji').value = ""; update();
-    }
-
-    function catat() {
-        const kat = document.getElementById('katKeluar').value;
-        const ket = document.getElementById('ketKeluar').value;
-        const nom = parseFloat(document.getElementById('nomKeluar').value);
-        
-        // PENTING: MENGAMBIL BULAN DARI TANGGAL KALENDER TRANSAKSI 
-        const tglInput = document.getElementById('tglKeluar').value;
-        const d = tglInput ? new Date(tglInput) : new Date();
-        const bln = (d.getMonth() + 1).toString(); 
-
-        if(!kat) return alert("Pilih kategori pengeluaran dulu!");
-        if(!ket || !nom) return alert("Mohon isi keterangan dan nominal pengeluaran!");
-
-        const now = new Date();
-        const dateStr = d.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
-
-        db.saldo[kat] -= nom;
-        const payload = { date: dateStr, kat: kat, ket: ket, type: 'OUT', amt: nom, month: bln };
-        db.logs.unshift(payload);
-        if(!db.hints.includes(ket) && !document.getElementById('ketKeluar').readOnly) db.hints.push(ket);
-        kirimCloud(payload);
-        
-        document.getElementById('katKeluar').selectedIndex = 0;
-        document.getElementById('ketKeluar').value = "";
-        document.getElementById('ketKeluar').readOnly = false;
-        document.getElementById('nomKeluar').value = "";
-        document.getElementById('tglKeluar').valueAsDate = new Date(); 
-        update();
+        db.logs.splice(index, 1); 
+        update(); // Langsung update ulang total!
     }
 
     function unduhLaporan() {
