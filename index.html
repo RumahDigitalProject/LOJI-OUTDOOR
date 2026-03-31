@@ -32,6 +32,9 @@
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .filter-mini { width: auto; padding: 8px 10px; margin-bottom: 0; font-size: 11px; border-radius: 12px; background: rgba(0,0,0,0.4); color: var(--accent); border: 1px solid var(--accent); cursor: pointer; text-transform: uppercase; font-weight: 800; }
 
+        /* Health Indicator Banner */
+        .health-banner { grid-column: span 2; padding: 12px 15px; border-radius: 16px; text-align: center; font-weight: 800; font-size: 12px; letter-spacing: 0.5px; transition: 0.4s ease; display: flex; justify-content: center; align-items: center; text-transform: uppercase; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
         /* Dashboard Grid */
         .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .b-item { padding: 15px; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s; display: flex; flex-direction: column; justify-content: center; }
@@ -150,6 +153,9 @@
                 </div>
             </div>
 
+            <div id="healthIndicator" class="health-banner">
+                </div>
+
             <div class="b-item card-makan">
                 <span>🍛 MAKAN</span><p id="v-makan">0</p>
                 <div class="progress-container"><div id="p-makan" class="progress-fill" style="background:var(--food); color:var(--food);"></div></div>
@@ -264,7 +270,7 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v20')) || { logs: [], hints: [] };
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v21')) || { logs: [], hints: [] };
 
     const fmt = (n) => {
         if (n < 0 || isNaN(n)) return "-Rp " + Math.abs(Math.round(n || 0)).toLocaleString('id-ID');
@@ -322,12 +328,10 @@
 
     function toggleHistory() { showAllHistory = !showAllHistory; update(); }
 
-    // FITUR CERDAS: INTIP SALDO REALTIME SAAT MAU SUNTIK
     function updateSuntikInfo() {
         const dari = document.getElementById('suntikDari').value;
         const blnDari = document.getElementById('suntikDariBulan').value;
         
-        // Kalkulasi saldo KHUSUS untuk bulan tersebut
         let totalGajiBln = 0;
         db.logs.forEach(l => { if(l.type === 'IN' && l.month === blnDari) totalGajiBln += l.amt; });
         
@@ -340,7 +344,7 @@
                 if(l.type === 'OUT' && l.kat === dari) saldoBulanIni -= l.amt;
                 if(l.type === 'TRANSFER_OUT' && l.kat === dari) saldoBulanIni -= l.amt;
                 if(l.type === 'TRANSFER_IN' && l.kat === dari) saldoBulanIni += l.amt;
-                if(l.type === 'TRANSFER') { // Jaga-jaga data lama
+                if(l.type === 'TRANSFER') { 
                     if(l.kat === dari) saldoBulanIni -= l.amt;
                     if(l.kat2 === dari) saldoBulanIni += l.amt;
                 }
@@ -348,7 +352,7 @@
         });
 
         document.getElementById('infoSuntik').innerText = `💳 Saldo: ${fmt(saldoBulanIni)}`;
-        return saldoBulanIni; // Mengembalikan nilai untuk dipakai saat validasi
+        return saldoBulanIni; 
     }
 
     function update() {
@@ -405,7 +409,6 @@
             dashTitleGaji.innerText = "🌟 TOTAL GAJI"; dashTitleKeluar.innerText = "💸 TOTAL KELUAR";
         } else {
             dGaji = monthlyIn[fDash] || 0;
-            // FIX BUG "Rp 6" -> Mappingnya dibenarkan
             if(monthlyInit[fDash]) {
                 let alok = monthlyInit[fDash];
                 dInit.wajib = alok.w; dInit.makan = alok.mkn; dInit.bbm = alok.bbm;
@@ -434,13 +437,46 @@
         document.getElementById('v-totalgaji').innerText = fmt(dGaji);
         document.getElementById('v-totalkeluar').innerText = fmt(dKeluar);
 
+        // 🌟 UPDATE LOGIKA HEALTH INDICATOR BANNER
+        const healthBox = document.getElementById('healthIndicator');
+        const sisaUangReil = dGaji - dKeluar;
+        
+        if (dGaji === 0) {
+            healthBox.innerHTML = "💤 Belum ada pemasukan nih. Yuk semangat!";
+            healthBox.style.background = "rgba(255,255,255,0.05)";
+            healthBox.style.color = "#94a3b8";
+            healthBox.style.border = "1px solid rgba(255,255,255,0.1)";
+        } else {
+            const percSehat = (sisaUangReil / dGaji) * 100;
+            if (percSehat >= 50) {
+                healthBox.innerHTML = "😎 Dompet tebel! Masih aman jaya sentosa.";
+                healthBox.style.background = "linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4))";
+                healthBox.style.color = "#34d399";
+                healthBox.style.border = "1px solid rgba(16, 185, 129, 0.5)";
+            } else if (percSehat >= 20) {
+                healthBox.innerHTML = "😌 Saldo lumayan. Ingat tahan godaan nongkrong!";
+                healthBox.style.background = "linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.4))";
+                healthBox.style.color = "#fcd34d";
+                healthBox.style.border = "1px solid rgba(245, 158, 11, 0.5)";
+            } else if (percSehat > 0) {
+                healthBox.innerHTML = "🚨 Waspada! Saldo menipis, mode hemat aktif.";
+                healthBox.style.background = "linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.4))";
+                healthBox.style.color = "#fdba74";
+                healthBox.style.border = "1px solid rgba(249, 115, 22, 0.5)";
+            } else {
+                healthBox.innerHTML = "🥵 GAWAT! Saldo minus alias boncos total, Bos!";
+                healthBox.style.background = "linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4))";
+                healthBox.style.color = "#fda4af";
+                healthBox.style.border = "1px solid rgba(244, 63, 94, 0.5)";
+            }
+        }
+
         ['wajib','makan','bbm','main','tabung','ortu','darurat'].forEach(id => {
             document.getElementById('v-'+id).innerText = fmt(dSaldo[id]);
             const perc = dInit[id] > 0 ? (dSaldo[id] / dInit[id]) * 100 : 0;
             document.getElementById('p-'+id).style.width = Math.min(Math.max(perc, 0), 100) + "%";
         });
 
-        // HISTORY LIST
         const fMonth = document.getElementById('fBulan').value;
         const fKey = document.getElementById('fKeyword').value.toLowerCase();
         const logList = document.getElementById('logList');
@@ -508,7 +544,7 @@
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v20', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v21', JSON.stringify(db));
     }
 
     function tambahGaji() {
@@ -559,7 +595,6 @@
         update();
     }
 
-    // FITUR CERDAS: SUNTIK DANA LINTAS BULAN
     function suntikDana() {
         const dari = document.getElementById('suntikDari').value;
         const ke = document.getElementById('suntikKe').value;
@@ -570,7 +605,6 @@
         if(!nom || nom <= 0) return alert("Masukkan nominal suntikan yang valid!");
         if(dari === ke && blnDari === blnKe) return alert("Kantong dan bulan asal/tujuan tidak boleh persis sama!");
 
-        // Validasi Cek Saldo Bulan Asal
         const saldoBulanIni = updateSuntikInfo();
         if(nom > saldoBulanIni) {
             const namaKat = document.getElementById('suntikDari').options[document.getElementById('suntikDari').selectedIndex].text;
@@ -583,15 +617,12 @@
         const namaBulanDari = document.getElementById('suntikDariBulan').options[document.getElementById('suntikDariBulan').selectedIndex].text;
         const namaBulanKe = document.getElementById('suntikKeBulan').options[document.getElementById('suntikKeBulan').selectedIndex].text;
         
-        // Buat ID unik untuk mengaitkan transfer keluar dan masuk agar jika dihapus bisa hilang bareng
         const linkId = Date.now().toString();
 
         const logOut = { date: dateStr, kat: dari, ket: `📤 Pindah ke ${ke.toUpperCase()} (${namaBulanKe})`, type: 'TRANSFER_OUT', amt: nom, month: blnDari, linkId: linkId };
         const logIn = { date: dateStr, kat: ke, ket: `📥 Terima dari ${dari.toUpperCase()} (${namaBulanDari})`, type: 'TRANSFER_IN', amt: nom, month: blnKe, linkId: linkId };
         
-        // Simpan log (Masuk dulu baru Keluar agar urutannya bagus di layar)
         db.logs.unshift(logIn, logOut);
-        
         kirimCloud({ date: dateStr, kat: `${dari.toUpperCase()}(${namaBulanDari}) -> ${ke.toUpperCase()}(${namaBulanKe})`, ket: `Suntik Lintas Bulan`, type: 'TRANSFER', amt: nom, month: blnDari });
 
         document.getElementById('suntikNom').value = ""; 
@@ -649,9 +680,7 @@
         if(!confirm("Hapus transaksi ini? Saldo akan dikembalikan secara otomatis.")) return;
         let l = db.logs[index];
         
-        // Jika yang dihapus adalah suntik dana lintas bulan (ada linkId)
         if (l.type.startsWith('TRANSFER_')) {
-            // Hapus kedua log yang berkaitan (Out dan In)
             db.logs = db.logs.filter(x => x.linkId !== l.linkId);
             kirimCloud({ date: l.date, kat: l.kat, ket: "[DIHAPUS SUNTIK DANA] " + l.ket, type: 'CORRECTION', amt: 0, month: l.month });
         } else {
@@ -685,7 +714,6 @@
 
     const months = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
     
-    // Inisialisasi semua dropdown yang berkaitan dengan bulan
     const selectBlnGaji = document.getElementById('blnGaji');
     const selectFBulan = document.getElementById('fBulan');
     const selectFBulanDash = document.getElementById('fBulanDash');
@@ -700,17 +728,12 @@
         const text = m.toUpperCase();
         const opt = `<option value="${val}">${text}</option>`;
         
-        selectBlnGaji.innerHTML += opt;
-        selectFBulan.innerHTML += opt;
-        selectFBulanDash.innerHTML += opt;
-        selectSuntikDariBulan.innerHTML += opt;
-        selectSuntikKeBulan.innerHTML += opt;
+        selectBlnGaji.innerHTML += opt; selectFBulan.innerHTML += opt; selectFBulanDash.innerHTML += opt;
+        selectSuntikDariBulan.innerHTML += opt; selectSuntikKeBulan.innerHTML += opt;
     });
 
     const currentMonth = (new Date().getMonth() + 1).toString();
-    selectBlnGaji.value = currentMonth;
-    selectSuntikDariBulan.value = currentMonth;
-    selectSuntikKeBulan.value = currentMonth;
+    selectBlnGaji.value = currentMonth; selectSuntikDariBulan.value = currentMonth; selectSuntikKeBulan.value = currentMonth;
     
     update();
 </script>
