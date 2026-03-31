@@ -266,7 +266,8 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v16')) || {
+    // V17 Database
+    let db = JSON.parse(localStorage.getItem('dompet_neon_v17')) || {
         saldo: { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         initial: { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 },
         totalGaji: 0, logs: [], hints: []
@@ -276,7 +277,7 @@
         db.initial.makan = 0; db.initial.bbm = 0;
     }
 
-    // Format mata uang mendukung minus yang rapi: "-Rp 100.000"
+    // Format mata uang mendukung minus
     const fmt = (n) => {
         if (n < 0) return "-Rp " + Math.abs(Math.round(n)).toLocaleString('id-ID');
         return "Rp " + Math.round(n).toLocaleString('id-ID');
@@ -285,7 +286,7 @@
     let showAllHistory = false;
     document.getElementById('tglKeluar').valueAsDate = new Date();
 
-    // AUTO FILL KETERANGAN (Makan dan BBM dikunci / paten)
+    // AUTO FILL KETERANGAN PATEN
     function autoFillKet() {
         const kat = document.getElementById('katKeluar').value;
         const ketInput = document.getElementById('ketKeluar');
@@ -301,16 +302,31 @@
         }
     }
 
-    // RUMUS KALKULASI DINAMIS (Bisa minus jika gaji kecil)
+    // --- RUMUS LOGIKA BARU: BAGI ADIL (ANTI MINUS GILA-GILAAN) ---
     function hitungAlokasi(amt, monthStr) {
         const year = new Date().getFullYear();
         const daysInMonth = new Date(year, parseInt(monthStr), 0).getDate();
         
-        const mkn = daysInMonth * 20000;
-        const bbm = Math.round(daysInMonth / 7) * 50000; 
+        const targetMkn = daysInMonth * 20000;
+        const targetBbm = Math.round(daysInMonth / 7) * 50000; 
         
-        // Wajib bisa MINUS jika gaji kecil
-        let w = (amt * 0.45) - mkn - bbm;
+        const wTotal = amt * 0.45;
+        let w = 0, mkn = 0, bbm = 0;
+
+        if (wTotal >= (targetMkn + targetBbm)) {
+            // Uang 45% cukup untuk memenuhi target 100% makan & BBM
+            mkn = targetMkn;
+            bbm = targetBbm;
+            w = wTotal - targetMkn - targetBbm;
+        } else {
+            // UANG KURANG! Sistem membagi seadanya secara proporsional
+            const totalTarget = targetMkn + targetBbm;
+            if (totalTarget > 0) {
+                mkn = Math.round(wTotal * (targetMkn / totalTarget));
+                bbm = wTotal - mkn; // Sisanya masuk ke BBM agar pas 100% dari wTotal
+            }
+            w = 0; // Sisa wajib 0 karena uang habis disedot makan & BBM
+        }
         
         const m = amt * 0.2;
         const t = amt * 0.2;
@@ -372,7 +388,6 @@
 
         ['wajib','makan','bbm','main','tabung','ortu','darurat'].forEach(id => {
             document.getElementById('v-'+id).innerText = fmt(dSaldo[id]);
-            // Progress bar akan mentok 0 jika minus
             const perc = dInit[id] > 0 ? (dSaldo[id] / dInit[id]) * 100 : 0;
             document.getElementById('p-'+id).style.width = Math.min(Math.max(perc, 0), 100) + "%";
         });
@@ -443,14 +458,14 @@
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
 
-        localStorage.setItem('dompet_neon_v16', JSON.stringify(db));
+        localStorage.setItem('dompet_neon_v17', JSON.stringify(db));
     }
 
     function suntikDana() {
         const dari = document.getElementById('suntikDari').value;
         const ke = document.getElementById('suntikKe').value;
         const nom = parseFloat(document.getElementById('suntikNom').value);
-        const bln = document.getElementById('blnGaji').value;
+        const bln = document.getElementById('blnGaji').value; // Mengambil bulan default HP saat ini
 
         if(!nom || nom <= 0) return alert("Masukkan nominal suntikan yang valid!");
         if(dari === ke) return alert("Kategori asal dan tujuan tidak boleh sama ya!");
@@ -465,6 +480,7 @@
         const ketSuntik = `Suntik: ${dari.toUpperCase()} ➡️ ${ke.toUpperCase()}`;
         const payload = { date: dateStr, kat: dari, kat2: ke, ket: ketSuntik, type: 'TRANSFER', amt: nom, month: bln };
         db.logs.unshift(payload);
+        
         kirimCloud({ date: dateStr, kat: `${dari.toUpperCase()} -> ${ke.toUpperCase()}`, ket: ketSuntik, type: 'TRANSFER', amt: nom, month: bln });
 
         document.getElementById('suntikNom').value = ""; update();
@@ -485,7 +501,7 @@
             document.getElementById('editKet').readOnly = true;
         } else {
             katSelect.disabled = false; katSelect.style.opacity = "1";
-            document.getElementById('editKet').readOnly = (l.kat === 'makan' || l.kat === 'bbm'); // Kunci saat diedit jika Makan/BBM
+            document.getElementById('editKet').readOnly = (l.kat === 'makan' || l.kat === 'bbm'); 
             katSelect.innerHTML = `
                 <option value="makan" ${l.kat === 'makan' ? 'selected' : ''}>🍛 Makan</option>
                 <option value="bbm" ${l.kat === 'bbm' ? 'selected' : ''}>⛽ BBM</option>
@@ -530,7 +546,7 @@
             db.initial.wajib += alokBaru.w; db.initial.makan += alokBaru.mkn; db.initial.bbm += alokBaru.bbm;
             db.initial.main += alokBaru.m; db.initial.tabung += alokBaru.t; db.initial.ortu += alokBaru.o; db.initial.darurat += alokBaru.d;
         } else {
-            // TIDAK ADA ALERT PENOLAKAN. Boleh minus jika uangnya kurang.
+            // Saldo dibiarkan minus kalau uangnya kurang (sesuai request)
             db.saldo[newKat] -= newAmt; 
         }
 
@@ -593,16 +609,14 @@
         const ket = document.getElementById('ketKeluar').value;
         const nom = parseFloat(document.getElementById('nomKeluar').value);
         
-        // PENTING: MENGAMBIL BULAN DARI TANGGAL KALENDER TRANSAKSI (BUKAN DARI DROPDOWN GAJI)
+        // PENTING: MENGAMBIL BULAN DARI TANGGAL KALENDER TRANSAKSI 
         const tglInput = document.getElementById('tglKeluar').value;
         const d = tglInput ? new Date(tglInput) : new Date();
-        const bln = (d.getMonth() + 1).toString(); // Mendapatkan bulan 1 - 12 dari kalender
+        const bln = (d.getMonth() + 1).toString(); 
 
         if(!kat) return alert("Pilih kategori pengeluaran dulu!");
         if(!ket || !nom) return alert("Mohon isi keterangan dan nominal pengeluaran!");
 
-        // SISTEM SALDO BEBAS MINUS (Alert dihapus, membiarkan ngutang)
-        
         const now = new Date();
         const dateStr = d.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
 
