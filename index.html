@@ -11,6 +11,7 @@
             --success: #10b981; --danger: #f43f5e; 
             --warning: #f59e0b; --parent: #ec4899; --cyan: #0ea5e9;
             --food: #f97316; --fuel: #8b5cf6;
+            --gold: #fbbf24;
             --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
             --glass: rgba(20, 20, 40, 0.6); 
             --text: #f8fafc;
@@ -23,14 +24,12 @@
         header { margin-bottom: 25px; margin-top: 10px; text-align: center; color: white; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         header h1 { font-size: 34px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* Cloud Animation Dikembalikan */
         .status-cloud { font-size: 10px; font-weight: 800; padding: 6px 15px; border-radius: 50px; background: rgba(0,0,0,0.3); color: white; display: inline-block; margin-top: 10px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
         .online { border-color: var(--success); color: var(--success); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
 
         .card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 30px; padding: 20px; margin-bottom: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
         .label { font-size: 12px; font-weight: 800; opacity: 0.8; text-transform: uppercase; margin-bottom: 0; letter-spacing: 1.5px; color: #94a3b8; }
         
-        /* Action Buttons Grid (Warna Diubah Jadi Harmonis) */
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .btn-action-1 { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
         .btn-action-2 { background: linear-gradient(135deg, #ec4899, #f43f5e); color: white; box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4); }
@@ -38,10 +37,8 @@
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .filter-mini { width: auto; padding: 8px 10px; margin-bottom: 0; font-size: 11px; border-radius: 12px; background: rgba(0,0,0,0.4); color: var(--accent); border: 1px solid var(--accent); cursor: pointer; text-transform: uppercase; font-weight: 800; }
 
-        /* Health Indicator Banner */
         .health-banner { grid-column: span 2; padding: 12px 15px; border-radius: 16px; text-align: center; font-weight: 800; font-size: 12px; letter-spacing: 0.5px; transition: 0.4s ease; display: flex; justify-content: center; align-items: center; text-transform: uppercase; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 
-        /* Dashboard Grid */
         .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .b-item { padding: 15px; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s; display: flex; flex-direction: column; justify-content: center; }
         .b-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; z-index: 0; }
@@ -50,7 +47,6 @@
         .b-item span { font-size: 10px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; text-transform: uppercase;}
         .b-item p { font-size: clamp(12px, 4.2vw, 18px); font-weight: 900; margin: 4px 0; word-break: break-all; text-shadow: 0 2px 10px rgba(0,0,0,0.5); width: 100%; line-height: 1.2; }
         
-        /* FIX: Total Gaji & Keluar jadi 1 baris lurus tanpa terpotong */
         .card-total { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.4)); border: 1px solid rgba(14, 165, 233, 0.5); grid-column: span 2; display: flex; flex-direction: row; padding: 0; }
         .card-total .half { flex: 1; padding: 20px 10px; display: flex; flex-direction: column; align-items: center; text-align: center; overflow: hidden; }
         .card-total .half:first-child { border-right: 1px solid rgba(255,255,255,0.1); }
@@ -80,6 +76,8 @@
         .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); }
         .btn-cyan { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); }
         .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; }
+        
+        .btn-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4); text-shadow: 0 1px 3px rgba(0,0,0,0.3); border: none; }
         .btn:active { transform: scale(0.95); }
 
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 18px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); }
@@ -97,7 +95,6 @@
 
         .stats-highlight { background: linear-gradient(45deg, var(--danger), var(--warning)); color: white; padding: 25px; border-radius: 25px; margin-top: 15px; text-align: center; box-shadow: 0 10px 30px rgba(244, 63, 94, 0.3); }
 
-        /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
         .modal-card { width: 100%; max-width: 400px; margin: 0; animation: popIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: var(--bg-gradient); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.5); padding: 25px; border-radius: 30px; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -120,7 +117,7 @@
                     <option value="" disabled selected>Pilih...</option>
                     <option value="makan">🍛 Makan</option>
                     <option value="bbm">⛽ BBM</option>
-                    <option value="wajib">🟢 Wajib (Lainnya)</option>
+                    <option value="wajib">🟢 Wajib</option>
                     <option value="main">🎮 Main</option>
                     <option value="tabung">💎 Tabungan</option>
                     <option value="ortu">👨‍👩‍👧 Ortu</option>
@@ -282,19 +279,30 @@
             <h2 id="totalFiltered" style="font-size: 32px; font-weight: 900; margin-top:5px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Rp 0</h2>
         </div>
 
-        <button class="btn btn-outline" style="margin-bottom: 15px;" onclick="unduhLaporan()">📥 DOWNLOAD CSV</button>
+        <button class="btn btn-gold" style="margin-bottom: 15px;" onclick="unduhLaporan()">📥 CETAK LAPORAN (CSV)</button>
         
         <div id="logList"></div>
         <button id="btnShowAll" class="btn btn-outline" style="display:none; width:100%; border-radius:15px; font-size: 13px; color:white; border-color:rgba(255,255,255,0.2);" onclick="toggleHistory()">TAMPILKAN SEMUA TRANSAKSI 🔽</button>
     </div>
 
-    <button onclick="hapusSemua()" style="background:none; border:none; color:#94a3b8; font-size: 11px; width: 100%; font-weight: 800; margin: 10px 0 40px 0; opacity: 0.5; text-decoration: underline; letter-spacing: 1px;">RESET SEMUA DATA SERVER & HP</button>
+    <button onclick="hapusSemua()" style="background:none; border:none; color:#f43f5e; font-size: 11px; width: 100%; font-weight: 800; margin: 20px 0 40px 0; opacity: 0.7; text-decoration: underline; letter-spacing: 1px;">⚠️ RESET SEMUA DATA (HP & GOOGLE SHEETS)</button>
 </div>
 
 <script>
-    const URL_CLOUD = "https://script.google.com/macros/s/AKfycbxVDw1tDrqVeVsuwMGTUtuuSSfU9uBdHCXK4cfgwGLoTcMbio0LuXo0sWLiS83GveSc/exec";
+    // URL CLOUD TERBARU KAMU
+    const URL_CLOUD = "https://script.google.com/macros/s/AKfycbyACsYu5CWjownAO0DNTaNRxNaZ60U04vyObPCfCREaEUnTYDmzOq-hIWb2r7ee5KNr/exec";
 
-    let db = JSON.parse(localStorage.getItem('dompet_neon_v23')) || { logs: [], hints: [] };
+    // KUNCI DATABASE PERMANEN
+    let db = JSON.parse(localStorage.getItem('dompet_ku_data_master'));
+    if (!db) {
+        let oldDb = localStorage.getItem('dompet_neon_v23');
+        if (oldDb) db = JSON.parse(oldDb);
+        else db = { logs: [], hints: [] };
+        db.logs.forEach(l => { if(!l.id) l.id = 'TRX_' + Math.random().toString(36).substr(2, 9); });
+        localStorage.setItem('dompet_ku_data_master', JSON.stringify(db));
+    }
+
+    function generateId() { return 'TRX_' + Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5); }
 
     const fmt = (n) => {
         if (n < 0 || isNaN(n)) return "-Rp " + Math.abs(Math.round(n || 0)).toLocaleString('id-ID');
@@ -302,24 +310,19 @@
     };
     
     let showAllHistory = false;
-    
-    // FIX TANGGAL: Menggunakan Offset agar selalu membaca zona waktu lokal HP kamu
     function setTodayDate() {
         const now = new Date();
         const tzOffset = now.getTimezoneOffset() * 60000;
         const localISOTime = new Date(now.getTime() - tzOffset).toISOString().split('T')[0];
         document.getElementById('tglKeluar').value = localISOTime;
     }
-    setTodayDate(); // Set saat pertama kali web dibuka
+    setTodayDate();
 
-    // MODAL HANDLERS
     function openModal(modalId) {
         document.getElementById(modalId).style.display = "flex";
         if(modalId === 'suntikModal') updateSuntikInfo();
     }
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = "none";
-    }
+    function closeModal(modalId) { document.getElementById(modalId).style.display = "none"; }
 
     function autoFillKet() {
         const kat = document.getElementById('katKeluar').value;
@@ -336,10 +339,8 @@
         const targetBbm = Math.round(daysInMonth / 7) * 50000; 
         const wTotal = totalGajiBulanIni * 0.45;
         let w = 0, mkn = 0, bbm = 0;
-
-        if (wTotal >= (targetMkn + targetBbm)) {
-            mkn = targetMkn; bbm = targetBbm; w = wTotal - targetMkn - targetBbm;
-        } else {
+        if (wTotal >= (targetMkn + targetBbm)) { mkn = targetMkn; bbm = targetBbm; w = wTotal - targetMkn - targetBbm; } 
+        else {
             const totalTarget = targetMkn + targetBbm;
             if (totalTarget > 0) { mkn = Math.round(wTotal * (targetMkn / totalTarget)); bbm = wTotal - mkn; }
             w = 0; 
@@ -347,10 +348,10 @@
         return { w, mkn, bbm, m: totalGajiBulanIni * 0.2, t: totalGajiBulanIni * 0.2, o: totalGajiBulanIni * 0.1, d: totalGajiBulanIni * 0.05 };
     }
 
-    // CLOUD ANIMATION DIKEMBALIKAN (Tanpa Loading Bar)
     async function kirimCloud(payload) {
         const s = document.getElementById('status');
         s.innerText = "☁️ SINKRONISASI..."; s.classList.remove('online');
+        if(!payload.action) payload.action = "INSERT";
         try {
             await fetch(URL_CLOUD, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
             s.innerText = "✅ CLOUD TERHUBUNG"; s.classList.add('online');
@@ -362,23 +363,16 @@
     function updateSuntikInfo() {
         const dari = document.getElementById('suntikDari').value;
         const blnDari = document.getElementById('suntikDariBulan').value;
-        
         let totalGajiBln = 0;
         db.logs.forEach(l => { if(l.type === 'IN' && l.month === blnDari) totalGajiBln += l.amt; });
-        
         let alok = hitungAlokasiBulanan(totalGajiBln, blnDari);
         let mapKat = {wajib:'w', makan:'mkn', bbm:'bbm', main:'m', tabung:'t', ortu:'o', darurat:'d'};
         let saldoBulanIni = alok[mapKat[dari]];
-        
         db.logs.forEach(l => {
             if(l.month === blnDari) {
                 if(l.type === 'OUT' && l.kat === dari) saldoBulanIni -= l.amt;
                 if(l.type === 'TRANSFER_OUT' && l.kat === dari) saldoBulanIni -= l.amt;
                 if(l.type === 'TRANSFER_IN' && l.kat === dari) saldoBulanIni += l.amt;
-                if(l.type === 'TRANSFER') { 
-                    if(l.kat === dari) saldoBulanIni -= l.amt;
-                    if(l.kat2 === dari) saldoBulanIni += l.amt;
-                }
             }
         });
         document.getElementById('infoSuntik').innerText = `💳 Saldo: ${fmt(saldoBulanIni)}`;
@@ -389,184 +383,94 @@
         let gInit = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let gSaldo = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let gTotalGaji = 0; let gTotalKeluar = 0;
-
         let monthlyIn = {};
-        db.logs.forEach(l => {
-            if(l.type === 'IN') {
-                if(!monthlyIn[l.month]) monthlyIn[l.month] = 0;
-                monthlyIn[l.month] += l.amt;
-                gTotalGaji += l.amt;
-            }
-        });
-
+        db.logs.forEach(l => { if(l.type === 'IN') { if(!monthlyIn[l.month]) monthlyIn[l.month] = 0; monthlyIn[l.month] += l.amt; gTotalGaji += l.amt; } });
         let monthlyInit = {};
         for(let m in monthlyIn) {
-            let totalInM = monthlyIn[m];
-            let alok = hitungAlokasiBulanan(totalInM, m);
-            monthlyInit[m] = alok;
-            
-            gInit.wajib += alok.w; gInit.makan += alok.mkn; gInit.bbm += alok.bbm;
-            gInit.main += alok.m; gInit.tabung += alok.t; gInit.ortu += alok.o; gInit.darurat += alok.d;
+            let alok = hitungAlokasiBulanan(monthlyIn[m], m); monthlyInit[m] = alok;
+            gInit.wajib += alok.w; gInit.makan += alok.mkn; gInit.bbm += alok.bbm; gInit.main += alok.m; gInit.tabung += alok.t; gInit.ortu += alok.o; gInit.darurat += alok.d;
         }
-
         gSaldo = { ...gInit }; 
-
         db.logs.forEach(l => {
-            if(l.type === 'OUT') {
-                gSaldo[l.kat] -= l.amt; gTotalKeluar += l.amt;
-            } else if(l.type === 'TRANSFER_OUT') {
-                gSaldo[l.kat] -= l.amt; gInit[l.kat] -= l.amt;
-            } else if(l.type === 'TRANSFER_IN') {
-                gSaldo[l.kat] += l.amt; gInit[l.kat] += l.amt;
-            } else if(l.type === 'TRANSFER') {
-                gSaldo[l.kat] -= l.amt; gSaldo[l.kat2] += l.amt;
-                gInit[l.kat] -= l.amt; gInit[l.kat2] += l.amt;
-            }
+            if(l.type === 'OUT') { gSaldo[l.kat] -= l.amt; gTotalKeluar += l.amt; } 
+            else if(l.type === 'TRANSFER_OUT') { gSaldo[l.kat] -= l.amt; gInit[l.kat] -= l.amt; } 
+            else if(l.type === 'TRANSFER_IN') { gSaldo[l.kat] += l.amt; gInit[l.kat] += l.amt; }
         });
-
         const fDash = document.getElementById('fBulanDash').value;
         const dashTitleGaji = document.getElementById('title-gaji');
         const dashTitleKeluar = document.getElementById('title-keluar');
-        
         let dSaldo = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let dInit = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let dGaji = 0; let dKeluar = 0;
-
-        if (fDash === 'all') {
-            dSaldo = { ...gSaldo }; dInit = { ...gInit }; dGaji = gTotalGaji; dKeluar = gTotalKeluar;
-            dashTitleGaji.innerText = "🌟 TOTAL GAJI"; dashTitleKeluar.innerText = "💸 TOTAL KELUAR";
-        } else {
+        if (fDash === 'all') { dSaldo = { ...gSaldo }; dInit = { ...gInit }; dGaji = gTotalGaji; dKeluar = gTotalKeluar; dashTitleGaji.innerText = "🌟 TOTAL GAJI"; dashTitleKeluar.innerText = "💸 TOTAL KELUAR"; } 
+        else {
             dGaji = monthlyIn[fDash] || 0;
-            if(monthlyInit[fDash]) {
-                let alok = monthlyInit[fDash];
-                dInit.wajib = alok.w; dInit.makan = alok.mkn; dInit.bbm = alok.bbm;
-                dInit.main = alok.m; dInit.tabung = alok.t; dInit.ortu = alok.o; dInit.darurat = alok.d;
-                dSaldo = { ...dInit };
-            }
-            
+            if(monthlyInit[fDash]) { let alok = monthlyInit[fDash]; dInit.wajib = alok.w; dInit.makan = alok.mkn; dInit.bbm = alok.bbm; dInit.main = alok.m; dInit.tabung = alok.t; dInit.ortu = alok.o; dInit.darurat = alok.d; dSaldo = { ...dInit }; }
             db.logs.forEach(l => {
                 if (l.month === fDash) {
                     if (l.type === 'OUT') { dSaldo[l.kat] -= l.amt; dKeluar += l.amt; } 
                     else if (l.type === 'TRANSFER_OUT') { dSaldo[l.kat] -= l.amt; dInit[l.kat] -= l.amt; } 
                     else if (l.type === 'TRANSFER_IN') { dSaldo[l.kat] += l.amt; dInit[l.kat] += l.amt; } 
-                    else if (l.type === 'TRANSFER') { dSaldo[l.kat] -= l.amt; dSaldo[l.kat2] += l.amt; dInit[l.kat] -= l.amt; dInit[l.kat2] += l.amt; }
                 }
             });
             const namaBulan = document.getElementById('fBulanDash').options[document.getElementById('fBulanDash').selectedIndex].text;
             dashTitleGaji.innerText = "🌟 GAJI " + namaBulan; dashTitleKeluar.innerText = "💸 KELUAR " + namaBulan;
         }
-
         document.getElementById('v-totalgaji').innerText = fmt(dGaji);
         document.getElementById('v-totalkeluar').innerText = fmt(dKeluar);
-
         const healthBox = document.getElementById('healthIndicator');
         const sisaUangReil = dGaji - dKeluar;
-        
-        if (dGaji === 0) {
-            healthBox.innerHTML = "💤 Belum ada pemasukan nih. Yuk semangat!";
-            healthBox.style.background = "rgba(255,255,255,0.05)"; healthBox.style.color = "#94a3b8"; healthBox.style.border = "1px solid rgba(255,255,255,0.1)";
-        } else {
+        if (dGaji === 0) { healthBox.innerHTML = "💤 Belum ada pemasukan"; healthBox.style.background = "rgba(255,255,255,0.05)"; healthBox.style.color = "#94a3b8"; healthBox.style.border = "1px solid rgba(255,255,255,0.1)"; } 
+        else {
             const percSehat = (sisaUangReil / dGaji) * 100;
-            if (percSehat >= 50) {
-                healthBox.innerHTML = "😎 Dompet tebel! Masih aman jaya sentosa.";
-                healthBox.style.background = "linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4))"; healthBox.style.color = "#34d399"; healthBox.style.border = "1px solid rgba(16, 185, 129, 0.5)";
-            } else if (percSehat >= 20) {
-                healthBox.innerHTML = "😌 Saldo lumayan. Tahan godaan nongkrong!";
-                healthBox.style.background = "linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.4))"; healthBox.style.color = "#fcd34d"; healthBox.style.border = "1px solid rgba(245, 158, 11, 0.5)";
-            } else if (percSehat > 0) {
-                healthBox.innerHTML = "🚨 Waspada! Saldo menipis, mode hemat aktif.";
-                healthBox.style.background = "linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.4))"; healthBox.style.color = "#fdba74"; healthBox.style.border = "1px solid rgba(249, 115, 22, 0.5)";
-            } else {
-                healthBox.innerHTML = "🥵 GAWAT! Saldo minus alias boncos, Bos!";
-                healthBox.style.background = "linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4))"; healthBox.style.color = "#fda4af"; healthBox.style.border = "1px solid rgba(244, 63, 94, 0.5)";
-            }
+            if (percSehat >= 50) { healthBox.innerHTML = "😎 Dompet tebel! Masih aman."; healthBox.style.background = "linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.4))"; healthBox.style.color = "#34d399"; healthBox.style.border = "1px solid rgba(16, 185, 129, 0.5)"; } 
+            else if (percSehat >= 20) { healthBox.innerHTML = "😌 Saldo lumayan. Tahan jajan!"; healthBox.style.background = "linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.4))"; healthBox.style.color = "#fcd34d"; healthBox.style.border = "1px solid rgba(245, 158, 11, 0.5)"; } 
+            else if (percSehat > 0) { healthBox.innerHTML = "🚨 Waspada! Saldo menipis."; healthBox.style.background = "linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.4))"; healthBox.style.color = "#fdba74"; healthBox.style.border = "1px solid rgba(249, 115, 22, 0.5)"; } 
+            else { healthBox.innerHTML = "🥵 GAWAT! Saldo boncos, Bos!"; healthBox.style.background = "linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4))"; healthBox.style.color = "#fda4af"; healthBox.style.border = "1px solid rgba(244, 63, 94, 0.5)"; }
         }
-
         ['wajib','makan','bbm','main','tabung','ortu','darurat'].forEach(id => {
             document.getElementById('v-'+id).innerText = fmt(dSaldo[id]);
             const perc = dInit[id] > 0 ? (dSaldo[id] / dInit[id]) * 100 : 0;
             document.getElementById('p-'+id).style.width = Math.min(Math.max(perc, 0), 100) + "%";
         });
-
         const fMonth = document.getElementById('fBulan').value;
         const fKey = document.getElementById('fKeyword').value.toLowerCase();
         const logList = document.getElementById('logList');
         const btnShowAll = document.getElementById('btnShowAll');
-        
-        let totalF = 0; let matchCount = 0;
-        let visibleHtml = ""; let hiddenHtml = "";
-
+        let totalF = 0; let matchCount = 0; let visibleHtml = ""; let hiddenHtml = "";
         db.logs.forEach((l, index) => {
             if((fMonth === 'all' || l.month === fMonth) && l.ket.toLowerCase().includes(fKey)) {
                 let color, sign, katLabel, editBtnHtml;
-                
-                if (l.type === 'IN') {
-                    color = '#34d399'; sign = '+'; katLabel = l.kat;
-                    editBtnHtml = `<button class="btn-mini" onclick="openEditModal(${index})" title="Edit">✏️</button>`;
-                } else if (l.type === 'OUT') {
-                    color = '#fb7185'; sign = '-'; katLabel = l.kat.toUpperCase(); totalF += l.amt;
-                    editBtnHtml = `<button class="btn-mini" onclick="openEditModal(${index})" title="Edit">✏️</button>`;
-                } else if (l.type === 'TRANSFER_IN') {
-                    color = '#38bdf8'; sign = '+'; katLabel = `SUNTIK MASUK: ${l.kat.toUpperCase()}`; editBtnHtml = ``; 
-                } else if (l.type === 'TRANSFER_OUT') {
-                    color = '#fb7185'; sign = '-'; katLabel = `SUNTIK KELUAR: ${l.kat.toUpperCase()}`; editBtnHtml = ``; 
-                } else if (l.type === 'TRANSFER') {
-                    color = '#38bdf8'; sign = '🔄'; katLabel = 'PINDAH SALDO'; editBtnHtml = ``; 
-                }
-
-                let itemHtml = `
-                    <div class="history-item">
-                        <div class="info"><b>${l.ket}</b><small>${l.date} | ${katLabel}</small></div>
-                        <div class="history-right">
-                            <div class="amt" style="color:${color}">${sign} ${fmt(l.amt)}</div>
-                            <div class="action-btns">
-                                ${editBtnHtml}
-                                <button class="btn-mini" onclick="deleteLog(${index})" title="Hapus">🗑️</button>
-                            </div>
-                        </div>
-                    </div>`;
-
-                if (matchCount < 3) visibleHtml += itemHtml;
-                else hiddenHtml += itemHtml;
+                if (l.type === 'IN') { color = '#34d399'; sign = '+'; katLabel = l.kat; editBtnHtml = `<button class="btn-mini" onclick="openEditModal(${index})" title="Edit">✏️</button>`; } 
+                else if (l.type === 'OUT') { color = '#fb7185'; sign = '-'; katLabel = l.kat.toUpperCase(); totalF += l.amt; editBtnHtml = `<button class="btn-mini" onclick="openEditModal(${index})" title="Edit">✏️</button>`; } 
+                else if (l.type === 'TRANSFER_IN') { color = '#38bdf8'; sign = '+'; katLabel = `SUNTIK MASUK: ${l.kat.toUpperCase()}`; editBtnHtml = ``; } 
+                else if (l.type === 'TRANSFER_OUT') { color = '#fb7185'; sign = '-'; katLabel = `SUNTIK KELUAR: ${l.kat.toUpperCase()}`; editBtnHtml = ``; }
+                let itemHtml = `<div class="history-item"><div class="info"><b>${l.ket}</b><small>${l.date} | ${katLabel}</small></div><div class="history-right"><div class="amt" style="color:${color}">${sign} ${fmt(l.amt)}</div><div class="action-btns">${editBtnHtml}<button class="btn-mini" onclick="deleteLog(${index})" title="Hapus">🗑️</button></div></div></div>`;
+                if (matchCount < 3) visibleHtml += itemHtml; else hiddenHtml += itemHtml;
                 matchCount++;
             }
         });
-
-        if (showAllHistory) logList.innerHTML = visibleHtml + hiddenHtml;
-        else logList.innerHTML = visibleHtml;
-
-        if (matchCount > 3) {
-            btnShowAll.style.display = 'block';
-            if (showAllHistory) { btnShowAll.innerHTML = "TAMPILKAN LEBIH SEDIKIT 🔼"; btnShowAll.style.background = "rgba(255,255,255,0.1)"; } 
-            else { btnShowAll.innerHTML = `TAMPILKAN SEMUA (${matchCount}) 🔽`; btnShowAll.style.background = "rgba(0,0,0,0.3)"; }
-        } else {
-            btnShowAll.style.display = 'none';
-        }
-
+        logList.innerHTML = showAllHistory ? visibleHtml + hiddenHtml : visibleHtml;
+        btnShowAll.style.display = matchCount > 3 ? 'block' : 'none';
+        btnShowAll.innerHTML = showAllHistory ? "TAMPILKAN LEBIH SEDIKIT 🔼" : `TAMPILKAN SEMUA (${matchCount}) 🔽`;
         document.getElementById('statsBox').style.display = (fKey || fMonth !== 'all') ? "block" : "none";
         document.getElementById('totalFiltered').innerText = fmt(totalF);
-
         const hintList = document.getElementById('hintList');
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
-
-        localStorage.setItem('dompet_neon_v23', JSON.stringify(db));
+        localStorage.setItem('dompet_ku_data_master', JSON.stringify(db));
     }
 
     function tambahGaji() {
         const amt = parseFloat(document.getElementById('inGaji').value);
         const blnVal = document.getElementById('blnGaji').value;
         const blnText = document.getElementById('blnGaji').options[document.getElementById('blnGaji').selectedIndex].text; 
-
         if(!amt) return alert("Masukkan nominal gaji!");
-        
         const now = new Date();
         const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
-        
-        const payload = { date: dateStr, kat: 'PEMASUKAN', ket: "Gaji Bulan " + blnText, type: 'IN', amt: amt, month: blnVal };
+        const payload = { action: 'INSERT', id: generateId(), date: dateStr, kat: 'PEMASUKAN', ket: "Gaji Bulan " + blnText, type: 'IN', amt: amt, month: blnVal };
         db.logs.unshift(payload);
         kirimCloud(payload);
-        
         document.getElementById('inGaji').value = ""; 
         update();
     }
@@ -575,33 +479,17 @@
         const kat = document.getElementById('katKeluar').value;
         const ket = document.getElementById('ketKeluar').value;
         const nom = parseFloat(document.getElementById('nomKeluar').value);
-        
-        const tglInput = document.getElementById('tglKeluar').value;
-        const d = tglInput ? new Date(tglInput) : new Date();
+        const d = new Date(document.getElementById('tglKeluar').value);
         const bln = (d.getMonth() + 1).toString(); 
-
-        if(!kat) return alert("Pilih kategori pengeluaran dulu!");
-        if(!ket || !nom) return alert("Mohon isi keterangan dan nominal pengeluaran!");
-
+        if(!kat || !ket || !nom) return alert("Lengkapi data!");
         const now = new Date();
-        // Gabungkan tanggal inputan dengan jam hari ini
         const dateStr = d.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
-
-        const payload = { date: dateStr, kat: kat, ket: ket, type: 'OUT', amt: nom, month: bln };
+        const payload = { action: 'INSERT', id: generateId(), date: dateStr, kat: kat, ket: ket, type: 'OUT', amt: nom, month: bln };
         db.logs.unshift(payload);
-        
         if(!db.hints.includes(ket) && !document.getElementById('ketKeluar').readOnly) db.hints.push(ket);
         kirimCloud(payload);
-        
-        document.getElementById('katKeluar').selectedIndex = 0;
-        document.getElementById('ketKeluar').value = "";
-        document.getElementById('ketKeluar').readOnly = false;
-        document.getElementById('nomKeluar').value = "";
-        
-        setTodayDate(); // Set kembali kalender ke hari ini
-        
-        closeModal('keluarModal');
-        update();
+        document.getElementById('katKeluar').selectedIndex = 0; document.getElementById('ketKeluar').value = ""; document.getElementById('nomKeluar').value = "";
+        setTodayDate(); closeModal('keluarModal'); update();
     }
 
     function suntikDana() {
@@ -610,137 +498,83 @@
         const blnDari = document.getElementById('suntikDariBulan').value;
         const blnKe = document.getElementById('suntikKeBulan').value;
         const nom = parseFloat(document.getElementById('suntikNom').value);
-        
-        if(!nom || nom <= 0) return alert("Masukkan nominal suntikan yang valid!");
-        if(dari === ke && blnDari === blnKe) return alert("Kantong dan bulan asal/tujuan tidak boleh persis sama!");
-
-        const saldoBulanIni = updateSuntikInfo();
-        if(nom > saldoBulanIni) {
-            const namaKat = document.getElementById('suntikDari').options[document.getElementById('suntikDari').selectedIndex].text;
-            return alert(`Gagal! Saldo di ${namaKat} cuma sisa ${fmt(saldoBulanIni)}. Uangnya nggak cukup!`);
-        }
-        
+        if(!nom || nom <= 0 || (dari === ke && blnDari === blnKe)) return alert("Data tidak valid!");
+        if(nom > updateSuntikInfo()) return alert(`Saldo tidak cukup!`);
         const now = new Date();
         const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
-
-        const namaBulanDari = document.getElementById('suntikDariBulan').options[document.getElementById('suntikDariBulan').selectedIndex].text;
-        const namaBulanKe = document.getElementById('suntikKeBulan').options[document.getElementById('suntikKeBulan').selectedIndex].text;
-        const linkId = Date.now().toString();
-
-        const logOut = { date: dateStr, kat: dari, ket: `📤 Pindah ke ${ke.toUpperCase()} (${namaBulanKe})`, type: 'TRANSFER_OUT', amt: nom, month: blnDari, linkId: linkId };
-        const logIn = { date: dateStr, kat: ke, ket: `📥 Terima dari ${dari.toUpperCase()} (${namaBulanDari})`, type: 'TRANSFER_IN', amt: nom, month: blnKe, linkId: linkId };
-        
+        const linkId = generateId();
+        const logOut = { action: 'INSERT', id: linkId + '_OUT', date: dateStr, kat: dari, ket: `📤 Pindah ke ${ke.toUpperCase()} (${blnKe})`, type: 'TRANSFER_OUT', amt: nom, month: blnDari, linkId: linkId };
+        const logIn = { action: 'INSERT', id: linkId + '_IN', date: dateStr, kat: ke, ket: `📥 Terima dari ${dari.toUpperCase()} (${blnDari})`, type: 'TRANSFER_IN', amt: nom, month: blnKe, linkId: linkId };
         db.logs.unshift(logIn, logOut);
-        kirimCloud({ date: dateStr, kat: `${dari.toUpperCase()}(${namaBulanDari}) -> ${ke.toUpperCase()}(${namaBulanKe})`, ket: `Suntik Lintas Bulan`, type: 'TRANSFER', amt: nom, month: blnDari });
-
-        document.getElementById('suntikNom').value = ""; 
-        closeModal('suntikModal');
-        update();
+        kirimCloud(logIn); setTimeout(() => kirimCloud(logOut), 500);
+        document.getElementById('suntikNom').value = ""; closeModal('suntikModal'); update();
     }
 
     function openEditModal(index) {
-        const l = db.logs[index];
-        document.getElementById('editIndex').value = index;
-        document.getElementById('editKet').value = l.ket;
-        document.getElementById('editNom').value = l.amt;
-        
-        const katSelect = document.getElementById('editKat');
-        katSelect.innerHTML = ""; 
-        
-        if (l.type === 'IN') {
-            katSelect.innerHTML = `<option value="PEMASUKAN">🌟 PEMASUKAN GAJI</option>`;
-            katSelect.disabled = true; katSelect.style.opacity = "0.6"; document.getElementById('editKet').readOnly = true;
-        } else {
-            katSelect.disabled = false; katSelect.style.opacity = "1";
-            document.getElementById('editKet').readOnly = (l.kat === 'makan' || l.kat === 'bbm'); 
-            katSelect.innerHTML = `
-                <option value="makan" ${l.kat === 'makan' ? 'selected' : ''}>🍛 Makan</option>
-                <option value="bbm" ${l.kat === 'bbm' ? 'selected' : ''}>⛽ BBM</option>
-                <option value="wajib" ${l.kat === 'wajib' ? 'selected' : ''}>🟢 Wajib</option>
-                <option value="main" ${l.kat === 'main' ? 'selected' : ''}>🎮 Main</option>
-                <option value="tabung" ${l.kat === 'tabung' ? 'selected' : ''}>💎 Tabung</option>
-                <option value="ortu" ${l.kat === 'ortu' ? 'selected' : ''}>👨‍👩‍👧 Ortu</option>
-                <option value="darurat" ${l.kat === 'darurat' ? 'selected' : ''}>🔥 Darurat</option>
-            `;
+        const l = db.logs[index]; document.getElementById('editIndex').value = index; document.getElementById('editKet').value = l.ket; document.getElementById('editNom').value = l.amt;
+        const katSelect = document.getElementById('editKat'); katSelect.innerHTML = ""; 
+        if (l.type === 'IN') { katSelect.innerHTML = `<option value="PEMASUKAN">🌟 PEMASUKAN GAJI</option>`; katSelect.disabled = true; document.getElementById('editKet').readOnly = true; } 
+        else {
+            katSelect.disabled = false; document.getElementById('editKet').readOnly = (l.kat === 'makan' || l.kat === 'bbm'); 
+            katSelect.innerHTML = `<option value="makan" ${l.kat === 'makan' ? 'selected' : ''}>🍛 Makan</option><option value="bbm" ${l.kat === 'bbm' ? 'selected' : ''}>⛽ BBM</option><option value="wajib" ${l.kat === 'wajib' ? 'selected' : ''}>🟢 Wajib</option><option value="main" ${l.kat === 'main' ? 'selected' : ''}>🎮 Main</option><option value="tabung" ${l.kat === 'tabung' ? 'selected' : ''}>💎 Tabung</option><option value="ortu" ${l.kat === 'ortu' ? 'selected' : ''}>👨‍👩‍👧 Ortu</option><option value="darurat" ${l.kat === 'darurat' ? 'selected' : ''}>🔥 Darurat</option>`;
         }
         openModal('editModal');
     }
 
     function saveEdit() {
-        const index = document.getElementById('editIndex').value;
-        const newKet = document.getElementById('editKet').value;
-        const newAmt = parseFloat(document.getElementById('editNom').value);
-        const newKat = document.getElementById('editKat').value; 
-        
-        if (!newKet || isNaN(newAmt) || newAmt < 0) return alert("Mohon isi keterangan dan nominal dengan benar!");
-
-        let l = db.logs[index];
-        l.ket = newKet; l.amt = newAmt; l.kat = newKat; 
-
-        kirimCloud({ date: l.date, kat: l.kat, ket: "[DIEDIT] " + l.ket, type: 'CORRECTION', amt: l.amt, month: l.month });
-        
+        const index = document.getElementById('editIndex').value; const newKet = document.getElementById('editKet').value; const newAmt = parseFloat(document.getElementById('editNom').value); const newKat = document.getElementById('editKat').value; 
+        if (!newKet || isNaN(newAmt) || newAmt < 0) return alert("Lengkapi data!");
+        let l = db.logs[index]; l.ket = newKet; l.amt = newAmt; l.kat = newKat; 
+        kirimCloud({ action: "EDIT", id: l.id, date: l.date, kat: l.kat, ket: l.ket, type: l.type, amt: l.amt, month: l.month });
         closeModal('editModal'); update(); 
     }
 
     function deleteLog(index) {
-        if(!confirm("Hapus transaksi ini? Saldo akan dikembalikan secara otomatis.")) return;
+        if(!confirm("Hapus transaksi ini secara PERMANEN?")) return;
         let l = db.logs[index];
-        
         if (l.type.startsWith('TRANSFER_')) {
+            const pair = db.logs.filter(x => x.linkId === l.linkId);
+            pair.forEach(delLog => kirimCloud({ action: "DELETE", id: delLog.id }));
             db.logs = db.logs.filter(x => x.linkId !== l.linkId);
-            kirimCloud({ date: l.date, kat: l.kat, ket: "[DIHAPUS SUNTIK DANA] " + l.ket, type: 'CORRECTION', amt: 0, month: l.month });
         } else {
-            kirimCloud({ date: l.date, kat: l.kat, ket: "[DIHAPUS] " + l.ket, type: 'CORRECTION', amt: 0, month: l.month });
+            kirimCloud({ action: "DELETE", id: l.id });
             db.logs.splice(index, 1); 
         }
         update(); 
     }
 
     function unduhLaporan() {
-        let csv = "Tanggal,Kategori,Keterangan,Tipe,Nominal\n";
+        const today = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
+        let totalGaji = 0; let totalKeluar = 0;
+        db.logs.forEach(l => { if(l.type==='IN') totalGaji+=l.amt; if(l.type==='OUT') totalKeluar+=l.amt; });
+        let csv = "=================================================\n          LAPORAN KEUANGAN - DOMPETKU NEON       \n          Dicetak pada: " + today + "\n=================================================\nTOTAL PENDAPATAN : Rp " + totalGaji.toLocaleString('id-ID') + "\nTOTAL PENGELUARAN: Rp " + totalKeluar.toLocaleString('id-ID') + "\nSISA UANG REAL   : Rp " + (totalGaji - totalKeluar).toLocaleString('id-ID') + "\n=================================================\n\nTANGGAL,BULAN,KATEGORI,KETERANGAN,TIPE,NOMINAL\n";
         db.logs.forEach(l => { 
-            let excelKat = l.type === 'TRANSFER' ? `${l.kat.toUpperCase()} -> ${l.kat2.toUpperCase()}` : l.kat;
-            csv += `${l.date},${excelKat},${l.ket},${l.type},${l.amt}\n`; 
+            let k = l.type === 'TRANSFER' ? `${l.kat.toUpperCase()} -> ${l.kat2.toUpperCase()}` : l.kat.toUpperCase();
+            let s = l.type === 'OUT' || l.type === 'TRANSFER_OUT' ? '-' : '';
+            csv += `${l.date},Bulan ${l.month},${k},"${l.ket}",${l.type},${s}Rp ${l.amt.toLocaleString('id-ID')}\n`; 
         });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `Laporan_Keuangan_Neon.csv`;
-        link.click();
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `Laporan_Dompetku_${today.replace(/ /g, '_')}.csv`; link.click();
     }
 
     async function hapusSemua() {
-        if(confirm("Yakin mau hapus semua data dari HP dan Server Google? Data nggak bisa balik lagi loh!")) {
+        if(confirm("🚨 PERINGATAN! Semua data akan DIHAPUS PERMANEN! Lanjutkan?")) {
             try {
                 await fetch(URL_CLOUD, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "RESET" }) });
-                localStorage.clear(); location.reload();
+                localStorage.removeItem('dompet_ku_data_master'); location.reload();
             } catch (e) { alert("Gagal konek ke Cloud!"); }
         }
     }
 
     const months = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
-    
-    const selectBlnGaji = document.getElementById('blnGaji');
-    const selectFBulan = document.getElementById('fBulan');
-    const selectFBulanDash = document.getElementById('fBulanDash');
-    const selectSuntikDariBulan = document.getElementById('suntikDariBulan');
-    const selectSuntikKeBulan = document.getElementById('suntikKeBulan');
-    
-    selectFBulan.innerHTML = `<option value="all">SEMUA BULAN</option>`;
-    selectFBulanDash.innerHTML = `<option value="all">SEMUA BULAN</option>`;
-    
+    const selects = [document.getElementById('blnGaji'), document.getElementById('fBulan'), document.getElementById('fBulanDash'), document.getElementById('suntikDariBulan'), document.getElementById('suntikKeBulan')];
+    selects[1].innerHTML = selects[2].innerHTML = `<option value="all">SEMUA BULAN</option>`;
     months.forEach((m, i) => {
-        const val = (i+1).toString();
-        const text = m.toUpperCase();
-        const opt = `<option value="${val}">${text}</option>`;
-        
-        selectBlnGaji.innerHTML += opt; selectFBulan.innerHTML += opt; selectFBulanDash.innerHTML += opt;
-        selectSuntikDariBulan.innerHTML += opt; selectSuntikKeBulan.innerHTML += opt;
+        const opt = `<option value="${i+1}">${m.toUpperCase()}</option>`;
+        selects.forEach(s => s.innerHTML += opt);
     });
-
-    const currentMonth = (new Date().getMonth() + 1).toString();
-    selectBlnGaji.value = currentMonth; selectSuntikDariBulan.value = currentMonth; selectSuntikKeBulan.value = currentMonth;
-    
+    const curMonth = (new Date().getMonth() + 1).toString();
+    selects[0].value = selects[3].value = selects[4].value = curMonth;
     update();
 </script>
 </body>
