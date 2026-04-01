@@ -30,9 +30,9 @@
         .card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 30px; padding: 20px; margin-bottom: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
         .label { font-size: 12px; font-weight: 800; opacity: 0.8; text-transform: uppercase; margin-bottom: 0; letter-spacing: 1.5px; color: #94a3b8; }
         
+        /* Tombol Aksi Utama - Warnanya Disamakan (Serasi) */
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .btn-action-1 { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
-        .btn-action-2 { background: linear-gradient(135deg, #ec4899, #f43f5e); color: white; box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4); }
         
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .filter-mini { width: auto; padding: 8px 10px; margin-bottom: 0; font-size: 11px; border-radius: 12px; background: rgba(0,0,0,0.4); color: var(--accent); border: 1px solid var(--accent); cursor: pointer; text-transform: uppercase; font-weight: 800; }
@@ -76,7 +76,6 @@
         .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); }
         .btn-cyan { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); }
         .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; }
-        
         .btn-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4); text-shadow: 0 1px 3px rgba(0,0,0,0.3); border: none; }
         .btn:active { transform: scale(0.95); }
 
@@ -93,7 +92,8 @@
         .btn-mini:hover { background: rgba(255,255,255,0.3); }
         .btn-mini:active { transform: scale(0.9); }
 
-        .stats-highlight { background: linear-gradient(45deg, var(--danger), var(--warning)); color: white; padding: 25px; border-radius: 25px; margin-top: 15px; text-align: center; box-shadow: 0 10px 30px rgba(244, 63, 94, 0.3); }
+        /* Stats Kotak Filter Lebih Rapi */
+        .stats-highlight { background: linear-gradient(45deg, var(--danger), var(--warning)); color: white; padding: 18px; border-radius: 20px; margin-top: 15px; text-align: center; box-shadow: 0 10px 25px rgba(244, 63, 94, 0.3); }
 
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
         .modal-card { width: 100%; max-width: 400px; margin: 0; animation: popIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: var(--bg-gradient); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.5); padding: 25px; border-radius: 30px; }
@@ -103,9 +103,20 @@
         .suntik-col { display: flex; flex-direction: column; gap: 8px; }
         .select-mini { padding: 12px; font-size: 13px; border-radius: 14px; margin-bottom: 0; }
         
+        /* Area khusus untuk mencetak PDF yang disembunyikan saat tampil di web biasa */
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; color: black; background: white; padding: 20px; box-sizing: border-box;}
+            #printArea table { width: 100%; border-collapse: collapse; margin-top: 15px; font-family: sans-serif; font-size: 12px; }
+            #printArea th, #printArea td { border: 1px solid #333; padding: 8px; text-align: left; }
+            #printArea th { background-color: #f2f2f2; font-weight: bold; }
+        }
     </style>
 </head>
 <body>
+
+<div id="printArea" style="display: none;"></div>
 
 <div id="keluarModal" class="modal-overlay">
     <div class="modal-card">
@@ -139,7 +150,7 @@
 
 <div id="suntikModal" class="modal-overlay">
     <div class="modal-card">
-        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900;">🔄 SUNTIK DANA</h3>
+        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900;">🔄 ALOKASIKAN DANA</h3>
         <div class="suntik-grid">
             <div class="suntik-col">
                 <span class="label" style="color: var(--cyan); margin-bottom: 0; font-size: 11px;">📤 DARI KANTONG</span>
@@ -173,7 +184,7 @@
         <input type="number" id="suntikNom" placeholder="Nominal Rp dipindah...">
         <div style="display: flex; gap: 10px; margin-top: 15px;">
             <button class="btn btn-outline" style="margin-top:0; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal('suntikModal')">BATAL</button>
-            <button class="btn btn-cyan" style="margin-top:0;" onclick="suntikDana()">SUNTIK</button>
+            <button class="btn btn-cyan" style="margin-top:0; background: linear-gradient(135deg, var(--primary), var(--accent)); box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);" onclick="suntikDana()">ALOKASIKAN</button>
         </div>
     </div>
 </div>
@@ -212,8 +223,8 @@
     </div>
 
     <div class="action-grid">
-        <button class="btn btn-action-1" onclick="openModal('keluarModal')">💸 CATAT KELUAR</button>
-        <button class="btn btn-action-2" onclick="openModal('suntikModal')">🔄 SUNTIK DANA</button>
+        <button class="btn btn-action-1" onclick="openModal('keluarModal')">💸 CATAT PENGELUARAN</button>
+        <button class="btn btn-action-1" onclick="openModal('suntikModal')">🔄 ALOKASIKAN DANA</button>
     </div>
 
     <div class="card">
@@ -275,30 +286,28 @@
         </div>
         
         <div id="statsBox" class="stats-highlight" style="display:none;">
-            <small style="font-weight:800; opacity:0.9; letter-spacing:1px; text-transform:uppercase;">Total Terfilter</small>
-            <h2 id="totalFiltered" style="font-size: 32px; font-weight: 900; margin-top:5px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Rp 0</h2>
+            <small id="filterLabel" style="font-weight:800; opacity:0.9; letter-spacing:1px; text-transform:uppercase;">TOTAL PENGELUARAN</small>
+            <div id="filterKeyword" style="font-weight:900; font-size: 16px; color: var(--warning); margin-top: 3px; display: none;"></div>
+            <h2 id="totalFiltered" style="font-size: 26px; font-weight: 900; margin-top:5px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Rp 0</h2>
         </div>
 
-        <button class="btn btn-gold" style="margin-bottom: 15px;" onclick="unduhLaporan()">📥 CETAK LAPORAN (CSV)</button>
+        <button class="btn btn-gold" style="margin-bottom: 15px;" onclick="unduhLaporanPDF()">📥 CETAK LAPORAN (PDF)</button>
         
         <div id="logList"></div>
         <button id="btnShowAll" class="btn btn-outline" style="display:none; width:100%; border-radius:15px; font-size: 13px; color:white; border-color:rgba(255,255,255,0.2);" onclick="toggleHistory()">TAMPILKAN SEMUA TRANSAKSI 🔽</button>
     </div>
 
-    <button onclick="hapusSemua()" style="background:none; border:none; color:#f43f5e; font-size: 11px; width: 100%; font-weight: 800; margin: 20px 0 40px 0; opacity: 0.7; text-decoration: underline; letter-spacing: 1px;">⚠️ RESET SEMUA DATA (HP & GOOGLE SHEETS)</button>
+    <button onclick="hapusSemua()" style="background:none; border:none; color:#f43f5e; font-size: 11px; width: 100%; font-weight: 800; margin: 10px 0 40px 0; opacity: 0.7; text-decoration: underline; letter-spacing: 1px;">⚠️ RESET SEMUA DATA (HP & GOOGLE SHEETS)</button>
 </div>
 
 <script>
-    // URL CLOUD TERBARU KAMU
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbyACsYu5CWjownAO0DNTaNRxNaZ60U04vyObPCfCREaEUnTYDmzOq-hIWb2r7ee5KNr/exec";
 
-    // KUNCI DATABASE PERMANEN
+    // 🌟 KUNCI PERMANEN & PENGHAPUSAN BUG -5000 SECARA TUNTAS
     let db = JSON.parse(localStorage.getItem('dompet_ku_data_master'));
+    // Jika tidak ada data, kita mulai BENAR-BENAR DARI NOL. Tanpa migrasi.
     if (!db) {
-        let oldDb = localStorage.getItem('dompet_neon_v23');
-        if (oldDb) db = JSON.parse(oldDb);
-        else db = { logs: [], hints: [] };
-        db.logs.forEach(l => { if(!l.id) l.id = 'TRX_' + Math.random().toString(36).substr(2, 9); });
+        db = { logs: [], hints: [] };
         localStorage.setItem('dompet_ku_data_master', JSON.stringify(db));
     }
 
@@ -383,29 +392,40 @@
         let gInit = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let gSaldo = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let gTotalGaji = 0; let gTotalKeluar = 0;
+
         let monthlyIn = {};
         db.logs.forEach(l => { if(l.type === 'IN') { if(!monthlyIn[l.month]) monthlyIn[l.month] = 0; monthlyIn[l.month] += l.amt; gTotalGaji += l.amt; } });
+        
         let monthlyInit = {};
         for(let m in monthlyIn) {
             let alok = hitungAlokasiBulanan(monthlyIn[m], m); monthlyInit[m] = alok;
             gInit.wajib += alok.w; gInit.makan += alok.mkn; gInit.bbm += alok.bbm; gInit.main += alok.m; gInit.tabung += alok.t; gInit.ortu += alok.o; gInit.darurat += alok.d;
         }
+        
         gSaldo = { ...gInit }; 
         db.logs.forEach(l => {
             if(l.type === 'OUT') { gSaldo[l.kat] -= l.amt; gTotalKeluar += l.amt; } 
             else if(l.type === 'TRANSFER_OUT') { gSaldo[l.kat] -= l.amt; gInit[l.kat] -= l.amt; } 
             else if(l.type === 'TRANSFER_IN') { gSaldo[l.kat] += l.amt; gInit[l.kat] += l.amt; }
         });
+        
         const fDash = document.getElementById('fBulanDash').value;
         const dashTitleGaji = document.getElementById('title-gaji');
         const dashTitleKeluar = document.getElementById('title-keluar');
+        
         let dSaldo = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let dInit = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
         let dGaji = 0; let dKeluar = 0;
-        if (fDash === 'all') { dSaldo = { ...gSaldo }; dInit = { ...gInit }; dGaji = gTotalGaji; dKeluar = gTotalKeluar; dashTitleGaji.innerText = "🌟 TOTAL GAJI"; dashTitleKeluar.innerText = "💸 TOTAL KELUAR"; } 
+
+        if (fDash === 'all') { 
+            dSaldo = { ...gSaldo }; dInit = { ...gInit }; dGaji = gTotalGaji; dKeluar = gTotalKeluar; 
+            dashTitleGaji.innerText = "🌟 TOTAL GAJI"; dashTitleKeluar.innerText = "💸 TOTAL KELUAR"; 
+        } 
         else {
             dGaji = monthlyIn[fDash] || 0;
-            if(monthlyInit[fDash]) { let alok = monthlyInit[fDash]; dInit.wajib = alok.w; dInit.makan = alok.mkn; dInit.bbm = alok.bbm; dInit.main = alok.m; dInit.tabung = alok.t; dInit.ortu = alok.o; dInit.darurat = alok.d; dSaldo = { ...dInit }; }
+            if(monthlyInit[fDash]) { 
+                let alok = monthlyInit[fDash]; dInit.wajib = alok.w; dInit.makan = alok.mkn; dInit.bbm = alok.bbm; dInit.main = alok.m; dInit.tabung = alok.t; dInit.ortu = alok.o; dInit.darurat = alok.d; dSaldo = { ...dInit }; 
+            }
             db.logs.forEach(l => {
                 if (l.month === fDash) {
                     if (l.type === 'OUT') { dSaldo[l.kat] -= l.amt; dKeluar += l.amt; } 
@@ -416,10 +436,13 @@
             const namaBulan = document.getElementById('fBulanDash').options[document.getElementById('fBulanDash').selectedIndex].text;
             dashTitleGaji.innerText = "🌟 GAJI " + namaBulan; dashTitleKeluar.innerText = "💸 KELUAR " + namaBulan;
         }
+        
         document.getElementById('v-totalgaji').innerText = fmt(dGaji);
         document.getElementById('v-totalkeluar').innerText = fmt(dKeluar);
+        
         const healthBox = document.getElementById('healthIndicator');
         const sisaUangReil = dGaji - dKeluar;
+        
         if (dGaji === 0) { healthBox.innerHTML = "💤 Belum ada pemasukan"; healthBox.style.background = "rgba(255,255,255,0.05)"; healthBox.style.color = "#94a3b8"; healthBox.style.border = "1px solid rgba(255,255,255,0.1)"; } 
         else {
             const percSehat = (sisaUangReil / dGaji) * 100;
@@ -428,36 +451,59 @@
             else if (percSehat > 0) { healthBox.innerHTML = "🚨 Waspada! Saldo menipis."; healthBox.style.background = "linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.4))"; healthBox.style.color = "#fdba74"; healthBox.style.border = "1px solid rgba(249, 115, 22, 0.5)"; } 
             else { healthBox.innerHTML = "🥵 GAWAT! Saldo boncos, Bos!"; healthBox.style.background = "linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4))"; healthBox.style.color = "#fda4af"; healthBox.style.border = "1px solid rgba(244, 63, 94, 0.5)"; }
         }
+        
         ['wajib','makan','bbm','main','tabung','ortu','darurat'].forEach(id => {
             document.getElementById('v-'+id).innerText = fmt(dSaldo[id]);
             const perc = dInit[id] > 0 ? (dSaldo[id] / dInit[id]) * 100 : 0;
             document.getElementById('p-'+id).style.width = Math.min(Math.max(perc, 0), 100) + "%";
         });
+        
         const fMonth = document.getElementById('fBulan').value;
         const fKey = document.getElementById('fKeyword').value.toLowerCase();
         const logList = document.getElementById('logList');
         const btnShowAll = document.getElementById('btnShowAll');
+        
         let totalF = 0; let matchCount = 0; let visibleHtml = ""; let hiddenHtml = "";
+        
         db.logs.forEach((l, index) => {
             if((fMonth === 'all' || l.month === fMonth) && l.ket.toLowerCase().includes(fKey)) {
                 let color, sign, katLabel, editBtnHtml;
                 if (l.type === 'IN') { color = '#34d399'; sign = '+'; katLabel = l.kat; editBtnHtml = `<button class="btn-mini" onclick="openEditModal(${index})" title="Edit">✏️</button>`; } 
                 else if (l.type === 'OUT') { color = '#fb7185'; sign = '-'; katLabel = l.kat.toUpperCase(); totalF += l.amt; editBtnHtml = `<button class="btn-mini" onclick="openEditModal(${index})" title="Edit">✏️</button>`; } 
-                else if (l.type === 'TRANSFER_IN') { color = '#38bdf8'; sign = '+'; katLabel = `SUNTIK MASUK: ${l.kat.toUpperCase()}`; editBtnHtml = ``; } 
-                else if (l.type === 'TRANSFER_OUT') { color = '#fb7185'; sign = '-'; katLabel = `SUNTIK KELUAR: ${l.kat.toUpperCase()}`; editBtnHtml = ``; }
+                else if (l.type === 'TRANSFER_IN') { color = '#38bdf8'; sign = '+'; katLabel = `ALOKASI MASUK: ${l.kat.toUpperCase()}`; editBtnHtml = ``; } 
+                else if (l.type === 'TRANSFER_OUT') { color = '#fb7185'; sign = '-'; katLabel = `ALOKASI KELUAR: ${l.kat.toUpperCase()}`; editBtnHtml = ``; }
+                
                 let itemHtml = `<div class="history-item"><div class="info"><b>${l.ket}</b><small>${l.date} | ${katLabel}</small></div><div class="history-right"><div class="amt" style="color:${color}">${sign} ${fmt(l.amt)}</div><div class="action-btns">${editBtnHtml}<button class="btn-mini" onclick="deleteLog(${index})" title="Hapus">🗑️</button></div></div></div>`;
                 if (matchCount < 3) visibleHtml += itemHtml; else hiddenHtml += itemHtml;
                 matchCount++;
             }
         });
+        
         logList.innerHTML = showAllHistory ? visibleHtml + hiddenHtml : visibleHtml;
         btnShowAll.style.display = matchCount > 3 ? 'block' : 'none';
         btnShowAll.innerHTML = showAllHistory ? "TAMPILKAN LEBIH SEDIKIT 🔼" : `TAMPILKAN SEMUA (${matchCount}) 🔽`;
-        document.getElementById('statsBox').style.display = (fKey || fMonth !== 'all') ? "block" : "none";
-        document.getElementById('totalFiltered').innerText = fmt(totalF);
+        
+        // PENGATURAN KOTAK FILTER PENGELUARAN YANG BARU
+        const statsBox = document.getElementById('statsBox');
+        const filterKeywordLabel = document.getElementById('filterKeyword');
+        
+        if(fKey || fMonth !== 'all') {
+            statsBox.style.display = "block";
+            if(fKey) {
+                filterKeywordLabel.innerText = fKey.toUpperCase();
+                filterKeywordLabel.style.display = "block";
+            } else {
+                filterKeywordLabel.style.display = "none";
+            }
+            document.getElementById('totalFiltered').innerText = fmt(totalF);
+        } else {
+            statsBox.style.display = "none";
+        }
+
         const hintList = document.getElementById('hintList');
         hintList.innerHTML = "";
         [...new Set(db.hints)].slice(0, 15).forEach(h => { hintList.innerHTML += `<option value="${h}">`; });
+        
         localStorage.setItem('dompet_ku_data_master', JSON.stringify(db));
     }
 
@@ -469,10 +515,8 @@
         const now = new Date();
         const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
         const payload = { action: 'INSERT', id: generateId(), date: dateStr, kat: 'PEMASUKAN', ket: "Gaji Bulan " + blnText, type: 'IN', amt: amt, month: blnVal };
-        db.logs.unshift(payload);
-        kirimCloud(payload);
-        document.getElementById('inGaji').value = ""; 
-        update();
+        db.logs.unshift(payload); kirimCloud(payload);
+        document.getElementById('inGaji').value = ""; update();
     }
 
     function catat() {
@@ -503,8 +547,11 @@
         const now = new Date();
         const dateStr = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit'}) + " " + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
         const linkId = generateId();
-        const logOut = { action: 'INSERT', id: linkId + '_OUT', date: dateStr, kat: dari, ket: `📤 Pindah ke ${ke.toUpperCase()} (${blnKe})`, type: 'TRANSFER_OUT', amt: nom, month: blnDari, linkId: linkId };
-        const logIn = { action: 'INSERT', id: linkId + '_IN', date: dateStr, kat: ke, ket: `📥 Terima dari ${dari.toUpperCase()} (${blnDari})`, type: 'TRANSFER_IN', amt: nom, month: blnKe, linkId: linkId };
+        const namaBulanDari = document.getElementById('suntikDariBulan').options[document.getElementById('suntikDariBulan').selectedIndex].text;
+        const namaBulanKe = document.getElementById('suntikKeBulan').options[document.getElementById('suntikKeBulan').selectedIndex].text;
+        
+        const logOut = { action: 'INSERT', id: linkId + '_OUT', date: dateStr, kat: dari, ket: `📤 Pindah ke ${ke.toUpperCase()} (${namaBulanKe})`, type: 'TRANSFER_OUT', amt: nom, month: blnDari, linkId: linkId };
+        const logIn = { action: 'INSERT', id: linkId + '_IN', date: dateStr, kat: ke, ket: `📥 Terima dari ${dari.toUpperCase()} (${namaBulanDari})`, type: 'TRANSFER_IN', amt: nom, month: blnKe, linkId: linkId };
         db.logs.unshift(logIn, logOut);
         kirimCloud(logIn); setTimeout(() => kirimCloud(logOut), 500);
         document.getElementById('suntikNom').value = ""; closeModal('suntikModal'); update();
@@ -543,18 +590,82 @@
         update(); 
     }
 
-    function unduhLaporan() {
-        const today = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
-        let totalGaji = 0; let totalKeluar = 0;
-        db.logs.forEach(l => { if(l.type==='IN') totalGaji+=l.amt; if(l.type==='OUT') totalKeluar+=l.amt; });
-        let csv = "=================================================\n          LAPORAN KEUANGAN - DOMPETKU NEON       \n          Dicetak pada: " + today + "\n=================================================\nTOTAL PENDAPATAN : Rp " + totalGaji.toLocaleString('id-ID') + "\nTOTAL PENGELUARAN: Rp " + totalKeluar.toLocaleString('id-ID') + "\nSISA UANG REAL   : Rp " + (totalGaji - totalKeluar).toLocaleString('id-ID') + "\n=================================================\n\nTANGGAL,BULAN,KATEGORI,KETERANGAN,TIPE,NOMINAL\n";
-        db.logs.forEach(l => { 
-            let k = l.type === 'TRANSFER' ? `${l.kat.toUpperCase()} -> ${l.kat2.toUpperCase()}` : l.kat.toUpperCase();
-            let s = l.type === 'OUT' || l.type === 'TRANSFER_OUT' ? '-' : '';
-            csv += `${l.date},Bulan ${l.month},${k},"${l.ket}",${l.type},${s}Rp ${l.amt.toLocaleString('id-ID')}\n`; 
+    // FUNGSI PRINT PDF SUPER KEREN (MENYESUAIKAN FILTER!)
+    function unduhLaporanPDF() {
+        const fMonth = document.getElementById('fBulan').value;
+        const fKey = document.getElementById('fKeyword').value.toLowerCase();
+        
+        let filteredLogs = db.logs.filter(l => {
+            return (fMonth === 'all' || l.month === fMonth) && l.ket.toLowerCase().includes(fKey);
         });
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `Laporan_Dompetku_${today.replace(/ /g, '_')}.csv`; link.click();
+
+        let totalIn = 0; let totalOut = 0;
+        filteredLogs.forEach(l => {
+            if(l.type === 'IN') totalIn += l.amt;
+            if(l.type === 'OUT') totalOut += l.amt;
+        });
+
+        let bulanTeks = fMonth === 'all' ? 'SEMUA BULAN' : document.getElementById('fBulan').options[document.getElementById('fBulan').selectedIndex].text;
+        let today = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'});
+        
+        let html = `
+            <div style="font-family: Arial, sans-serif; padding: 20px; color: #000;">
+                <h2 style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">LAPORAN KEUANGAN - DOMPETKU</h2>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 14px;">
+                    <div>
+                        <p style="margin: 3px 0;"><strong>Dicetak pada:</strong> ${today}</p>
+                        <p style="margin: 3px 0;"><strong>Filter Bulan:</strong> ${bulanTeks}</p>
+                        ${fKey ? `<p style="margin: 3px 0;"><strong>Kata Kunci:</strong> ${fKey.toUpperCase()}</p>` : ''}
+                    </div>
+                    <div style="border: 1px solid #ccc; padding: 10px; border-radius: 8px;">
+                        <p style="margin: 3px 0;"><strong>Total Pemasukan:</strong> <span style="color: green;">${fmt(totalIn)}</span></p>
+                        <p style="margin: 3px 0;"><strong>Total Pengeluaran:</strong> <span style="color: red;">${fmt(totalOut)}</span></p>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 30px; margin-bottom: 10px;">Rincian Transaksi:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Kategori</th>
+                            <th>Keterangan</th>
+                            <th style="text-align: right;">Nominal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        if (filteredLogs.length === 0) {
+            html += `<tr><td colspan="4" style="text-align: center; padding: 15px;">Tidak ada data transaksi.</td></tr>`;
+        } else {
+            filteredLogs.forEach(l => {
+                let excelKat = l.type === 'TRANSFER_IN' || l.type === 'TRANSFER_OUT' ? `ALOKASI ${l.kat.toUpperCase()}` : l.kat.toUpperCase();
+                let sign = l.type === 'OUT' || l.type === 'TRANSFER_OUT' ? '-' : (l.type === 'IN' || l.type === 'TRANSFER_IN' ? '+' : '');
+                let color = l.type === 'OUT' || l.type === 'TRANSFER_OUT' ? 'red' : (l.type === 'IN' || l.type === 'TRANSFER_IN' ? 'green' : 'blue');
+                
+                html += `
+                    <tr>
+                        <td>${l.date}</td>
+                        <td>${excelKat}</td>
+                        <td>${l.ket}</td>
+                        <td style="text-align: right; color: ${color}; font-weight: bold;">${sign} ${fmt(l.amt)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        html += `</tbody></table></div>`;
+        
+        const printArea = document.getElementById('printArea');
+        printArea.innerHTML = html;
+        document.title = `Laporan_Dompetku_${bulanTeks.replace(/ /g, '_')}`;
+        
+        // Memanggil fungsi print bawaan HP/PC (Bisa langsung disave as PDF)
+        window.print();
+        
+        // Kembalikan title asli setelah print
+        setTimeout(() => { document.title = "Dompetku Neon Ultimate"; }, 1000);
     }
 
     async function hapusSemua() {
