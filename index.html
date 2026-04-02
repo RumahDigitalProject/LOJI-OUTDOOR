@@ -6,7 +6,8 @@
     <title>Dompetku Neon Ultimate</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
     
     <style>
         :root {
@@ -95,7 +96,7 @@
         .btn-mini:hover { background: rgba(255,255,255,0.3); }
         .btn-mini:active { transform: scale(0.9); }
 
-        /* KOTAK FILTER MINIMALIS (WHITE GLASS & EFEK KILAU) */
+        /* KOTAK FILTER MINIMALIS */
         .stats-highlight { 
             background: rgba(255, 255, 255, 0.15); 
             backdrop-filter: blur(10px); 
@@ -221,6 +222,7 @@
     </div>
 </div>
 
+
 <div class="container">
     <header>
         <h1>DOMPETKU 🚀</h1>
@@ -305,7 +307,7 @@
         
         <div id="statsBox" class="stats-highlight" style="display:none;">
             <div>
-                <small style="font-weight:800; opacity:0.9; letter-spacing:1px;">TOTAL PENGELUARAN</small>
+                <small style="font-weight:800; opacity:0.9; letter-spacing:1px; color:#f8fafc;">TOTAL PENGELUARAN</small>
                 <div id="filterKeyword" style="font-weight:900; font-size: 13px; color: #38bdf8; text-transform: uppercase; margin-top: 2px; display: none;"></div>
             </div>
             <h2 id="totalFiltered" style="font-size: 22px; font-weight: 900; text-shadow: 0 1px 5px rgba(0,0,0,0.2); margin: 0;">Rp 0</h2>
@@ -321,7 +323,7 @@
 <script>
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbyACsYu5CWjownAO0DNTaNRxNaZ60U04vyObPCfCREaEUnTYDmzOq-hIWb2r7ee5KNr/exec";
 
-    // 🌟 KUNCI PERMANEN & BERSIH!
+    // 🌟 DATABASE BENAR-BENAR BERSIH
     let db = JSON.parse(localStorage.getItem('dompet_ku_data_master'));
     if (!db) {
         db = { logs: [], hints: [] };
@@ -612,102 +614,118 @@
         update(); 
     }
 
-    // 🌟 FUNGSI CETAK PDF DIRECT DOWNLOAD (BUG FIXED)
+    // 🌟 MESIN CETAK PDF BARU (JSPDF + AUTOTABLE) - PASTI MUNCUL TABELNYA!
     function unduhLaporanPDF() {
         const btn = document.getElementById('btnCetakPDF');
         const originalText = btn.innerHTML;
         btn.innerHTML = "⏳ MENYIAPKAN PDF...";
         btn.disabled = true;
 
-        const fMonth = document.getElementById('fBulan').value;
-        const fKey = document.getElementById('fKeyword').value.toLowerCase();
-        
-        let filteredLogs = db.logs.filter(l => {
-            return (fMonth === 'all' || l.month === fMonth) && l.ket.toLowerCase().includes(fKey);
-        });
+        setTimeout(() => { // Kasih jeda dikit biar tombolnya sempat berubah tulisan
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4'); // Kertas A4 Portrait
 
-        let totalIn = 0; let totalOut = 0;
-        filteredLogs.forEach(l => {
-            if(l.type === 'IN') totalIn += l.amt;
-            if(l.type === 'OUT') totalOut += l.amt;
-        });
-
-        let bulanTeks = fMonth === 'all' ? 'SEMUA BULAN' : document.getElementById('fBulan').options[document.getElementById('fBulan').selectedIndex].text;
-        let today = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'});
-        
-        // Membangun String HTML murni dengan Inline CSS agar html2pdf bisa membaca dengan sempurna (tanpa display:none)
-        let htmlContent = `
-            <div style="font-family: Arial, sans-serif; color: #000; padding: 20px; background: #fff; width: 100%;">
-                <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 25px;">
-                    <h2 style="font-size: 24px; font-weight: bold; margin: 0; color: #1e293b;">LAPORAN KEUANGAN DOMPETKU</h2>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 14px;">
-                    <div style="border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px; background: #f8fafc; width: 48%;">
-                        <p style="margin: 5px 0;"><strong>Dicetak pada:</strong> <br>${today}</p>
-                        <p style="margin: 5px 0;"><strong>Filter Bulan:</strong> <br>${bulanTeks}</p>
-                        ${fKey ? `<p style="margin: 5px 0;"><strong>Kata Kunci:</strong> <br>${fKey.toUpperCase()}</p>` : ''}
-                    </div>
-                    <div style="border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px; background: #f8fafc; width: 48%;">
-                        <p style="margin: 5px 0;"><strong>Total Pemasukan:</strong> <br><span style="color: #059669; font-weight: bold;">${fmt(totalIn)}</span></p>
-                        <p style="margin: 5px 0;"><strong>Total Pengeluaran:</strong> <br><span style="color: #e11d48; font-weight: bold;">${fmt(totalOut)}</span></p>
-                    </div>
-                </div>
+                const fMonth = document.getElementById('fBulan').value;
+                const fKey = document.getElementById('fKeyword').value.toLowerCase();
                 
-                <h3 style="margin-top: 20px; margin-bottom: 10px; color: #334155;">Rincian Transaksi:</h3>
-                <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
-                    <thead>
-                        <tr>
-                            <th style="border: 1px solid #cbd5e1; padding: 10px; text-align: left; background-color: #f1f5f9; font-weight: bold; color: #334155;">Tanggal</th>
-                            <th style="border: 1px solid #cbd5e1; padding: 10px; text-align: left; background-color: #f1f5f9; font-weight: bold; color: #334155;">Kategori</th>
-                            <th style="border: 1px solid #cbd5e1; padding: 10px; text-align: left; background-color: #f1f5f9; font-weight: bold; color: #334155;">Keterangan</th>
-                            <th style="border: 1px solid #cbd5e1; padding: 10px; text-align: right; background-color: #f1f5f9; font-weight: bold; color: #334155;">Nominal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-        `;
+                let filteredLogs = db.logs.filter(l => {
+                    return (fMonth === 'all' || l.month === fMonth) && l.ket.toLowerCase().includes(fKey);
+                });
 
-        if (filteredLogs.length === 0) {
-            htmlContent += `<tr><td colspan="4" style="text-align: center; padding: 20px; border: 1px solid #cbd5e1;">Tidak ada data transaksi.</td></tr>`;
-        } else {
-            filteredLogs.forEach(l => {
-                let excelKat = l.type === 'TRANSFER_IN' || l.type === 'TRANSFER_OUT' ? `ALOKASI ${l.kat.toUpperCase()}` : l.kat.toUpperCase();
-                let sign = l.type === 'OUT' || l.type === 'TRANSFER_OUT' ? '-' : (l.type === 'IN' || l.type === 'TRANSFER_IN' ? '+' : '');
-                let colorStyle = l.type === 'OUT' || l.type === 'TRANSFER_OUT' ? 'color: #e11d48;' : (l.type === 'IN' || l.type === 'TRANSFER_IN' ? 'color: #059669;' : 'color: #0284c7;');
+                let totalIn = 0; let totalOut = 0;
+                filteredLogs.forEach(l => {
+                    if(l.type === 'IN') totalIn += l.amt;
+                    if(l.type === 'OUT') totalOut += l.amt;
+                });
+
+                let bulanTeks = fMonth === 'all' ? 'SEMUA BULAN' : document.getElementById('fBulan').options[document.getElementById('fBulan').selectedIndex].text;
+                let today = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'});
+
+                // ---- MENGGAMBAR KOP SURAT ----
+                doc.setFontSize(16);
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(30, 41, 59); // Warna abu-abu gelap
+                doc.text("LAPORAN KEUANGAN DOMPETKU", 105, 20, { align: "center" });
                 
-                htmlContent += `
-                    <tr>
-                        <td style="border: 1px solid #cbd5e1; padding: 10px;">${l.date.split(' ')[0]}</td>
-                        <td style="border: 1px solid #cbd5e1; padding: 10px;">${excelKat}</td>
-                        <td style="border: 1px solid #cbd5e1; padding: 10px;">${l.ket}</td>
-                        <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: right; font-weight: bold; ${colorStyle}">${sign} ${fmt(l.amt)}</td>
-                    </tr>
-                `;
-            });
-        }
+                // Garis pemisah
+                doc.setDrawColor(203, 213, 225);
+                doc.line(14, 25, 196, 25);
 
-        htmlContent += `</tbody></table></div>`;
-        
-        // Buat elemen sementara yang sesungguhnya di memori browser (Bukan disembunyikan pakai CSS)
-        const tempElement = document.createElement('div');
-        tempElement.innerHTML = htmlContent;
-        
-        var opt = {
-            margin:       10,
-            filename:     `Laporan_Dompetku_${bulanTeks.replace(/ /g, '_')}.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
+                // ---- MENGGAMBAR INFO FILTER & TOTAL ----
+                doc.setFontSize(10);
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(71, 85, 105);
+                
+                // Info Kiri
+                doc.text(`Dicetak pada: ${today}`, 14, 33);
+                doc.text(`Filter Bulan: ${bulanTeks}`, 14, 38);
+                if(fKey) doc.text(`Kata Kunci: ${fKey.toUpperCase()}`, 14, 43);
 
-        // Eksekusi render PDF langsung dari memori
-        html2pdf().set(opt).from(tempElement).save().then(() => {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        }).catch(err => {
-            alert('Gagal mencetak PDF. Pastikan koneksi internet stabil.');
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        });
+                // Info Kanan
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(5, 150, 105); // Hijau untuk pemasukan
+                doc.text(`Total Pemasukan: ${fmt(totalIn)}`, 196, 33, { align: "right" });
+                
+                doc.setTextColor(225, 29, 72); // Merah untuk pengeluaran
+                doc.text(`Total Pengeluaran: ${fmt(totalOut)}`, 196, 38, { align: "right" });
+
+                // ---- MENGGAMBAR TABEL ----
+                const tableColumn = ["Tanggal", "Kategori", "Keterangan Transaksi", "Nominal"];
+                const tableRows = [];
+
+                filteredLogs.forEach(l => {
+                    let excelKat = l.type === 'TRANSFER_IN' || l.type === 'TRANSFER_OUT' ? `ALOKASI ${l.kat.toUpperCase()}` : l.kat.toUpperCase();
+                    let sign = l.type === 'OUT' || l.type === 'TRANSFER_OUT' ? '-' : (l.type === 'IN' || l.type === 'TRANSFER_IN' ? '+' : '');
+                    
+                    tableRows.push([
+                        l.date.split(' ')[0], // Ambil tanggalnya aja tanpa jam
+                        excelKat, 
+                        l.ket, 
+                        `${sign} ${fmt(l.amt)}`
+                    ]);
+                });
+
+                if(tableRows.length === 0) {
+                    tableRows.push(["-", "-", "Tidak ada data transaksi", "-"]);
+                }
+
+                // Render otomatis ke dalam format tabel cantik
+                doc.autoTable({
+                    startY: 50,
+                    head: [tableColumn],
+                    body: tableRows,
+                    theme: 'grid',
+                    headStyles: { fillColor: [99, 102, 241], textColor: [255, 255, 255], fontStyle: 'bold' }, // Warna Indigo Theme Kita
+                    styles: { fontSize: 9, cellPadding: 4 },
+                    alternateRowStyles: { fillColor: [248, 250, 252] },
+                    columnStyles: {
+                        0: { cellWidth: 30 },
+                        1: { cellWidth: 40 },
+                        2: { cellWidth: 'auto' }, // Lebar keterangan fleksibel menyesuaikan kertas
+                        3: { cellWidth: 40, halign: 'right', fontStyle: 'bold' } // Rata Kanan untuk Uang
+                    },
+                    // Warnai tulisan minus jadi merah, plus jadi hijau
+                    didParseCell: function(data) {
+                        if (data.section === 'body' && data.column.index === 3) {
+                            if (data.cell.raw.includes('-')) data.cell.styles.textColor = [225, 29, 72];
+                            else if (data.cell.raw.includes('+')) data.cell.styles.textColor = [5, 150, 105];
+                        }
+                    }
+                });
+
+                // Eksekusi Download!
+                doc.save(`Laporan_Dompetku_${bulanTeks.replace(/ /g, '_')}.pdf`);
+                
+            } catch (err) {
+                alert("Gagal membuat PDF. Pastikan internetmu menyala.");
+                console.error(err);
+            } finally {
+                // Kembalikan tombol ke semula
+                btn.innerHTML = "📥 CETAK PDF";
+                btn.disabled = false;
+            }
+        }, 100);
     }
 
     async function hapusSemua() {
