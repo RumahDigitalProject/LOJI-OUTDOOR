@@ -22,23 +22,87 @@
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-gradient); background-attachment: fixed; color: var(--text); padding: 15px; min-height: 100vh; overflow-x: hidden; }
+        body { background: var(--bg-gradient); background-attachment: fixed; color: var(--text); padding: 0 15px 15px 15px; min-height: 100vh; overflow-x: hidden; }
         .container { max-width: 480px; margin: auto; position: relative; }
         
-        header { margin-bottom: 25px; margin-top: 10px; text-align: center; color: white; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        header h1 { font-size: 34px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        /* --- STICKY HEADER MELENGKUNG DENGAN ANIMASI SOFT --- */
+        .sticky-header {
+            position: sticky; top: 0; z-index: 90;
+            background: rgba(20, 18, 50, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            margin: 0 -15px 20px -15px; padding: 12px 15px 18px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border-bottom-left-radius: 26px; /* Bikin bawahnya gak kaku (melengkung) */
+            border-bottom-right-radius: 26px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Animasi Transisi Warna Background Soft selama 4 detik */
+        @keyframes softBgPulse {
+            0% { background: rgba(20, 18, 50, 0.85); }
+            25% { background: rgba(99, 102, 241, 0.45); } /* Soft Indigo */
+            50% { background: rgba(168, 85, 247, 0.45); } /* Soft Purple */
+            75% { background: rgba(236, 72, 153, 0.45); } /* Soft Pink */
+            100% { background: rgba(20, 18, 50, 0.85); }
+        }
+        .animate-update { animation: softBgPulse 4s ease-in-out; }
 
-        .status-cloud { font-size: 10px; font-weight: 800; padding: 6px 15px; border-radius: 50px; background: rgba(0,0,0,0.3); color: white; display: inline-block; margin-top: 10px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
-        .online { border-color: var(--success); color: var(--success); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+        /* Layout Grid Header Top: Kiri (Kosong) - Tengah (Logo) - Kanan (Tombol Notif) */
+        .header-top { 
+            display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; 
+            margin-bottom: 15px; width: 100%;
+        }
+        .header-center-group { display: flex; flex-direction: column; align-items: center; }
+        .header-center-group h1 { 
+            font-size: 26px; font-weight: 900; letter-spacing: -1px; margin: 0; 
+            background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .header-right-group { display: flex; justify-content: flex-end; }
+        
+        /* TOMBOL TINDAKAN (WARNING BADGE) */
+        .btn-tindakan {
+            background: linear-gradient(135deg, #f43f5e, #e11d48); color: white;
+            border: 1px solid rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 12px; font-size: 9.5px; 
+            font-weight: 900; cursor: pointer; box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
+            text-transform: uppercase; letter-spacing: 0.5px; animation: pulse-red 2s infinite;
+            white-space: nowrap;
+        }
+        .btn-tindakan:active { transform: scale(0.95); }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(244, 63, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+        }
+
+        .status-cloud { 
+            font-size: 9px; font-weight: 800; padding: 4px 12px; border-radius: 50px; 
+            background: rgba(0,0,0,0.4); color: white; display: inline-block; 
+            margin-top: 4px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; 
+        }
+        .online { border-color: var(--success); color: var(--success); box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+
+        /* Struktur Grid Tombol Kaca Hitam */
+        .sticky-controls { display: grid; grid-template-columns: 1fr 2.2fr; gap: 8px; }
+        .sc-left { display: grid; grid-template-rows: 1fr 1fr; gap: 8px; }
+        .sc-right { display: grid; grid-template-rows: 1fr 1fr; gap: 8px; }
+        .sc-right-bot { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        
+        /* Desain Tombol Hitam Kaca (Black Glass) */
+        .btn-sticky {
+            background: rgba(0, 0, 0, 0.45); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: #f8fafc; font-size: 9px; font-weight: 800; border-radius: 12px; padding: 8px 4px;
+            cursor: pointer; transition: 0.2s; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            letter-spacing: 0.5px; line-height: 1.2; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        .btn-sticky:hover { background: rgba(0, 0, 0, 0.6); border-color: rgba(255,255,255,0.25); }
+        .btn-sticky:active { transform: scale(0.95); opacity: 0.8; }
 
         .card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 30px; padding: 20px; margin-bottom: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
         .label { font-size: 12px; font-weight: 800; opacity: 0.8; text-transform: uppercase; margin-bottom: 0; letter-spacing: 1.5px; color: #94a3b8; }
-        
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .btn-action-full { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); grid-column: span 2; margin-bottom: -5px;}
-        .btn-sync { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); font-size: 10px; padding: 12px; font-weight: 900; letter-spacing: 1px; }
-        .btn-sync:hover { background: rgba(255,255,255,0.1); }
-        .btn-action-1 { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
         
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .filter-mini { width: auto; padding: 8px 10px; margin-bottom: 0; font-size: 11px; border-radius: 12px; background: rgba(0,0,0,0.4); color: var(--accent); border: 1px solid var(--accent); cursor: pointer; text-transform: uppercase; font-weight: 800; }
@@ -238,22 +302,46 @@
     </div>
 </div>
 
-<div class="container">
-    <header>
-        <h1>DOMPETKU 🚀</h1>
-        <div id="status" class="status-cloud">MENYAMBUNG CLOUD...</div>
-    </header>
-
-    <div class="action-grid">
-        <button class="btn btn-action-full" onclick="openModal('gajiModal')">📥 INPUT PENDAPATAN GAJI</button>
-        
-        <button class="btn btn-sync" id="btnCloudPush" onclick="pushDataCloud()" style="color: #34d399;">📤 BACKUP KE CLOUD</button>
-        <button class="btn btn-sync" id="btnCloudSync" onclick="tarikDataCloud()" style="color: #38bdf8;">☁️ TARIK DARI CLOUD</button>
-        
-        <button class="btn btn-action-1" onclick="openModal('keluarModal')">💸 CATAT KELUAR</button>
-        <button class="btn btn-action-1" onclick="openModal('suntikModal')">🔄 ALOKASIKAN DANA</button>
+<div id="tindakanModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900;">⚠️ PERLU TINDAKAN</h3>
+        <p style="font-size: 12px; text-align: center; margin-bottom: 15px; color: #94a3b8;">Sistem mendeteksi ada pengeluaran bocor atau minus pada bulan berikut:</p>
+        <div id="listBulanMinus" style="display: flex; flex-direction: column; gap: 10px;"></div>
+        <button class="btn btn-outline" style="margin-top: 20px; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal('tindakanModal')">TUTUP</button>
     </div>
+</div>
 
+<div class="container">
+    
+    <div id="mainStickyHeader" class="sticky-header">
+        
+        <div class="header-top">
+            <div></div> <div class="header-center-group">
+                <h1>DOMPETKU 🚀</h1>
+                <div id="status" class="status-cloud">MENYAMBUNG CLOUD...</div>
+            </div>
+            
+            <div class="header-right-group">
+                <button id="btnTindakan" class="btn-tindakan" style="display:none;" onclick="handleTindakanClick()"></button>
+            </div>
+        </div>
+        
+        <div class="sticky-controls">
+            <div class="sc-left">
+                <button class="btn-sticky" id="btnCloudPush" onclick="pushDataCloud()">📤 BACKUP</button>
+                <button class="btn-sticky" id="btnCloudSync" onclick="tarikDataCloud()">☁️ RESTORE</button>
+            </div>
+            
+            <div class="sc-right">
+                <button class="btn-sticky" onclick="openModal('gajiModal')">📥 INPUT PENDAPATAN</button>
+                
+                <div class="sc-right-bot">
+                    <button class="btn-sticky" onclick="openModal('keluarModal')">💸 CATAT PENGELUARAN</button>
+                    <button class="btn-sticky" onclick="openModal('suntikModal')">🔄 ALOKASIKAN DANA</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="card">
         <div class="dash-header">
             <span class="label">💳 Dashboard Saldo</span>
@@ -354,13 +442,16 @@
     const URL_CLOUD = "https://script.google.com/macros/s/AKfycbyACsYu5CWjownAO0DNTaNRxNaZ60U04vyObPCfCREaEUnTYDmzOq-hIWb2r7ee5KNr/exec";
 
     let db = JSON.parse(localStorage.getItem('dompet_ku_data_master')) || { logs: [], hints: [] };
+    const months = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
 
     function generateId() { return 'TRX_' + Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5); }
     
-    // FORMATTING RUPIAH OTOMATIS (V34)
+    // FORMATTING RUPIAH OTOMATIS (V35) - PERBAIKAN BUG -Rp 0
     const fmt = (n) => {
-        if (n < 0 || isNaN(n)) return "-Rp " + Math.abs(Math.round(n || 0)).toLocaleString('id-ID');
-        return "Rp " + Math.round(n).toLocaleString('id-ID');
+        let rounded = Math.round(n || 0);
+        if (rounded === 0) return "Rp 0";
+        if (rounded < 0 || isNaN(rounded)) return "-Rp " + Math.abs(rounded).toLocaleString('id-ID');
+        return "Rp " + rounded.toLocaleString('id-ID');
     };
 
     function formatRupiah(obj) {
@@ -387,6 +478,8 @@
     }
     
     let showAllHistory = false;
+    let minusMonthsData = []; // Array Penyimpan Data Minus
+
     function setTodayDate() {
         const now = new Date();
         const tzOffset = now.getTimezoneOffset() * 60000;
@@ -395,7 +488,7 @@
     }
     setTodayDate();
 
-    // OTOMATIS BERSIHKAN FORM SAAT DIBUKA (BUG FIXED V34)
+    // OTOMATIS BERSIHKAN FORM SAAT DIBUKA 
     function openModal(modalId) {
         document.getElementById(modalId).style.display = "flex";
         
@@ -457,7 +550,7 @@
         if(!confirm("Ini akan MENIMPA semua data di Google Sheets dengan data yang ada di HP kamu saat ini. Lanjutkan?")) return;
         const btn = document.getElementById('btnCloudPush');
         const originalText = btn.innerHTML;
-        btn.innerHTML = "⏳ SEDANG MEMBACKUP...";
+        btn.innerHTML = "⏳ BACKUP...";
         btn.disabled = true;
         try {
             await fetch(URL_CLOUD, {
@@ -477,7 +570,7 @@
     async function tarikDataCloud() {
         const btn = document.getElementById('btnCloudSync');
         const originalText = btn.innerHTML;
-        btn.innerHTML = "⏳ MENARIK DATA...";
+        btn.innerHTML = "⏳ RESTORE...";
         btn.disabled = true;
         try {
             const response = await fetch(URL_CLOUD, { method: 'POST', body: JSON.stringify({ action: "GET_ALL" }) });
@@ -575,6 +668,80 @@
             nomInput.style.background = "rgba(0,0,0,0.2)";
         }
     }
+
+    /* --- SISTEM DETEKSI MINUS (DIPERBAIKI UNTUK 0 MUTLAK) --- */
+    function checkMinusMonths() {
+        minusMonthsData = [];
+        let allMonths = [...new Set(db.logs.map(l => l.month))];
+        
+        allMonths.forEach(m => {
+            let totalGaji = 0;
+            let totalKeluar = 0;
+            let mLogs = db.logs.filter(l => l.month === m);
+            
+            mLogs.forEach(l => {
+                if (l.type === 'IN') totalGaji += l.amt;
+                if (l.type === 'OUT') totalKeluar += l.amt;
+            });
+            
+            let isMinus = false;
+            
+            if (totalGaji === 0 && totalKeluar > 0) {
+                isMinus = true;
+            } else if (totalGaji > 0) {
+                let alok = hitungAlokasiBulanan(totalGaji, m);
+                let saldo = { wajib: alok.w, makan: alok.mkn, bbm: alok.bbm, main: alok.m, tabung: alok.t, ortu: alok.o, darurat: alok.d };
+                
+                mLogs.forEach(l => {
+                    if (l.type === 'OUT') saldo[l.kat] -= l.amt;
+                    if (l.type === 'TRANSFER_OUT') saldo[l.kat] -= l.amt;
+                    if (l.type === 'TRANSFER_IN') saldo[l.kat] += l.amt;
+                });
+                
+                for (let key in saldo) {
+                    // Gunakan pembulatan mutlak agar 0 murni tidak dihitung minus
+                    if (Math.round(saldo[key]) < 0) { isMinus = true; break; }
+                }
+            }
+            if (isMinus) minusMonthsData.push(m);
+        });
+        
+        minusMonthsData.sort((a,b) => parseInt(a) - parseInt(b));
+        
+        const btn = document.getElementById('btnTindakan');
+        if (minusMonthsData.length === 0) {
+            btn.style.display = "none";
+        } else if (minusMonthsData.length === 1) {
+            btn.style.display = "block";
+            btn.innerText = "🚨 TINDAKAN " + months[parseInt(minusMonthsData[0])-1];
+        } else {
+            btn.style.display = "block";
+            btn.innerText = "🚨 PERLU TINDAKAN";
+        }
+    }
+
+    function handleTindakanClick() {
+        if (minusMonthsData.length === 1) {
+            gotoMonth(minusMonthsData[0]);
+        } else if (minusMonthsData.length > 1) {
+            const list = document.getElementById('listBulanMinus');
+            list.innerHTML = "";
+            minusMonthsData.forEach(m => {
+                let namaBulan = months[parseInt(m)-1].toUpperCase();
+                list.innerHTML += `<button class="btn btn-red-outline" style="width: 100%; font-size: 13px; padding: 12px; justify-content: center; font-weight: 800; border: 1px solid #f43f5e;" onclick="gotoMonth('${m}')">CEK BULAN ${namaBulan}</button>`;
+            });
+            openModal('tindakanModal');
+        }
+    }
+
+    function gotoMonth(m) {
+        document.getElementById('fBulanDash').value = m;
+        document.getElementById('fBulan').value = m;
+        closeModal('tindakanModal');
+        update();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    /* -------------------------- */
 
     function update() {
         let gInit = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
@@ -675,7 +842,17 @@
         
         const statsBox = document.getElementById('statsBox');
         if(fKey || fMonth !== 'all') { statsBox.style.display = "flex"; document.getElementById('filterKeyword').innerText = fKey; document.getElementById('filterKeyword').style.display = fKey ? "block" : "none"; document.getElementById('totalFiltered').innerText = fmt(totalF); } else { statsBox.style.display = "none"; }
+        
+        checkMinusMonths(); 
         localStorage.setItem('dompet_ku_data_master', JSON.stringify(db));
+
+        // Memicu animasi background soft 4 detik saat data berubah
+        const stickyHeader = document.getElementById('mainStickyHeader');
+        if (stickyHeader) {
+            stickyHeader.classList.remove('animate-update');
+            void stickyHeader.offsetWidth; // Trigger reflow
+            stickyHeader.classList.add('animate-update');
+        }
     }
 
     function tambahGaji() {
@@ -819,7 +996,6 @@
         }
     }
 
-    const months = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
     const selects = [document.getElementById('blnGaji'), document.getElementById('fBulan'), document.getElementById('fBulanDash'), document.getElementById('suntikDariBulan'), document.getElementById('suntikKeBulan')];
     selects[1].innerHTML = selects[2].innerHTML = `<option value="all">SEMUA BULAN</option>`;
     months.forEach((m, i) => { selects.forEach(s => s.innerHTML += `<option value="${i+1}">${m.toUpperCase()}</option>`); });
