@@ -22,78 +22,98 @@
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-gradient); background-attachment: fixed; color: var(--text); padding: 0 15px 15px 15px; min-height: 100vh; overflow-x: hidden; }
+        body { background: var(--bg-gradient); background-attachment: fixed; color: var(--text); padding: 0 10px 10px 10px; min-height: 100vh; overflow-x: hidden; }
         .container { max-width: 480px; margin: auto; position: relative; }
         
-        /* --- STICKY HEADER MELENGKUNG DENGAN ANIMASI SOFT --- */
+        /* --- STICKY HEADER SUPER KECIL (50% LEBIH RAMPING) --- */
         .sticky-header {
             position: sticky; top: 0; z-index: 90;
             background: rgba(20, 18, 50, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            margin: 0 -15px 20px -15px; padding: 12px 15px 18px 15px;
+            margin: 0 -10px 10px -10px; padding: 6px 10px 8px 10px;
             border-bottom: 1px solid rgba(255,255,255,0.05); 
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            border-bottom-left-radius: 26px; /* Bikin bawahnya gak kaku (melengkung) */
-            border-bottom-right-radius: 26px;
+            border-bottom-left-radius: 16px; 
+            border-bottom-right-radius: 16px;
             transition: all 0.3s ease;
         }
         
-        /* Animasi Transisi Warna Background Soft selama 4 detik */
         @keyframes softBgPulse {
             0% { background: rgba(20, 18, 50, 0.85); }
-            25% { background: rgba(99, 102, 241, 0.45); } /* Soft Indigo */
-            50% { background: rgba(168, 85, 247, 0.45); } /* Soft Purple */
-            75% { background: rgba(236, 72, 153, 0.45); } /* Soft Pink */
+            25% { background: rgba(99, 102, 241, 0.45); } 
+            50% { background: rgba(168, 85, 247, 0.45); } 
+            75% { background: rgba(236, 72, 153, 0.45); } 
             100% { background: rgba(20, 18, 50, 0.85); }
         }
         .animate-update { animation: softBgPulse 4s ease-in-out; }
 
-        /* Layout Grid Header Top: Kiri (Kosong) - Tengah (Logo) - Kanan (Tombol Notif) */
         .header-top { 
             display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; 
-            margin-bottom: 15px; width: 100%;
+            margin-bottom: 4px; width: 100%;
         }
-        .header-center-group { display: flex; flex-direction: column; align-items: center; }
+        .header-left-group { display: flex; justify-content: flex-start; align-items: center; }
+        .header-right-group { display: flex; justify-content: flex-end; align-items: center; }
+        .header-center-group { display: flex; flex-direction: column; align-items: center; text-align: center; }
         .header-center-group h1 { 
-            font-size: 26px; font-weight: 900; letter-spacing: -1px; margin: 0; 
+            font-size: 16px; font-weight: 900; letter-spacing: -0.5px; margin: 0; 
             background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-            text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
-        .header-right-group { display: flex; justify-content: flex-end; }
         
-        /* TOMBOL TINDAKAN (WARNING BADGE) */
         .btn-tindakan {
             background: linear-gradient(135deg, #f43f5e, #e11d48); color: white;
-            border: 1px solid rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 12px; font-size: 9.5px; 
-            font-weight: 900; cursor: pointer; box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
+            border: 1px solid rgba(255,255,255,0.2); padding: 4px 6px; border-radius: 6px; font-size: 7.5px; 
+            font-weight: 900; cursor: pointer; box-shadow: 0 4px 10px rgba(244, 63, 94, 0.4);
             text-transform: uppercase; letter-spacing: 0.5px; animation: pulse-red 2s infinite;
-            white-space: nowrap;
+            white-space: nowrap; margin-right: 0px;
         }
         .btn-tindakan:active { transform: scale(0.95); }
         @keyframes pulse-red {
             0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(244, 63, 94, 0); }
+            70% { box-shadow: 0 0 0 4px rgba(244, 63, 94, 0); }
             100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
         }
 
         .status-cloud { 
-            font-size: 9px; font-weight: 800; padding: 4px 12px; border-radius: 50px; 
+            font-size: 7px; font-weight: 800; padding: 2px 6px; border-radius: 50px; 
             background: rgba(0,0,0,0.4); color: white; display: inline-block; 
-            margin-top: 4px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; 
+            margin-top: 0px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; 
         }
         .online { border-color: var(--success); color: var(--success); box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
 
-        /* Struktur Grid Tombol Kaca Hitam */
-        .sticky-controls { display: grid; grid-template-columns: 1fr 2.2fr; gap: 8px; }
-        .sc-left { display: grid; grid-template-rows: 1fr 1fr; gap: 8px; }
-        .sc-right { display: grid; grid-template-rows: 1fr 1fr; gap: 8px; }
-        .sc-right-bot { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .btn-menu {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; 
+            width: 24px; height: 24px; 
+            border-radius: 6px; display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; backdrop-filter: blur(5px); transition: 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2); padding: 0;
+        }
+        .btn-menu:hover { background: rgba(255, 255, 255, 0.2); }
+        .btn-menu:active { transform: scale(0.9); }
+
+        .panel-wrapper { display: grid; grid-template-areas: "stack"; width: 100%; }
         
-        /* Desain Tombol Hitam Kaca (Black Glass) */
+        #mainControls {
+            grid-area: stack; display: flex; flex-direction: column; gap: 4px; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(0); opacity: 1; pointer-events: auto;
+        }
+        #mainControls.hide-up { transform: translateY(-30px); opacity: 0; pointer-events: none; }
+        
+        #slideMenu {
+            grid-area: stack; display: flex; flex-direction: column; gap: 4px; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(-30px); opacity: 0; pointer-events: none;
+            background: rgba(0, 0, 0, 0.3); padding: 6px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+        }
+        #slideMenu.show-down { transform: translateY(0); opacity: 1; pointer-events: auto; }
+
+        .sc-right-bot { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        
         .btn-sticky {
-            background: rgba(0, 0, 0, 0.45); 
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            color: #f8fafc; font-size: 9px; font-weight: 800; border-radius: 12px; padding: 8px 4px;
+            background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            color: #f8fafc; font-size: 8px; font-weight: 800; border-radius: 8px; padding: 6px 4px;
             cursor: pointer; transition: 0.2s; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center; text-align: center;
             letter-spacing: 0.5px; line-height: 1.2; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
@@ -101,33 +121,33 @@
         .btn-sticky:hover { background: rgba(0, 0, 0, 0.6); border-color: rgba(255,255,255,0.25); }
         .btn-sticky:active { transform: scale(0.95); opacity: 0.8; }
 
-        .card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 30px; padding: 20px; margin-bottom: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
-        .label { font-size: 12px; font-weight: 800; opacity: 0.8; text-transform: uppercase; margin-bottom: 0; letter-spacing: 1.5px; color: #94a3b8; }
+        .card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 20px; padding: 15px; margin-bottom: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
+        .label { font-size: 11px; font-weight: 800; opacity: 0.8; text-transform: uppercase; margin-bottom: 0; letter-spacing: 1px; color: #94a3b8; }
         
-        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .filter-mini { width: auto; padding: 8px 10px; margin-bottom: 0; font-size: 11px; border-radius: 12px; background: rgba(0,0,0,0.4); color: var(--accent); border: 1px solid var(--accent); cursor: pointer; text-transform: uppercase; font-weight: 800; }
+        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .filter-mini { width: auto; padding: 6px 10px; margin-bottom: 0; font-size: 10px; border-radius: 10px; background: rgba(0,0,0,0.4); color: var(--accent); border: 1px solid var(--accent); cursor: pointer; text-transform: uppercase; font-weight: 800; }
 
-        .health-banner { grid-column: span 2; padding: 12px 15px; border-radius: 16px; text-align: center; font-weight: 800; font-size: 12px; letter-spacing: 0.5px; transition: 0.4s ease; display: flex; justify-content: center; align-items: center; text-transform: uppercase; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 5px; }
+        .health-banner { grid-column: span 2; padding: 10px 12px; border-radius: 14px; text-align: center; font-weight: 800; font-size: 11px; letter-spacing: 0.5px; transition: 0.4s ease; display: flex; justify-content: center; align-items: center; text-transform: uppercase; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 5px; }
 
-        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .b-item { padding: 15px; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s; display: flex; flex-direction: column; justify-content: center; }
+        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .b-item { padding: 12px; border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 8px 15px rgba(0,0,0,0.2); transition: 0.3s; display: flex; flex-direction: column; justify-content: center; }
         .b-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; z-index: 0; }
         .b-item > * { position: relative; z-index: 1; }
         
-        .b-item span { font-size: 10px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; text-transform: uppercase;}
-        .b-item p { font-size: clamp(12px, 4.2vw, 18px); font-weight: 900; margin: 4px 0; word-break: break-all; text-shadow: 0 2px 10px rgba(0,0,0,0.5); width: 100%; line-height: 1.2; }
+        .b-item span { font-size: 9px; font-weight: 800; opacity: 0.9; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-bottom: 2px; text-transform: uppercase;}
+        .b-item p { font-size: clamp(11px, 4vw, 16px); font-weight: 900; margin: 2px 0; word-break: break-all; text-shadow: 0 2px 8px rgba(0,0,0,0.5); width: 100%; line-height: 1.2; }
         
         .card-total { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.4)); border: 1px solid rgba(14, 165, 233, 0.5); grid-column: span 2; display: flex; flex-direction: column; padding: 0; }
         .card-total-top { display: flex; width: 100%; border-bottom: 1px solid rgba(14, 165, 233, 0.3); }
-        .card-total .half { flex: 1; padding: 15px 10px; display: flex; flex-direction: column; align-items: center; text-align: center; overflow: hidden; }
+        .card-total .half { flex: 1; padding: 12px 8px; display: flex; flex-direction: column; align-items: center; text-align: center; overflow: hidden; }
         .card-total .half:first-child { border-right: 1px solid rgba(14, 165, 233, 0.3); }
-        .card-total p { font-size: clamp(14px, 4vw, 20px); white-space: nowrap; margin-top: 8px; width: 100%; } 
-        .card-total-bottom { padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.15); }
-        .card-total-bottom span { font-size: 9px; font-weight: 800; letter-spacing: 1px; color: #6ee7b7; text-transform: uppercase; }
-        .card-total-bottom p { font-size: clamp(14px, 4vw, 18px); color: #34d399; text-shadow: 0 2px 10px rgba(52, 211, 153, 0.3); margin-top: 2px; }
+        .card-total p { font-size: clamp(13px, 4vw, 18px); white-space: nowrap; margin-top: 6px; width: 100%; } 
+        .card-total-bottom { padding: 8px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.15); }
+        .card-total-bottom span { font-size: 8px; font-weight: 800; letter-spacing: 1px; color: #6ee7b7; text-transform: uppercase; }
+        .card-total-bottom p { font-size: clamp(13px, 4vw, 16px); color: #34d399; text-shadow: 0 2px 8px rgba(52, 211, 153, 0.3); margin-top: 2px; }
 
-        .init-info { font-size: 8.5px; font-weight: 700; color: rgba(255,255,255,0.6); margin-top: 6px; text-align: right; white-space: nowrap; }
-        .init-info span { font-size: 9px; font-weight: 900; color: rgba(255,255,255,0.9); margin-left: 2px; }
+        .init-info { font-size: 7.5px; font-weight: 700; color: rgba(255,255,255,0.6); margin-top: 4px; text-align: right; white-space: nowrap; }
+        .init-info span { font-size: 8px; font-weight: 900; color: rgba(255,255,255,0.9); margin-left: 2px; }
 
         .card-makan { background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.4)); border: 1px solid rgba(249, 115, 22, 0.5); } .card-makan p { color: #fdba74; }
         .card-bbm { background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(109, 40, 217, 0.4)); border: 1px solid rgba(139, 92, 246, 0.5); } .card-bbm p { color: #c4b5fd; }
@@ -137,41 +157,42 @@
         .card-ortu { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.4)); border: 1px solid rgba(245, 158, 11, 0.5); } .card-ortu p { color: #fcd34d; }
         .card-darurat { background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.4)); border: 1px solid rgba(244, 63, 94, 0.5); } .card-darurat p { color: #fda4af; }
 
-        .progress-container { width: 100%; height: 6px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; margin-top: 8px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
-        .progress-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px; box-shadow: 0 0 10px currentColor; }
+        .progress-container { width: 100%; height: 5px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; margin-top: 6px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
+        .progress-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px; box-shadow: 0 0 8px currentColor; }
 
-        input, select { width: 100%; background: rgba(0,0,0,0.2); border: 2px solid rgba(255,255,255,0.1); color: white; padding: 16px; border-radius: 18px; margin-bottom: 12px; font-size: 15px; font-weight: 700; outline: none; transition: 0.3s; color-scheme: dark; }
-        input:focus { border-color: var(--accent); background: rgba(0,0,0,0.4); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
+        input, select { width: 100%; background: rgba(0,0,0,0.2); border: 2px solid rgba(255,255,255,0.1); color: white; padding: 12px; border-radius: 14px; margin-bottom: 10px; font-size: 13px; font-weight: 700; outline: none; transition: 0.3s; color-scheme: dark; }
+        input:focus { border-color: var(--accent); background: rgba(0,0,0,0.4); box-shadow: 0 0 12px rgba(168, 85, 247, 0.3); }
         input::placeholder { color: rgba(255,255,255,0.4); }
         input:read-only { background: rgba(0,0,0,0.4); color: #94a3b8; border-color: transparent; }
         select option { background: #1e1b4b; color: white; font-weight: 700; }
         ::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
 
-        .btn { width: 100%; padding: 16px; border-radius: 18px; border: none; font-weight: 900; cursor: pointer; transition: 0.2s; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        /* Specific style for White PDF Modal Inputs */
+        .white-input { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; color: #0f172a !important; padding: 10px !important; border-radius: 10px !important; }
+        .white-input:focus { border-color: var(--primary) !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.2) !important; background: white !important;}
+        .white-input-select option { background: white !important; color: #0f172a !important; }
+
+        .btn { width: 100%; padding: 14px; border-radius: 14px; border: none; font-weight: 900; cursor: pointer; transition: 0.2s; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4); }
         .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); }
-        .btn-cyan { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); }
         .btn-outline { background: rgba(0,0,0,0.2); border: 2px solid var(--accent); color: #e879f9; }
-        .btn-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4); text-shadow: 0 1px 3px rgba(0,0,0,0.3); border: none; padding: 10px 14px; font-size: 10px; width: auto; display: inline-flex; border-radius: 12px; }
-        .btn-red-outline { background: rgba(244, 63, 94, 0.1); color: #f43f5e; border: none; padding: 10px 14px; font-size: 10px; width: auto; display: inline-flex; border-radius: 12px; transition: 0.2s; }
-        .btn-red-outline:hover { background: rgba(244, 63, 94, 0.2); }
         .btn:active { transform: scale(0.95); }
 
-        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 18px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 14px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.05); }
         .history-item .info { flex: 1; min-width: 0; padding-right: 8px; }
-        .history-item b { font-size: 14px; font-weight: 800; display: block; color: white; word-break: break-word; line-height: 1.4; margin-bottom: 4px; }
-        .history-item small { opacity: 0.6; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: block; }
+        .history-item b { font-size: 13px; font-weight: 800; display: block; color: white; word-break: break-word; line-height: 1.4; margin-bottom: 2px; }
+        .history-item small { opacity: 0.6; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: block; }
         
-        .amt { font-weight: 900; font-size: 13px; white-space: nowrap; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 12px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
-        .action-btns { display: flex; gap: 5px; }
-        .btn-mini { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 6px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+        .amt { font-weight: 900; font-size: 12px; white-space: nowrap; background: rgba(0,0,0,0.4); padding: 6px 10px; border-radius: 10px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
+        .action-btns { display: flex; gap: 4px; }
+        .btn-mini { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 5px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 10px; display: flex; align-items: center; justify-content: center; }
         .btn-mini:hover { background: rgba(255,255,255,0.3); }
         .btn-mini:active { transform: scale(0.9); }
 
         .stats-highlight { 
             background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 15px; border-radius: 18px; 
-            margin-top: 15px; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+            border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 12px; border-radius: 14px; 
+            margin-top: 12px; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
             position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center;
         }
         .stats-highlight::before {
@@ -183,18 +204,45 @@
 
         /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-        .modal-card { width: 100%; max-width: 400px; margin: 0; animation: popIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: var(--bg-gradient); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.5); padding: 25px; border-radius: 30px; }
+        .modal-card { width: 100%; max-width: 360px; margin: 0; animation: popIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: var(--bg-gradient); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.5); padding: 20px; border-radius: 24px; }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        .suntik-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 20px; border: 1px solid rgba(14, 165, 233, 0.3); margin-bottom: 12px; }
-        .suntik-col { display: flex; flex-direction: column; gap: 8px; }
-        .select-mini { padding: 12px; font-size: 13px; border-radius: 14px; margin-bottom: 0; }
+        .suntik-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 16px; border: 1px solid rgba(14, 165, 233, 0.3); margin-bottom: 10px; }
+        .suntik-col { display: flex; flex-direction: column; gap: 6px; }
+        .select-mini { padding: 10px; font-size: 11px; border-radius: 10px; margin-bottom: 0; }
         
-        .checkbox-container { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: var(--gold); cursor: pointer; user-select: none; }
+        .checkbox-container { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; color: var(--gold); cursor: pointer; user-select: none; }
         .checkbox-container input { display: none; }
-        .checkmark { width: 16px; height: 16px; background: rgba(0,0,0,0.3); border: 2px solid var(--gold); border-radius: 4px; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+        .checkmark { width: 14px; height: 14px; background: rgba(0,0,0,0.3); border: 2px solid var(--gold); border-radius: 4px; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
         .checkbox-container input:checked + .checkmark { background: var(--gold); }
-        .checkbox-container input:checked + .checkmark::after { content: '✔'; color: white; font-size: 10px; }
+        .checkbox-container input:checked + .checkmark::after { content: '✔'; color: white; font-size: 8px; }
+
+        /* --- STICKY PANEL BAWAH (SUPER KECIL 50% RAMPING) --- */
+        .sticky-bottom {
+            position: sticky; bottom: 0; z-index: 90;
+            background: rgba(15, 12, 35, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            margin: 5px -10px -10px -10px; padding: 6px 10px; 
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top-left-radius: 16px; border-top-right-radius: 16px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.6);
+        }
+        .stat-mini-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+        }
+        .stat-mini-box {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            padding: 4px; border-radius: 8px; text-align: center;
+        }
+        .stat-mini-box span {
+            display: block; font-size: 6px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1px;
+        }
+        .stat-mini-box b {
+            font-size: 9px; font-weight: 900; word-break: break-all; letter-spacing: 0.5px;
+        }
+        #st-inc-today { color: #34d399; text-shadow: 0 0 6px rgba(52, 211, 153, 0.4); }
+        #st-exp-today { color: #fb7185; text-shadow: 0 0 6px rgba(251, 113, 133, 0.4); }
+        #st-avg-this { color: #38bdf8; text-shadow: 0 0 6px rgba(56, 189, 248, 0.4); }
+        #st-avg-last { color: #fcd34d; text-shadow: 0 0 6px rgba(252, 211, 77, 0.4); }
 
     </style>
 </head>
@@ -202,12 +250,12 @@
 
 <div id="gajiModal" class="modal-overlay">
     <div class="modal-card">
-        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900;">📥 INPUT GAJI</h3>
+        <h3 style="margin-bottom: 15px; text-align: center; color: white; font-weight: 900; font-size: 16px;">📥 INPUT GAJI</h3>
         <label class="label">Bulan Alokasi</label>
         <select id="blnGaji"></select>
         <label class="label">Nominal Gaji</label>
         <input type="text" inputmode="numeric" onkeyup="formatRupiah(this)" id="inGaji" placeholder="Nominal Gaji...">
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button class="btn btn-outline" style="margin-top:0; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal('gajiModal')">BATAL</button>
             <button class="btn btn-success" style="margin-top:0;" onclick="tambahGaji()">SIMPAN</button>
         </div>
@@ -216,11 +264,11 @@
 
 <div id="keluarModal" class="modal-overlay">
     <div class="modal-card">
-        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900;">💸 CATAT PENGELUARAN</h3>
+        <h3 style="margin-bottom: 15px; text-align: center; color: white; font-weight: 900; font-size: 16px;">💸 CATAT PENGELUARAN</h3>
         <div style="display: flex; gap: 8px;">
             <div style="flex: 1;"><label class="label">Tanggal</label><input type="date" id="tglKeluar"></div>
             <div style="flex: 1.5;"><label class="label">Kategori</label>
-                <select id="katKeluar" onchange="autoFillKet()" style="margin-bottom: 12px;">
+                <select id="katKeluar" onchange="autoFillKet()" style="margin-bottom: 10px;">
                     <option value="" disabled selected>Pilih...</option>
                     <option value="makan">🍛 Makan</option>
                     <option value="bbm">⛽ BBM</option>
@@ -237,7 +285,7 @@
         <datalist id="hintList"></datalist>
         <label class="label">Nominal (Rp)</label>
         <input type="text" inputmode="numeric" onkeyup="formatRupiah(this)" id="nomKeluar" placeholder="Nominal Rp...">
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button class="btn btn-outline" style="margin-top:0; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal('keluarModal')">BATAL</button>
             <button class="btn btn-primary" style="margin-top:0;" onclick="catat()">SIMPAN</button>
         </div>
@@ -246,16 +294,16 @@
 
 <div id="suntikModal" class="modal-overlay">
     <div class="modal-card">
-        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900;">🔄 ALOKASIKAN DANA</h3>
+        <h3 style="margin-bottom: 15px; text-align: center; color: white; font-weight: 900; font-size: 16px;">🔄 ALOKASIKAN DANA</h3>
         <div class="suntik-grid">
             <div class="suntik-col">
-                <span class="label" style="color: var(--cyan); font-size: 11px;">📤 DARI</span>
+                <span class="label" style="color: var(--cyan); font-size: 10px;">📤 DARI</span>
                 <select id="suntikDariBulan" class="select-mini" onchange="renderSuntikDariOptions()"></select>
                 <select id="suntikDari" class="select-mini" onchange="updateSuntikInfo()"></select>
-                <div id="infoSuntik" style="font-size: 11px; font-weight: 800; color: #38bdf8;">💳 Saldo: Rp 0</div>
+                <div id="infoSuntik" style="font-size: 10px; font-weight: 800; color: #38bdf8;">💳 Saldo: Rp 0</div>
             </div>
             <div class="suntik-col">
-                <span class="label" style="color: var(--success); font-size: 11px;">📥 KE</span>
+                <span class="label" style="color: var(--success); font-size: 10px;">📥 KE</span>
                 <select id="suntikKeBulan" class="select-mini"></select>
                 <select id="suntikKe" class="select-mini">
                     <option value="tabung">Tabung</option>
@@ -269,7 +317,7 @@
             </div>
         </div>
         
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
             <label class="label" style="margin-bottom:0;">Nominal (Rp)</label>
             <label class="checkbox-container">
                 <input type="checkbox" id="chkSuntikMax" onchange="toggleSuntikMax()">
@@ -278,7 +326,7 @@
         </div>
         <input type="text" inputmode="numeric" onkeyup="formatRupiah(this)" id="suntikNom" placeholder="Nominal...">
         
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button class="btn btn-outline" style="margin-top:0; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal('suntikModal')">BATAL</button>
             <button class="btn btn-primary" style="margin-top:0; background: linear-gradient(135deg, var(--primary), var(--accent));" onclick="suntikDana()">ALOKASIKAN</button>
         </div>
@@ -287,7 +335,7 @@
 
 <div id="editModal" class="modal-overlay">
     <div class="modal-card">
-        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900;">✏️ EDIT DATA</h3>
+        <h3 style="margin-bottom: 15px; text-align: center; color: white; font-weight: 900; font-size: 16px;">✏️ EDIT DATA</h3>
         <input type="hidden" id="editIndex">
         <label class="label">Kategori</label>
         <select id="editKat"></select>
@@ -295,7 +343,7 @@
         <input type="text" id="editKet" placeholder="Keterangan baru...">
         <label class="label">Nominal</label>
         <input type="text" inputmode="numeric" onkeyup="formatRupiah(this)" id="editNom" placeholder="Nominal...">
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button class="btn btn-outline" style="margin-top:0;" onclick="closeModal('editModal')">BATAL</button>
             <button class="btn btn-success" style="margin-top:0;" onclick="saveEdit()">SIMPAN</button>
         </div>
@@ -304,10 +352,45 @@
 
 <div id="tindakanModal" class="modal-overlay">
     <div class="modal-card">
-        <h3 style="margin-bottom: 20px; text-align: center; color: white; font-weight: 900;">⚠️ PERLU TINDAKAN</h3>
-        <p style="font-size: 12px; text-align: center; margin-bottom: 15px; color: #94a3b8;">Sistem mendeteksi ada pengeluaran bocor atau minus pada bulan berikut:</p>
-        <div id="listBulanMinus" style="display: flex; flex-direction: column; gap: 10px;"></div>
-        <button class="btn btn-outline" style="margin-top: 20px; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal('tindakanModal')">TUTUP</button>
+        <h3 style="margin-bottom: 15px; text-align: center; color: white; font-weight: 900; font-size: 16px;">⚠️ PERLU TINDAKAN</h3>
+        <p style="font-size: 11px; text-align: center; margin-bottom: 15px; color: #94a3b8;">Sistem mendeteksi ada pengeluaran bocor atau minus pada bulan berikut:</p>
+        <div id="listBulanMinus" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        <button class="btn btn-outline" style="margin-top: 15px; border-color: rgba(255,255,255,0.3); color: white;" onclick="closeModal('tindakanModal')">TUTUP</button>
+    </div>
+</div>
+
+<!-- MODAL KHUSUS CETAK PDF BERTEMA PUTIH -->
+<div id="pdfModal" class="modal-overlay">
+    <div class="modal-card" style="background: #ffffff; color: #1e293b; box-shadow: 0 25px 50px rgba(0,0,0,0.6);">
+        <h3 style="margin-bottom: 20px; text-align: center; font-weight: 900; color: #334155; font-size: 18px;">📥 EXPORT DATA KE PDF</h3>
+        
+        <label style="font-size: 11px; font-weight: 800; color: #64748b; margin-bottom: 6px; display:block; letter-spacing: 1px;">PILIH RENTANG WAKTU</label>
+        <select id="pdfFilterType" class="white-input white-input-select" style="margin-bottom: 15px;" onchange="togglePdfInputs()">
+            <option value="all">Semua Bulan (Keseluruhan)</option>
+            <option value="month">Hanya Bulan Tertentu</option>
+            <option value="range">Pilih Rentang Tanggal</option>
+        </select>
+
+        <div id="pdfMonthContainer" style="display:none;">
+            <label style="font-size: 11px; font-weight: 800; color: #64748b; margin-bottom: 6px; display:block; letter-spacing: 1px;">PILIH BULAN</label>
+            <select id="pdfBulan" class="white-input white-input-select" style="margin-bottom: 15px;"></select>
+        </div>
+
+        <div id="pdfRangeContainer" style="display:none; gap: 10px; margin-bottom: 15px;">
+            <div style="flex:1;">
+                <label style="font-size: 10px; font-weight: 800; color: #64748b; display:block; margin-bottom: 4px;">DARI TANGGAL</label>
+                <input type="date" id="pdfStartDate" class="white-input" style="color-scheme: light;">
+            </div>
+            <div style="flex:1;">
+                <label style="font-size: 10px; font-weight: 800; color: #64748b; display:block; margin-bottom: 4px;">SAMPAI TANGGAL</label>
+                <input type="date" id="pdfEndDate" class="white-input" style="color-scheme: light;">
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button class="btn" style="background: #e2e8f0; color: #475569; box-shadow: none;" onclick="closeModal('pdfModal')">BATAL</button>
+            <button id="btnProsesPDF" class="btn btn-primary" onclick="prosesCetakPDF()">CETAK PDF</button>
+        </div>
     </div>
 </div>
 
@@ -316,7 +399,17 @@
     <div id="mainStickyHeader" class="sticky-header">
         
         <div class="header-top">
-            <div></div> <div class="header-center-group">
+            <div class="header-left-group">
+                <button class="btn-menu" id="btnHamburger" onclick="toggleMenuPanel()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="header-center-group">
                 <h1>DOMPETKU 🚀</h1>
                 <div id="status" class="status-cloud">MENYAMBUNG CLOUD...</div>
             </div>
@@ -326,22 +419,33 @@
             </div>
         </div>
         
-        <div class="sticky-controls">
-            <div class="sc-left">
-                <button class="btn-sticky" id="btnCloudPush" onclick="pushDataCloud()">📤 BACKUP</button>
-                <button class="btn-sticky" id="btnCloudSync" onclick="tarikDataCloud()">☁️ RESTORE</button>
-            </div>
+        <div class="panel-wrapper">
             
-            <div class="sc-right">
-                <button class="btn-sticky" onclick="openModal('gajiModal')">📥 INPUT PENDAPATAN</button>
-                
+            <!-- PANEL UTAMA -->
+            <div id="mainControls">
+                <button class="btn-sticky" style="padding: 6px; font-size: 9px;" onclick="openModal('gajiModal')">📥 INPUT PENDAPATAN</button>
                 <div class="sc-right-bot">
-                    <button class="btn-sticky" onclick="openModal('keluarModal')">💸 CATAT PENGELUARAN</button>
-                    <button class="btn-sticky" onclick="openModal('suntikModal')">🔄 ALOKASIKAN DANA</button>
+                    <button class="btn-sticky" style="padding: 6px; font-size: 9px;" onclick="openModal('keluarModal')">💸 CATAT PENGELUARAN</button>
+                    <button class="btn-sticky" style="padding: 6px; font-size: 9px;" onclick="openModal('suntikModal')">🔄 ALOKASIKAN DANA</button>
                 </div>
             </div>
+
+            <!-- PANEL PENGATURAN (BACKUP, RESTORE, PDF, RESET) -->
+            <div id="slideMenu">
+                <div style="display:flex; justify-content:center; align-items:center; margin-bottom: 2px;">
+                    <h3 style="margin:0; font-size:9px; font-weight:800; color:#cbd5e1; letter-spacing: 1px;">⚙️ PENGATURAN SISTEM</h3>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                    <button class="btn-sticky" id="btnCloudPush" onclick="pushDataCloud()">📤 BACKUP</button>
+                    <button class="btn-sticky" id="btnCloudSync" onclick="tarikDataCloud()">☁️ RESTORE</button>
+                    <button class="btn-sticky" onclick="openModal('pdfModal')" style="color: #fcd34d;">📥 CETAK PDF</button>
+                    <button class="btn-sticky" onclick="hapusSemua()" style="color: #fb7185;">⚠️ RESET DATA</button>
+                </div>
+            </div>
+            
         </div>
     </div>
+
     <div class="card">
         <div class="dash-header">
             <span class="label">💳 Dashboard Saldo</span>
@@ -407,15 +511,11 @@
     </div>
 
     <div class="card">
-        <div style="text-align: center; margin-bottom: 20px;">
-            <span class="label" style="display: block; margin-bottom: 12px; font-size: 14px;">📊 Riwayat Transaksi</span>
-            <div style="display: flex; justify-content: center; gap: 10px;">
-                <button class="btn-red-outline" onclick="hapusSemua()">⚠️ RESET DATA</button>
-                <button class="btn-gold" id="btnCetakPDF" onclick="unduhLaporanPDF()">📥 CETAK PDF</button>
-            </div>
+        <div style="text-align: center; margin-bottom: 12px;">
+            <span class="label" style="display: block; font-size: 13px;">📊 Riwayat Transaksi</span>
         </div>
         
-        <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
             <select id="fBulan" onchange="update()"></select>
             <input type="text" id="fKeyword" onkeyup="update()" placeholder="Cari kata kunci...">
         </div>
@@ -423,16 +523,46 @@
         <div id="statsBox" class="stats-highlight" style="display:none;">
             <div>
                 <small style="font-weight:800; opacity:0.9; letter-spacing:1px; color:#f8fafc;">TOTAL PENGELUARAN</small>
-                <div id="filterKeyword" style="font-weight:900; font-size: 13px; color: #38bdf8; text-transform: uppercase; margin-top: 2px; display: none;"></div>
+                <div id="filterKeyword" style="font-weight:900; font-size: 12px; color: #38bdf8; text-transform: uppercase; margin-top: 2px; display: none;"></div>
             </div>
-            <h2 id="totalFiltered" style="font-size: 22px; font-weight: 900; margin: 0; text-shadow: 0 1px 5px rgba(0,0,0,0.2);">Rp 0</h2>
+            <h2 id="totalFiltered" style="font-size: 20px; font-weight: 900; margin: 0; text-shadow: 0 1px 5px rgba(0,0,0,0.2);">Rp 0</h2>
         </div>
         
-        <button id="btnHideAllTop" class="btn btn-outline" style="display:none; width:100%; border-radius:15px; font-size: 12px; color:white; border-color:rgba(255,255,255,0.2); margin-bottom: 15px;" onclick="toggleHistory()">🔼 TUTUP LAPORAN</button>
+        <button id="btnHideAllTop" class="btn btn-outline" style="display:none; width:100%; border-radius:12px; font-size: 11px; padding: 12px; color:white; border-color:rgba(255,255,255,0.2); margin-bottom: 12px;" onclick="toggleHistory()">🔼 TUTUP LAPORAN</button>
         
-        <div id="logList" style="margin-top: 15px;"></div>
+        <div id="logList" style="margin-top: 12px;"></div>
         
-        <button id="btnShowAll" class="btn btn-outline" style="display:none; width:100%; border-radius:15px; font-size: 13px; color:white; border-color:rgba(255,255,255,0.2);" onclick="toggleHistory()">TAMPILKAN SEMUA 🔽</button>
+        <button id="btnShowAll" class="btn btn-outline" style="display:none; width:100%; border-radius:12px; font-size: 11px; padding: 12px; color:white; border-color:rgba(255,255,255,0.2);" onclick="toggleHistory()">TAMPILKAN SEMUA 🔽</button>
+    </div>
+
+    <!-- PANEL STATISTIK REALTIME DI BAWAH (SUPER KECIL 50%) -->
+    <div class="sticky-bottom">
+        <div style="text-align: center; margin-bottom: 4px; display: flex; justify-content: center;">
+            <div style="position: relative; display: inline-block;">
+                <span style="font-size: 8px; font-weight: 800; color: #cbd5e1; letter-spacing: 1px; background: rgba(255,255,255,0.08); padding: 3px 10px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(255,255,255,0.15);">
+                    ⚡ STATS (TGL <span id="st-tgl">1</span>) <span style="font-size: 8px;">📅</span>
+                </span>
+                <input type="date" id="historicalDate" onchange="update()" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+            </div>
+        </div>
+        <div class="stat-mini-grid">
+            <div class="stat-mini-box">
+                <span>Masuk Hari Ini</span>
+                <b id="st-inc-today">Rp 0</b>
+            </div>
+            <div class="stat-mini-box">
+                <span>Keluar Hari Ini</span>
+                <b id="st-exp-today">Rp 0</b>
+            </div>
+            <div class="stat-mini-box">
+                <span>Rata² Keluar Bln Ini</span>
+                <b id="st-avg-this">Rp 0</b>
+            </div>
+            <div class="stat-mini-box">
+                <span>Rata² Keluar Bln Lalu</span>
+                <b id="st-avg-last">Rp 0</b>
+            </div>
+        </div>
     </div>
 
 </div>
@@ -446,7 +576,6 @@
 
     function generateId() { return 'TRX_' + Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5); }
     
-    // FORMATTING RUPIAH OTOMATIS (V35) - PERBAIKAN BUG -Rp 0
     const fmt = (n) => {
         let rounded = Math.round(n || 0);
         if (rounded === 0) return "Rp 0";
@@ -472,13 +601,52 @@
         return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
-    // Fungsi konversi text '10.000' jadi int '10000'
     function parseRupiah(str) {
         return parseInt(str.toString().replace(/\./g, '')) || 0;
     }
     
     let showAllHistory = false;
-    let minusMonthsData = []; // Array Penyimpan Data Minus
+    let minusMonthsData = [];
+
+    // --- ANIMASI MENU BERURUTAN ---
+    let isMenuOpen = false;
+    let isAnimating = false;
+
+    const svgMenu = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
+    const svgClose = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+
+    function toggleMenuPanel() {
+        if (isAnimating) return; 
+        isAnimating = true;
+        
+        const mainPanel = document.getElementById('mainControls');
+        const menuPanel = document.getElementById('slideMenu');
+        const btnHam = document.getElementById('btnHamburger');
+        
+        if (!isMenuOpen) {
+            mainPanel.classList.add('hide-up');
+            btnHam.innerHTML = svgClose; 
+            
+            setTimeout(() => {
+                menuPanel.classList.add('show-down');
+                setTimeout(() => {
+                    isMenuOpen = true;
+                    isAnimating = false;
+                }, 300); 
+            }, 300); 
+        } else {
+            menuPanel.classList.remove('show-down');
+            btnHam.innerHTML = svgMenu; 
+            
+            setTimeout(() => {
+                mainPanel.classList.remove('hide-up');
+                setTimeout(() => {
+                    isMenuOpen = false;
+                    isAnimating = false;
+                }, 300);
+            }, 300);
+        }
+    }
 
     function setTodayDate() {
         const now = new Date();
@@ -488,7 +656,6 @@
     }
     setTodayDate();
 
-    // OTOMATIS BERSIHKAN FORM SAAT DIBUKA 
     function openModal(modalId) {
         document.getElementById(modalId).style.display = "flex";
         
@@ -508,6 +675,10 @@
             document.getElementById('ketKeluar').value = "";
             document.getElementById('nomKeluar').value = "";
             setTodayDate();
+        }
+        if(modalId === 'pdfModal') {
+            document.getElementById('pdfFilterType').value = 'all';
+            togglePdfInputs();
         }
     }
     function closeModal(modalId) { document.getElementById(modalId).style.display = "none"; }
@@ -559,6 +730,7 @@
                 body: JSON.stringify({ action: "BACKUP_ALL", logs: db.logs })
             });
             alert("✅ Berhasil membackup data ke Google Sheets!");
+            if(isMenuOpen) toggleMenuPanel();
         } catch (e) {
             alert("❌ Gagal backup. Cek koneksi internet.");
         } finally {
@@ -580,6 +752,7 @@
                 localStorage.setItem('dompet_ku_data_master', JSON.stringify(db));
                 update();
                 alert(`✅ Sinkronisasi berhasil! Uangmu sudah kembali.`);
+                if(isMenuOpen) toggleMenuPanel();
             } else { alert("Gagal menarik data atau Sheet masih kosong."); }
         } catch (e) { alert("❌ Error koneksi ke Google Cloud."); } finally { btn.innerHTML = originalText; btn.disabled = false; }
     }
@@ -669,7 +842,6 @@
         }
     }
 
-    /* --- SISTEM DETEKSI MINUS (DIPERBAIKI UNTUK 0 MUTLAK) --- */
     function checkMinusMonths() {
         minusMonthsData = [];
         let allMonths = [...new Set(db.logs.map(l => l.month))];
@@ -699,7 +871,6 @@
                 });
                 
                 for (let key in saldo) {
-                    // Gunakan pembulatan mutlak agar 0 murni tidak dihitung minus
                     if (Math.round(saldo[key]) < 0) { isMinus = true; break; }
                 }
             }
@@ -741,7 +912,6 @@
         update();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    /* -------------------------- */
 
     function update() {
         let gInit = { wajib: 0, makan: 0, bbm: 0, main: 0, tabung: 0, ortu: 0, darurat: 0 };
@@ -844,13 +1014,57 @@
         if(fKey || fMonth !== 'all') { statsBox.style.display = "flex"; document.getElementById('filterKeyword').innerText = fKey; document.getElementById('filterKeyword').style.display = fKey ? "block" : "none"; document.getElementById('totalFiltered').innerText = fmt(totalF); } else { statsBox.style.display = "none"; }
         
         checkMinusMonths(); 
+        
+        // --- LOGIKA LIVE STATS PANEL BAWAH (SUPER KECIL & HISTORIS) ---
+        const histInput = document.getElementById('historicalDate');
+        
+        if (!histInput.max) {
+            const todayISO = new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+            histInput.max = todayISO; 
+        }
+
+        let targetDateObj = new Date();
+        if (histInput.value) { targetDateObj = new Date(histInput.value); }
+        
+        const targetDayNum = targetDateObj.getDate();
+        const targetMonthNumStr = (targetDateObj.getMonth() + 1).toString();
+        const targetLastMonthNumStr = targetDateObj.getMonth() === 0 ? "12" : targetDateObj.getMonth().toString();
+        
+        const isToday = (targetDateObj.toDateString() === new Date().toDateString());
+        document.getElementById('st-tgl').innerText = isToday ? targetDayNum + " (HARI INI)" : targetDayNum;
+
+        let incToday = 0; let expToday = 0; 
+        let expThisMonthToDate = 0; let expLastMonthToDate = 0;
+
+        db.logs.forEach(l => {
+            const dayStr = l.date.split(/[\/\-\s]/)[0]; 
+            const d = parseInt(dayStr) || 0;
+
+            if (l.month === targetMonthNumStr) {
+                if (d === targetDayNum) {
+                    if (l.type === 'IN') incToday += l.amt;
+                    if (l.type === 'OUT') expToday += l.amt;
+                }
+                if (d <= targetDayNum && l.type === 'OUT') { expThisMonthToDate += l.amt; }
+            }
+            
+            if (l.month === targetLastMonthNumStr) {
+                if (d <= targetDayNum && l.type === 'OUT') { expLastMonthToDate += l.amt; }
+            }
+        });
+
+        document.getElementById('st-inc-today').innerText = fmt(incToday);
+        document.getElementById('st-exp-today').innerText = fmt(expToday);
+        document.getElementById('st-avg-this').innerText = fmt(targetDayNum > 0 ? (expThisMonthToDate / targetDayNum) : 0);
+        document.getElementById('st-avg-last').innerText = fmt(targetDayNum > 0 ? (expLastMonthToDate / targetDayNum) : 0);
+        // -------------------------------------------------------------
+
         localStorage.setItem('dompet_ku_data_master', JSON.stringify(db));
 
-        // Memicu animasi background soft 4 detik saat data berubah
         const stickyHeader = document.getElementById('mainStickyHeader');
         if (stickyHeader) {
             stickyHeader.classList.remove('animate-update');
-            void stickyHeader.offsetWidth; // Trigger reflow
+            void stickyHeader.offsetWidth; 
             stickyHeader.classList.add('animate-update');
         }
     }
@@ -910,10 +1124,67 @@
         update();
     }
 
-    function unduhLaporanPDF() {
-        const btn = document.getElementById('btnCetakPDF');
+    // --- LOGIKA FILTER MODAL PDF ---
+    function togglePdfInputs() {
+        const type = document.getElementById('pdfFilterType').value;
+        document.getElementById('pdfMonthContainer').style.display = (type === 'month') ? 'block' : 'none';
+        document.getElementById('pdfRangeContainer').style.display = (type === 'range') ? 'flex' : 'none';
+        
+        if(type === 'range') {
+            const todayStr = new Date().toISOString().split('T')[0];
+            if(!document.getElementById('pdfStartDate').value) document.getElementById('pdfStartDate').value = todayStr;
+            if(!document.getElementById('pdfEndDate').value) document.getElementById('pdfEndDate').value = todayStr;
+        }
+    }
+
+    function parseDateDariStringLog(dateStr) {
+        // Contoh dateStr: "13/07/2026 22:54" atau "13-07-2026 22:54"
+        const d = dateStr.split(' ')[0]; 
+        const parts = d.split(/[\/\-]/);
+        const year = parts[2] || new Date().getFullYear();
+        return new Date(`${year}-${parts[1]}-${parts[0]}T00:00:00`);
+    }
+
+    function prosesCetakPDF() {
+        const type = document.getElementById('pdfFilterType').value;
+        let filteredLogs = [];
+        let subtitleText = "";
+
+        if (type === 'all') {
+            filteredLogs = db.logs;
+            subtitleText = "SEMUA BULAN";
+        } 
+        else if (type === 'month') {
+            const m = document.getElementById('pdfBulan').value;
+            filteredLogs = db.logs.filter(l => l.month === m);
+            subtitleText = "BULAN: " + months[parseInt(m)-1].toUpperCase();
+        } 
+        else if (type === 'range') {
+            const sdInput = document.getElementById('pdfStartDate').value;
+            const edInput = document.getElementById('pdfEndDate').value;
+            if(!sdInput || !edInput) return alert("Harap pilih tanggal awal dan akhir!");
+            
+            const sd = new Date(sdInput);
+            sd.setHours(0,0,0,0);
+            const ed = new Date(edInput);
+            ed.setHours(23,59,59,999);
+
+            if(sd > ed) return alert("Tanggal akhir tidak boleh lebih kecil dari tanggal awal!");
+
+            filteredLogs = db.logs.filter(l => {
+                let logD = parseDateDariStringLog(l.date);
+                return logD >= sd && logD <= ed;
+            });
+            subtitleText = `PERIODE: ${sd.toLocaleDateString('id-ID')} s/d ${ed.toLocaleDateString('id-ID')}`;
+        }
+
+        generatePDFDoc(filteredLogs, subtitleText);
+    }
+
+    function generatePDFDoc(filteredLogs, subtitle) {
+        const btn = document.getElementById('btnProsesPDF');
         const originalText = btn.innerHTML;
-        btn.innerHTML = "⏳ MENYIAPKAN PDF...";
+        btn.innerHTML = "⏳ MEMPROSES...";
         btn.disabled = true;
 
         setTimeout(() => { 
@@ -921,20 +1192,12 @@
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF('p', 'mm', 'a4'); 
 
-                const fMonth = document.getElementById('fBulan').value;
-                const fKey = document.getElementById('fKeyword').value.toLowerCase();
-                
-                let filteredLogs = db.logs.filter(l => {
-                    return (fMonth === 'all' || l.month === fMonth) && l.ket.toLowerCase().includes(fKey);
-                });
-
                 let totalIn = 0; let totalOut = 0;
                 filteredLogs.forEach(l => {
                     if(l.type === 'IN') totalIn += l.amt;
                     if(l.type === 'OUT') totalOut += l.amt;
                 });
 
-                let bulanTeks = fMonth === 'all' ? 'SEMUA BULAN' : document.getElementById('fBulan').options[document.getElementById('fBulan').selectedIndex].text;
                 let today = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'});
 
                 doc.setFontSize(16); doc.setFont("helvetica", "bold"); doc.setTextColor(30, 41, 59); 
@@ -945,8 +1208,7 @@
                 doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.setTextColor(71, 85, 105);
                 
                 doc.text(`Dicetak pada: ${today}`, 14, 33);
-                doc.text(`Filter Bulan: ${bulanTeks}`, 14, 38);
-                if(fKey) doc.text(`Kata Kunci: ${fKey.toUpperCase()}`, 14, 43);
+                doc.text(`Filter Data: ${subtitle}`, 14, 38);
 
                 doc.setFont("helvetica", "bold"); doc.setTextColor(5, 150, 105); 
                 doc.text(`Total Pemasukan: ${fmt(totalIn)}`, 196, 33, { align: "right" });
@@ -962,7 +1224,7 @@
                     tableRows.push([l.date.split(' ')[0], excelKat, l.ket, `${sign} ${fmt(l.amt)}`]);
                 });
 
-                if(tableRows.length === 0) tableRows.push(["-", "-", "Tidak ada data transaksi", "-"]);
+                if(tableRows.length === 0) tableRows.push(["-", "-", "Tidak ada data transaksi di periode ini", "-"]);
 
                 doc.autoTable({
                     startY: 50, head: [tableColumn], body: tableRows, theme: 'grid',
@@ -977,12 +1239,14 @@
                     }
                 });
 
-                doc.save(`Laporan_Dompetku_${bulanTeks.replace(/ /g, '_')}.pdf`);
+                doc.save(`Laporan_Dompetku_${subtitle.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`);
+                closeModal('pdfModal');
+                if(isMenuOpen) toggleMenuPanel();
             } catch (err) {
                 alert("Gagal membuat PDF. Pastikan internetmu menyala.");
                 console.error(err);
             } finally {
-                btn.innerHTML = "📥 CETAK PDF"; btn.disabled = false;
+                btn.innerHTML = "CETAK PDF"; btn.disabled = false;
             }
         }, 100);
     }
@@ -996,12 +1260,48 @@
         }
     }
 
-    const selects = [document.getElementById('blnGaji'), document.getElementById('fBulan'), document.getElementById('fBulanDash'), document.getElementById('suntikDariBulan'), document.getElementById('suntikKeBulan')];
+    // --- FUNGSI AUTO-BACKUP PERGANTIAN TANGGAL ---
+    async function autoBackupDaily() {
+        const todayStr = new Date().toDateString();
+        const lastBackup = localStorage.getItem('dompetku_last_backup_date');
+        
+        if (lastBackup !== todayStr && db.logs && db.logs.length > 0) {
+            localStorage.setItem('dompetku_last_backup_date', todayStr); 
+            const s = document.getElementById('status');
+            s.innerText = "🔄 AUTO BACKUP...";
+            s.classList.remove('online');
+            
+            try {
+                await fetch(URL_CLOUD, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ action: "BACKUP_ALL", logs: db.logs })
+                });
+                s.innerText = "✅ CLOUD TERHUBUNG";
+                s.classList.add('online');
+            } catch (e) {
+                console.log("Auto Backup Gagal:", e);
+                s.innerText = "❌ ERROR CLOUD";
+                localStorage.removeItem('dompetku_last_backup_date');
+            }
+        }
+    }
+
+    const selects = [
+        document.getElementById('blnGaji'), 
+        document.getElementById('fBulan'), 
+        document.getElementById('fBulanDash'), 
+        document.getElementById('suntikDariBulan'), 
+        document.getElementById('suntikKeBulan'),
+        document.getElementById('pdfBulan') // Memasukkan dropdown modal PDF ke dalam perulangan bulan
+    ];
     selects[1].innerHTML = selects[2].innerHTML = `<option value="all">SEMUA BULAN</option>`;
     months.forEach((m, i) => { selects.forEach(s => s.innerHTML += `<option value="${i+1}">${m.toUpperCase()}</option>`); });
     const curMonth = (new Date().getMonth() + 1).toString();
-    selects[0].value = selects[3].value = selects[4].value = curMonth;
+    selects[0].value = selects[3].value = selects[4].value = selects[5].value = curMonth;
+    
     update();
+    autoBackupDaily(); 
 </script>
 </body>
 </html>
